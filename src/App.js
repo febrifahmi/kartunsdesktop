@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router';
 import { BrowserRouter } from 'react-router-dom';
 import MainNavbar from './components/MainNavbar';
 import { Landing } from './routes/Landing';
+import { Home } from './routes/Home';
 import { StatusBar } from './components/StatusBar';
 
 // const windowWidth = window.innerWidth;
@@ -20,6 +21,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route exact path="/" element={<Landing />} />
+            <Route exact path="/home" element={<Home />} />
           </Routes>
         </BrowserRouter>
       </div>
