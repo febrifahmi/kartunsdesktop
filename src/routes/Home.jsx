@@ -6,6 +6,10 @@ import { MdHomeFilled } from "react-icons/md";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { ProfileCard } from "../components/ProfilCard";
 import { AdmNavbar } from "../components/admin/AdmNavbar";
+import { AdmDashboard } from "../components/admin/AdmDashboard";
+import { AdmUserMgmt } from "../components/admin/AdmUserMgmt";
+import { AdmSettings } from "../components/admin/AdmSettings";
+import { AdmLogs } from "../components/admin/AdmLogs";
 import { PengurusNavbar } from "../components/pengurus/PengurusNavbar";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -19,6 +23,7 @@ export const Home = () => {
     }
 
     const [articles, setArticles] = useState();
+    const [activemenu, setActiveMenu] = useState();
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -42,6 +47,10 @@ export const Home = () => {
             .catch((err) => console.log(err.message))
     }, [])
 
+    const getSelection = (selectiondata) => {
+        setActiveMenu(selectiondata);
+    }
+
 
     return (
         <>
@@ -59,20 +68,46 @@ export const Home = () => {
                     </div>
                 </div>
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
-                    <div className="bg-slate-800 rounded-md w-5/6 text-white">
+                    <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white">
                         <div className="flex gap-2 items-center ml-4">
                             {ReadCookie().isadmin === true ?
                                 <div>
-                                    <AdmNavbar />
+                                    <AdmNavbar getSelection={getSelection} />
                                 </div> : ""
                             }
                             {ReadCookie().ispengurus === true ?
                                 <div>
-                                    <PengurusNavbar />
+                                    <PengurusNavbar getSelection={getSelection} />
                                 </div> : ""
                             }
                         </div>
                         <hr className="border-slate-700 my-2 border-dotted" />
+                        <div className="text-white">
+                            {activemenu === "Dashboard" ?
+                                <div>
+                                    <AdmDashboard />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "User Management" ?
+                                <div>
+                                    <AdmUserMgmt />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Settings" ?
+                                <div>
+                                    <AdmSettings />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Logs" ?
+                                <div>
+                                    <AdmLogs />
+                                </div>
+                                :
+                                ""}
+                        </div>
                     </div>
                     <div className="rounded-md w-1/6">
                         <ProfileCard />
