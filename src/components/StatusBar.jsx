@@ -2,10 +2,14 @@ import { useState } from "react";
 
 export const StatusBar = () => {
     const [status, setStatus] = useState("idle");
+    const handleAbout = () => {
+        window.alert("KartUNS Desktop © Febri Fahmi Hakim (2023)")
+    }
     return (
         <>
-            <div className='flex grow-0 h-6 text-gray-400 bg-gray-700 items-center'>
-                <p className='text-xs px-5'>Status: {status}</p>
+            <div className='flex grow-0 h-6 text-gray-400 bg-gray-700 items-center justify-between px-5'>
+                <p className='text-xs'>Status: {status}</p>
+                <button className="bg-slate-600 text-slate-300 text-xs rounded-lg px-2" onClick={handleAbout}>About</button>
             </div>
         </>
     )

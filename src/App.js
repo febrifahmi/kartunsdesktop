@@ -13,7 +13,7 @@ function App() {
   // to get current path location, try to save the location.pathname to cookie and read cookie value from this page
   // or make a footer status bar as a component so that we can use props to get pathname data
   return (
-    <div className="bg-slate-800 flex flex-col h-screen justify-between">
+    <div className="bg-slate-900 flex flex-col h-screen justify-between">
       <header className="bg-slate-900 border-b-1 border-slate-300 sticky top-0 z-50">
         <MainNavbar />
       </header>
