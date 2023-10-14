@@ -80,7 +80,7 @@ export const Home = () => {
                     </div>
                 </div>
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
-                    <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white">
+                    <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
                         <div className="flex gap-2 items-center ml-4">
                             {ReadCookie().isadmin === true ?
                                 <div>

@@ -16,6 +16,22 @@ export const SaveCookie = (data) => {
     // console.log("Name: " + cookies.get('name'));
 }
 
+export const CreateStatusCookie = (status) => {
+    const cookies = new Cookies();
+    cookies.set("status", status, { maxAge: 900 })
+}
+
+export const ReadStatusCookie = () => {
+    const cookies = new Cookies();
+    const status = cookies.get("status")
+    return status
+}
+
+export const RemoveStatusCookie = () => {
+    const cookies = new Cookies();
+    cookies.remove("status", { maxAge: 900 })
+}
+
 export const ReadCookie = () => {
     const cookies = new Cookies();
     const token = cookies.get("token")

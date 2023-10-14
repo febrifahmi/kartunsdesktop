@@ -5,13 +5,18 @@ import MainNavbar from './components/MainNavbar';
 import { Landing } from './routes/Landing';
 import { Home } from './routes/Home';
 import { StatusBar } from './components/StatusBar';
+import { useState } from 'react';
 
-// const windowWidth = window.innerWidth;
-// const windowHeight = window.innerHeight;
+
 
 function App() {
   // to get current path location, try to save the location.pathname to cookie and read cookie value from this page
   // or make a footer status bar as a component so that we can use props to get pathname data
+  const [status, setStatus] = useState();
+  const getStatus = (message) => {
+    setStatus(message)
+  }
+
   return (
     <div className="bg-slate-900 flex flex-col h-screen justify-between">
       <header className="bg-slate-900 border-b-1 border-slate-300 sticky top-0 z-50">
@@ -26,7 +31,7 @@ function App() {
         </BrowserRouter>
       </div>
       <footer className='sticky bottom-0'>
-        <StatusBar />
+        <StatusBar getStatus={getStatus} />
       </footer>
     </div>
   );

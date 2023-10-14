@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ReadStatusCookie } from "../config/utils";
 
-export const StatusBar = () => {
+export const StatusBar = ({getStatus}) => {
     const [status, setStatus] = useState("idle");
     const handleAbout = () => {
         window.alert("KartUNS Desktop © Febri Fahmi Hakim (2023)")
     }
+
+    useEffect(() => {
+        setStatus(ReadStatusCookie())
+    }, [])
+
     return (
         <>
             <div className='flex grow-0 h-6 text-gray-400 bg-gray-700 items-center justify-between px-5'>
