@@ -18,9 +18,17 @@ export const PgCoverStory = () => {
                 <h3 className="font-bold text-center text-lg text-green-500">Pengaturan Cover Story</h3>
                 <div className="text-slate-900 mt-5">
                     <form method='post'>
+                        <div>
+                            <div className="flex py-1">
+                                <input className="grow rounded h-12" name="covertitle" type={"text"} placeholder=" Judul cover story" />
+                            </div>
+                        </div>
+                        <div className="flex py-6">
+                            <input className="grow rounded h-12" name="coverdesc" type={"text"} placeholder=" Deskripsi pendek mengenai isi cover story" />
+                        </div>
                         <Editor
                             onInit={(evt, editor) => editorRef.current = editor}
-                            initialValue="<p>This is the initial content of the editor.</p>"
+                            initialValue="<p>Silahkan tuliskan isi <i>cover story</i> terbaru KartUNS di sini.</p>"
                             init={{
                                 height: 500,
                                 menubar: false,

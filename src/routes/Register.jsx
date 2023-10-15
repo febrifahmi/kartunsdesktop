@@ -5,17 +5,21 @@ import { SaveCookie } from "../config/utils";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-export const Landing = () => {
+export const Register = () => {
     const navigate = useNavigate();
-    const navRegister = () => navigate("/register");
-    const home = () => navigate("/home");
+    const navLanding = () => navigate("/");
 
-    const failed = () => toast.warning("Login Failed! Check your username and password");
+    const failed = () => toast.warning("Registration Failed! User may already exist!");
 
     const initialFormData = Object.freeze({
         username: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        is_alumni: "",
         password: ""
     });
+
     const [formData, updateFormData] = useState(initialFormData);
     const handleChange = (e) => {
         // ... get data form    
@@ -26,12 +30,13 @@ export const Landing = () => {
             [e.target.name]: e.target.value.trim()
         });
     }
+    console.log(formData);
     // console.log(APIURLConfig.baseurl+APIURLConfig.loginendpoint)
     const handleSubmit = async (e) => {
         e.preventDefault()
         // console.log(formData);
         // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.loginendpoint, {
+        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.registerendpoint, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json',
@@ -41,8 +46,7 @@ export const Landing = () => {
             .then((response) => response.json())
             .then((data) => {
                 if (data["code"] === "success") {
-                    SaveCookie(data)
-                    home()
+                    navLanding()
                 } else {
                     failed()
                 }
@@ -56,17 +60,33 @@ export const Landing = () => {
                     <div>
                         <form className="w-96" method="post">
                             <div className="flex flex-col items-center rounded-lg bg-slate-900 py-6 px-4 gap-4">
-                                <h2 className="text-slate-500 font-bold text-2xl mb-4">KartUNS Login</h2>
+                                <h2 className="text-slate-500 font-bold text-2xl mb-4">KartUNS Register</h2>
                                 <div className="w-full">
-                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="text" name="username" placeholder=" Username" onChange={handleChange} />
+                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="text" name="username" placeholder=" Username" onChange={handleChange} value={formData.username} />
                                 </div>
                                 <div className="w-full">
-                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="password" name="password" placeholder=" Password" onChange={handleChange} />
+                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="text" name="first_name" placeholder=" First name" onChange={handleChange} value={formData.first_name} />
                                 </div>
-                                <input className="bg-green-500 py-2 px-4 rounded-md text-white font-bold w-full mt-2" type="submit" value="Login" onClick={handleSubmit} />
+                                <div className="w-full">
+                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="text" name="last_name" placeholder=" Last name" onChange={handleChange} value={formData.last_name} />
+                                </div>
+                                <div className="w-full">
+                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="text" name="email" placeholder=" Email" onChange={handleChange} value={formData.email} />
+                                </div>
+                                <div className="w-full flex justify-between items-center gap-x-6">
+                                    <label className="text-white">Alumni?</label>
+                                    <select name="is_alumni" className="text-slate-600" onChange={handleChange} >
+                                        <option name="is_alumni" value={0} >No</option>
+                                        <option name="is_alumni" value={1}>Yes</option>
+                                    </select>
+                                </div>
+                                <div className="w-full">
+                                    <input className="rounded-sm h-8 text-slate-800 w-full" type="password" name="password" placeholder=" Password" onChange={handleChange} value={formData.password} />
+                                </div>
+                                <input className="bg-green-500 py-2 px-4 rounded-md text-white font-bold w-full mt-2" type="submit" value="Register" onClick={handleSubmit} />
                                 <div className="flex gap-4 justify-between mt-4">
-                                    <p className="text-white">Belum punya akun?</p>
-                                    <button className="text-cyan-600 font-bold" onClick={navRegister} >Daftar</button>
+                                    <p className="text-white">Sudah punya akun?</p>
+                                    <button className="text-cyan-600 font-bold" onClick={navLanding} >Login</button>
                                 </div>
                                 <div className="text-sm text-slate-500">
                                     <a href="valid">*) Kebijakan privasi</a>

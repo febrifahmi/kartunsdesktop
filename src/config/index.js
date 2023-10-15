@@ -5,4 +5,5 @@ export const APIURLConfig = {
     logoutendpoint: "api/users/logout",
     registerendpoint: "api/users/register",
     articleendpoint: "api/articles/",
+    coverstoryendpoint: "api/covers/",
 }

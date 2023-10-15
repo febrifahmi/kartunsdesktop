@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import MainNavbar from './components/MainNavbar';
 import { Landing } from './routes/Landing';
 import { Home } from './routes/Home';
+import { Register } from './routes/Register';
 import { StatusBar } from './components/StatusBar';
 import { useState } from 'react';
 
@@ -27,6 +28,7 @@ function App() {
           <Routes>
             <Route exact path="/" element={<Landing />} />
             <Route exact path="/home" element={<Home />} />
+            <Route exact path="/register" element={<Register />} />
           </Routes>
         </BrowserRouter>
       </div>

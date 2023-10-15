@@ -194,6 +194,10 @@ export const Home = () => {
                                 :
                                 ""}
                         </div>
+                        <hr className="border-slate-700 mb-2 border-dotted" />
+                        <div className="mb-2">
+
+                        </div>
                     </div>
                     <div className="rounded-md w-1/6">
                         <ProfileCard />
