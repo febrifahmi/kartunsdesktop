@@ -52,10 +52,9 @@ export const Landing = () => {
     return (
         <>
             <div className="h-full w-full flex flex-col justify-around bg-landing-bg bg-cover">
-                {/* <h1 className="text-3xl font-bold text-white text-center">KartUNS Dashboard</h1> */}
                 <div className="flex flex-row flex-wrap gap-8 justify-center items-center align-middle text-white">
                     <div>
-                        <form  className="w-96" method="post">
+                        <form className="w-96" method="post">
                             <div className="flex flex-col items-center rounded-lg bg-slate-900 py-6 px-4 gap-4">
                                 <h2 className="text-slate-500 font-bold text-2xl mb-4">KartUNS Login</h2>
                                 <div className="w-full">
@@ -77,6 +76,18 @@ export const Landing = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

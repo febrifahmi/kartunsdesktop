@@ -11,6 +11,18 @@ import { AdmUserMgmt } from "../components/admin/AdmUserMgmt";
 import { AdmSettings } from "../components/admin/AdmSettings";
 import { AdmLogs } from "../components/admin/AdmLogs";
 import { PengurusNavbar } from "../components/pengurus/PengurusNavbar";
+import { PgCoverStory } from "../components/pengurus/PgCoverStory";
+import { PgPersuratan } from "../components/pengurus/PgPersuratan";
+import { PgAgenda } from "../components/pengurus/PgAgenda";
+import { PgArtikel } from "../components/pengurus/PgArtikel";
+import { PgAnggaran } from "../components/pengurus/PgAnggaran";
+import { PgPengumuman } from "../components/pengurus/PgPengumuman";
+import { PgKepengurusan } from "../components/pengurus/PgKepengurusan";
+import { PgKeanggotaan } from "../components/pengurus/PgKeanggotaan";
+import { PgAdsApproval } from "../components/pengurus/PgAdsApproval";
+import { PgJobOffers } from "../components/pengurus/PgJobOffers";
+import { PgTraining } from "../components/pengurus/PgTraining";
+import { PgRevenue } from "../components/pengurus/PgRevenue";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -68,7 +80,7 @@ export const Home = () => {
                     </div>
                 </div>
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
-                    <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white">
+                    <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
                         <div className="flex gap-2 items-center ml-4">
                             {ReadCookie().isadmin === true ?
                                 <div>
@@ -83,6 +95,7 @@ export const Home = () => {
                         </div>
                         <hr className="border-slate-700 my-2 border-dotted" />
                         <div className="text-white">
+                            {/* Active Menu for Admin */}
                             {activemenu === "Dashboard" ?
                                 <div>
                                     <AdmDashboard />
@@ -107,6 +120,83 @@ export const Home = () => {
                                 </div>
                                 :
                                 ""}
+                            {/* Active Menu for Pengurus */}
+                            {activemenu === "Cover Story" ?
+                                <div>
+                                    <PgCoverStory />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Persuratan" ?
+                                <div>
+                                    <PgPersuratan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Agenda" ?
+                                <div>
+                                    <PgAgenda />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Artikel" ?
+                                <div>
+                                    <PgArtikel />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Anggaran" ?
+                                <div>
+                                    <PgAnggaran />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Pengumuman" ?
+                                <div>
+                                    <PgPengumuman />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Kepengurusan" ?
+                                <div>
+                                    <PgKepengurusan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Keanggotaan" ?
+                                <div>
+                                    <PgKeanggotaan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Ads Approval" ?
+                                <div>
+                                    <PgAdsApproval />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Job Offers" ?
+                                <div>
+                                    <PgJobOffers />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Training" ?
+                                <div>
+                                    <PgTraining />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Revenue Layanan" ?
+                                <div>
+                                    <PgRevenue />
+                                </div>
+                                :
+                                ""}
+                        </div>
+                        <hr className="border-slate-700 mb-2 border-dotted" />
+                        <div className="mb-2">
+
                         </div>
                     </div>
                     <div className="rounded-md w-1/6">
