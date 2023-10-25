@@ -5,6 +5,7 @@ import { ReadCookie, SaveCookie } from "../config/utils";
 import { MdHomeFilled } from "react-icons/md";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { ProfileCard } from "../components/ProfilCard";
+import { Ads } from "../components/Ads";
 import { AdmNavbar } from "../components/admin/AdmNavbar";
 import { AdmDashboard } from "../components/admin/AdmDashboard";
 import { AdmUserMgmt } from "../components/admin/AdmUserMgmt";
@@ -194,10 +195,7 @@ export const Home = () => {
                                 :
                                 ""}
                         </div>
-                        <hr className="border-slate-700 mb-2 border-dotted" />
-                        <div className="mb-2">
-
-                        </div>
+                        
                     </div>
                     <div className="rounded-md w-1/6">
                         <ProfileCard />
