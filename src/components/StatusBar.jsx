@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import { ReadStatusCookie } from "../config/utils";
 
 export const StatusBar = ({getStatus}) => {
-    const [status, setStatus] = useState("idle");
+    const [status, setStatus] = useState("idle")
     const handleAbout = () => {
         window.alert("KartUNS Desktop © Febri Fahmi Hakim (2023)")
     }
 
     useEffect(() => {
-        setStatus(ReadStatusCookie())
+        let message = ReadStatusCookie()
+        console.log("Message: ", message)
+        setStatus(message)
+        getStatus(message)
     }, [])
 
     return (

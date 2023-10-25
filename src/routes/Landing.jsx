@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export const Landing = () => {
     const navigate = useNavigate();
     const navRegister = () => navigate("/register");
+    const kebijakan = () => navigate("/kebijakan");
     const home = () => navigate("/home");
 
     const failed = () => toast.warning("Login Failed! Check your username and password");
@@ -68,9 +69,9 @@ export const Landing = () => {
                                     <p className="text-white">Belum punya akun?</p>
                                     <button className="text-cyan-600 font-bold" onClick={navRegister} >Daftar</button>
                                 </div>
-                                <div className="text-sm text-slate-500">
-                                    <a href="valid">*) Kebijakan privasi</a>
-                                </div>
+                                <button className="text-sm text-slate-500" onClick={kebijakan}>
+                                    *) Kebijakan privasi
+                                </button>
                             </div>
                         </form>
                     </div>
