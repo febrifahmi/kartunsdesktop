@@ -766,6 +766,10 @@ video {
   align-items: center;
 }
 
+.items-stretch {
+  align-items: stretch;
+}
+
 .justify-start {
   justify-content: flex-start;
 }
@@ -1150,6 +1154,14 @@ video {
   outline-color: #0ea5e9;
 }
 
+.outline-slate-700 {
+  outline-color: #334155;
+}
+
+.outline-slate-600 {
+  outline-color: #475569;
+}
+
 /* Chrome, Safari and Opera */
 
 /*
@@ -1228,4 +1240,16 @@ video {
 .hover\:text-white:hover {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.hover\:outline:hover {
+  outline-style: solid;
+}
+
+.hover\:outline-\[1px\]:hover {
+  outline-width: 1px;
+}
+
+.hover\:outline-slate-600:hover {
+  outline-color: #475569;
 }

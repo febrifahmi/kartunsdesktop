@@ -149,9 +149,8 @@ export const PgCoverStory = () => {
                     <div className='py-4'>
                         {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idcover}>
-                                <div>
-                                    <img width={100} src={item.file !== undefined || item.file !== null || item.file !== "" ? item.file : 'static/img/noimage.png'} alt=''></img>
-                                    {/* {item.file ? item.file : ""} */}
+                                <div className='rounded-md flex items-stretch hover:outline hover:outline-[1px] hover:outline-slate-600'>
+                                    <img width={100} src={item.coverimgurl !== undefined || item.coverimgurl !== null || item.coverimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.coverimgurl : 'static/img/noimage.png'} alt=''></img>
                                 </div>
                                 <div className='flex flex-col gap-2'>
                                     <div className='text-sm font-bold'>
