@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 
@@ -12,7 +12,14 @@ export const PgPengumuman = () => {
         }
     };
 
+    let cookie = ReadCookie()
+
     const [pengumuman, setPengumuman] = useState([]);
+    const [judulpengumuman, setJudulPengumuman] = useState("");
+    const [descpengumuman, setDescPengumuman] = useState("");
+    const [pengumumantext, setPengumumanText] = useState("");
+    const [pengumumanimgurl, setPengumumanImgUrl] = useState("");
+    const [image, setImage] = useState()
 
     const getPengumuman = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengumumanendpoint + "all", {
@@ -29,6 +36,25 @@ export const PgPengumuman = () => {
         return response
     }
 
+    var newFormData = new FormData();
+
+    const handleChange = (e) => {
+        // ... get data form
+        newFormData[e.target.name] = e.target.value.trim()
+        if (newFormData["judul"] !== undefined) {
+            setJudulPengumuman(newFormData["judul"])
+        }
+        if (newFormData["pengumumandesc"] !== undefined) {
+            setDescPengumuman(newFormData["pengumumandesc"])
+        }
+        console.log({
+            judul: judulpengumuman,
+            pengumumandesc: descpengumuman,
+            pengumumantext: pengumumantext,
+            pengumumanimgurl: pengumumanimgurl
+        })
+    }
+
     useEffect(() => {
         CreateStatusCookie("Manage Pengumuman");
         getPengumuman()
@@ -37,8 +63,50 @@ export const PgPengumuman = () => {
                 setPengumuman(isi)
             })
             .catch((err) => console.log(err))
-        console.log(pengumuman.pengumumans)
+        // console.log(pengumuman.pengumumans)
     }, [])
+
+    const handleImageChange = async (event) => {
+        const file = event.target.files[0];
+        const image = await resizeImage(file);
+        // console.log(image);
+        setPengumumanImgUrl(file.name);
+        setImage(image);
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // console.log(e.target);
+        console.log({
+            "judul": judulpengumuman,
+            "pengumumandesc": descpengumuman,
+            "pengumumantext": pengumumantext,
+            "pengumumanimgurl": pengumumanimgurl,
+            "file": image,
+        })
+        // ... submit to RestAPI using fetch api
+        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.pengumumanendpoint + "create", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+            body: JSON.stringify({
+                "judul": judulpengumuman,
+                "pengumumanimgurl": pengumumanimgurl,
+                "pengumumandesc": descpengumuman,
+                "pengumumantext": pengumumantext,
+                "file": image,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
 
     return (
         <>
@@ -48,11 +116,11 @@ export const PgPengumuman = () => {
                     <form method='post'>
                         <div>
                             <div className="flex">
-                                <input className="grow rounded h-12" name="judul" type={"text"} placeholder=" Judul pengumuman" />
+                                <input className="grow rounded h-12" name="judul" type={"text"} placeholder=" Judul pengumuman" onChange={handleChange} />
                             </div>
                         </div>
                         <div className="flex py-6">
-                            <input className="grow rounded h-12" name="pengumumandesc" type={"text"} placeholder=" Deskripsi pendek mengenai isi pengumuman" />
+                            <input className="grow rounded h-12" name="pengumumandesc" type={"text"} placeholder=" Deskripsi pendek mengenai isi pengumuman" onChange={handleChange} />
                         </div>
                         <Editor
                             onInit={(evt, editor) => editorRef.current = editor}
@@ -71,7 +139,19 @@ export const PgPengumuman = () => {
                                     'removeformat | help',
                                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                             }}
+                            onEditorChange={(newText) => setPengumumanText(newText)}
                         />
+                        <input type="hidden" id="pengumumantext" name="pengumumantext" value={pengumumantext}></input>
+                        <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
+                            <div className='flex'>
+                                <label className='mr-6'>Upload gambar pengumuman (max. <span className='text-red'>500Kb</span>)</label>
+                                <input type="file" name="imagefile" accept="image/*" onChange={handleImageChange} />
+                            </div>
+                        </div>
+                        <input type="hidden" id="" name="pengumumanimgurl" value={pengumumanimgurl}></input>
+                        <div className='flex justify-center'>
+                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Create Pengumuman</button>
+                        </div>
                     </form>
                 </div>
                 <hr className="border-slate-700 mt-8 border-dotted" />
@@ -80,10 +160,10 @@ export const PgPengumuman = () => {
                     <div className='py-4'>
                         {pengumuman.pengumumans !== undefined && pengumuman.pengumumans.length !== 0 ? pengumuman.pengumumans.map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idpengumuman}>
-                                <div>
-                                    <img width={100} src={item.pengumumanimgurl !== undefined || item.pengumumanimgurl !== null ? item.pengumumanimgurl : 'static/img/noimage.png'}></img>
+                                <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
+                                    <img className='object-fill rounded-md' src={item.pengumumanimgurl !== undefined || item.pengumumanimgurl !== null ? APIURLConfig.baseurl + "static/uploads/" + item.pengumumanimgurl : 'static/img/noimage.png'}></img>
                                 </div>
-                                <div className='flex flex-col gap-2'>
+                                <div className='flex flex-col gap-2 w-5/6'>
                                     <div className='text-sm font-bold'>
                                         {item.judul}
                                     </div>

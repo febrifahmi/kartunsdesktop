@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 
@@ -12,8 +12,14 @@ export const PgAgenda = () => {
         }
     };
 
+    let cookie = ReadCookie()
 
     const [agenda, setAgenda] = useState([]);
+    const [judulagenda, setJudulAgenda] = useState("");
+    const [descagenda, setDescAgenda] = useState("");
+    const [agendatext, setAgendaText] = useState("");
+    const [agendaimgurl, setAgendaImgUrl] = useState("");
+    const [image, setImage] = useState()
 
     const getAgenda = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.agendaendpoint + "all", {
@@ -30,6 +36,11 @@ export const PgAgenda = () => {
             .catch((err) => console.log(err))
         return response
     }
+
+    var newFormData = new FormData();
+
+
+
 
     useEffect(() => {
         CreateStatusCookie("Manage Agenda KartUNS");
@@ -94,7 +105,7 @@ export const PgAgenda = () => {
                         {agenda.agendas !== undefined && agenda.agendas.length !== 0 ? agenda.agendas.map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idagenda}>
                                 <div>
-                                    <img width={100} src={item.agendaimgurl !== undefined || item.agendaimgurl !== null ? item.agendaimgurl : 'static/img/noimage.png'}></img>
+                                    <img className='object-fill rounded-md' src={item.agendaimgurl !== undefined || item.agendaimgurl !== null ? item.agendaimgurl : 'static/img/noimage.png'}></img>
                                 </div>
                                 <div className='flex flex-col gap-2'>
                                     <div className='text-sm font-bold'>
