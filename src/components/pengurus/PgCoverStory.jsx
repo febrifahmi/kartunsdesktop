@@ -15,6 +15,8 @@ export const PgCoverStory = () => {
     let cookie = ReadCookie()
 
     const [coverstories, setCoverStories] = useState([]);
+    const [judulcover, setJudulCover] = useState("");
+    const [desccover, setDescCover] = useState("");
     const [covertext, setCoverText] = useState("");
     const [coverimgurl, setCoverImgUrl] = useState("");
     const [image, setImage] = useState()
@@ -39,10 +41,17 @@ export const PgCoverStory = () => {
 
     const handleChange = (e) => {
         // ... get data form
-        newFormData[e.target.name] = e.target.value
-        newFormData["covertext"] = covertext
-        newFormData["coverimgurl"] = coverimgurl
-        console.log(newFormData["covertitle"], newFormData["coverdesc"], newFormData["covertext"], newFormData["coverimgurl"])
+        newFormData[e.target.name] = e.target.value.trim()
+        if(newFormData["covertitle"] !== undefined || newFormData["coverdesc"] !== undefined){
+            setJudulCover(newFormData["covertitle"])
+            setDescCover(newFormData["coverdesc"])
+        }
+        console.log({
+            covertitle: judulcover, 
+            coverdesc: desccover, 
+            covertext: covertext, 
+            coverimgurl: coverimgurl
+        })
     }
 
     useEffect(() => {
@@ -53,13 +62,13 @@ export const PgCoverStory = () => {
                 setCoverStories(isi)
             })
             .catch((err) => console.log(err))
-        console.log(coverstories.covers)
+        // console.log(coverstories.covers)
     }, [])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
         const image = await resizeImage(file);
-        console.log(image);
+        // console.log(image);
         setCoverImgUrl(file.name);
         setImage(image);
     }
@@ -68,8 +77,8 @@ export const PgCoverStory = () => {
         e.preventDefault()
         // console.log(e.target);
         console.log({
-            "covertitle": newFormData["covertitle"],
-            "coverdesc": newFormData["coverdesc"],
+            "covertitle": judulcover,
+            "coverdesc": desccover,
             "covertext": covertext,
             "coverimgurl": coverimgurl,
             "file": image,
@@ -82,8 +91,8 @@ export const PgCoverStory = () => {
                 'Authorization': `Bearer ${cookie.token}`
             },
             body: JSON.stringify({
-                "covertitle": newFormData["covertitle"],
-                "coverdesc": newFormData["coverdesc"],
+                "covertitle": judulcover,
+                "coverdesc": desccover,
                 "covertext": covertext,
                 "coverimgurl": coverimgurl,
                 "file": image
@@ -130,7 +139,7 @@ export const PgCoverStory = () => {
                             }}
                             onEditorChange={(newText) => setCoverText(newText)}
                         />
-                        <input type="hidden" id="" name="covertext" value={covertext}></input>
+                        <input type="hidden" id="covertext" name="covertext" value={covertext}></input>
                         <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                             <div className='flex'>
                                 <label className='mr-6'>Upload gambar cover (max. <span className='text-red'>500Kb</span>)</label>
