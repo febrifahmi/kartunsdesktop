@@ -41,7 +41,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </div>
-      <footer className='sticky bottom-0'>
+      <footer className='sticky bottom-0 z-20'>
         <StatusBar getStatus={getStatus} />
       </footer>
     </div>

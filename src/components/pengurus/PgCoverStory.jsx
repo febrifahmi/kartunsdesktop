@@ -15,6 +15,8 @@ export const PgCoverStory = () => {
     let cookie = ReadCookie()
 
     const [coverstories, setCoverStories] = useState([]);
+    const [judulcover, setJudulCover] = useState("");
+    const [desccover, setDescCover] = useState("");
     const [covertext, setCoverText] = useState("");
     const [coverimgurl, setCoverImgUrl] = useState("");
     const [image, setImage] = useState()
@@ -39,10 +41,19 @@ export const PgCoverStory = () => {
 
     const handleChange = (e) => {
         // ... get data form
-        newFormData[e.target.name] = e.target.value
-        newFormData["covertext"] = covertext
-        newFormData["coverimgurl"] = coverimgurl
-        console.log(newFormData["covertitle"], newFormData["coverdesc"], newFormData["covertext"], newFormData["coverimgurl"])
+        newFormData[e.target.name] = e.target.value.trim()
+        if(newFormData["covertitle"] !== undefined){
+            setJudulCover(newFormData["covertitle"])
+        }
+        if(newFormData["coverdesc"] !== undefined){
+            setDescCover(newFormData["coverdesc"])
+        }
+        console.log({
+            covertitle: judulcover, 
+            coverdesc: desccover, 
+            covertext: covertext, 
+            coverimgurl: coverimgurl
+        })
     }
 
     useEffect(() => {
@@ -53,13 +64,13 @@ export const PgCoverStory = () => {
                 setCoverStories(isi)
             })
             .catch((err) => console.log(err))
-        console.log(coverstories.covers)
+        // console.log(coverstories.covers)
     }, [])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
         const image = await resizeImage(file);
-        console.log(image);
+        // console.log(image);
         setCoverImgUrl(file.name);
         setImage(image);
     }
@@ -68,8 +79,8 @@ export const PgCoverStory = () => {
         e.preventDefault()
         // console.log(e.target);
         console.log({
-            "covertitle": newFormData["covertitle"],
-            "coverdesc": newFormData["coverdesc"],
+            "covertitle": judulcover,
+            "coverdesc": desccover,
             "covertext": covertext,
             "coverimgurl": coverimgurl,
             "file": image,
@@ -82,8 +93,8 @@ export const PgCoverStory = () => {
                 'Authorization': `Bearer ${cookie.token}`
             },
             body: JSON.stringify({
-                "covertitle": newFormData["covertitle"],
-                "coverdesc": newFormData["coverdesc"],
+                "covertitle": judulcover,
+                "coverdesc": desccover,
                 "covertext": covertext,
                 "coverimgurl": coverimgurl,
                 "file": image
@@ -130,7 +141,7 @@ export const PgCoverStory = () => {
                             }}
                             onEditorChange={(newText) => setCoverText(newText)}
                         />
-                        <input type="hidden" id="" name="covertext" value={covertext}></input>
+                        <input type="hidden" id="covertext" name="covertext" value={covertext}></input>
                         <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                             <div className='flex'>
                                 <label className='mr-6'>Upload gambar cover (max. <span className='text-red'>500Kb</span>)</label>
@@ -149,11 +160,10 @@ export const PgCoverStory = () => {
                     <div className='py-4'>
                         {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idcover}>
-                                <div>
-                                    <img width={100} src={item.file !== undefined || item.file !== null || item.file !== "" ? item.file : 'static/img/noimage.png'} alt=''></img>
-                                    {/* {item.file ? item.file : ""} */}
+                                <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
+                                    <img className='object-fill rounded-md' src={item.coverimgurl !== undefined || item.coverimgurl !== null || item.coverimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.coverimgurl : 'static/img/noimage.png'} alt=''></img>
                                 </div>
-                                <div className='flex flex-col gap-2'>
+                                <div className='flex flex-col gap-2 w-5/6'>
                                     <div className='text-sm font-bold'>
                                         {item.covertitle}
                                     </div>
