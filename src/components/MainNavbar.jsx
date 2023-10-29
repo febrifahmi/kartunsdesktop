@@ -1,6 +1,5 @@
 import { MdClose, MdMinimize, MdMaximize } from "react-icons/md";
-
-const appversion = "v0.1.0"
+import { appversion } from "../config";
 
 export default function MainNavbar() {
     function closeWindow() {

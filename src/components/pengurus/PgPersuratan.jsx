@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 
@@ -12,48 +12,146 @@ export const PgPersuratan = () => {
         }
     };
 
+    let cookie = ReadCookie()
+
     const SuratMasuk = () => {
+        const [judulsurat, setJudulSurat] = useState("");
+        const [nosurat, setNoSurat] = useState("");
+        const [descsurat, setDescSurat] = useState("");
+        const [pengirim, setPengirim] = useState("");
+        const [filesuraturi, setFileSuratUri] = useState("");
+        const [filesurat, setFileSurat] = useState()
+
+        var newFormData = new FormData();
+
+        const handleChangeSrtMsk = (e) => {
+            // ... get data form
+            newFormData[e.target.name] = e.target.value.trim()
+            if(newFormData["suratmasuktitle"] !== undefined){
+                setJudulSurat(newFormData["suratmasuktitle"])
+            }
+            if(newFormData["suratmasuknr"] !== undefined){
+                setNoSurat(newFormData["suratmasuknr"])
+            }
+            if(newFormData["suratmasukdesc"] !== undefined){
+                setDescSurat(newFormData["suratmasukdesc"])
+            }
+            if(newFormData["pengirim"] !== undefined){
+                setPengirim(newFormData["pengirim"])
+            }
+            console.log({
+                suratmasuktitle: judulsurat,
+                suratmasuknr: nosurat,
+                suratmasukdesc: descsurat,
+                pengirim: pengirim,
+                filesuraturi: filesuraturi,
+                file: filesurat,
+            })
+        }
+
+        const getBase64 = async (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        const handleFileChange = async (event) => {
+            const file = await event.target.files[0];
+            // console.log(file);
+            setFileSuratUri(file.name);
+            // Convert data to base64
+            let pdf = await getBase64(file)
+            console.log("PDF file: ", pdf)
+            setFileSurat(pdf);
+        }
+
+        const handleSubmitSuratMasuk = async (e) => {
+            e.preventDefault()
+            console.log({
+                "suratmasuktitle": judulsurat,
+                "suratmasuknr": nosurat,
+                "suratmasukdesc": descsurat,
+                "pengirim": pengirim,
+                "filesuraturi": filesuraturi,
+                "file": filesurat,
+            })
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.suratmasukendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "suratmasuktitle": judulsurat,
+                    "suratmasuknr": nosurat,
+                    "suratmasukdesc": descsurat,
+                    "pengirim": pengirim,
+                    "filesuraturi": filesuraturi,
+                    "file": filesurat,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            return response
+        }
+
         return (
             <div className='flex flex-col bg-slate-700 rounded-md p-2'>
                 <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Rekam Surat Masuk</h3>
                 <div className='text-slate-500 mt-5 px-6'>
                     <form method='post'>
                         <div className="flex">
-                            <input className="grow rounded h-12" name="suratmasuktitle" type={"text"} placeholder=" Judul surat masuk" />
+                            <input className="grow rounded h-12" name="suratmasuktitle" type={"text"} placeholder=" Judul surat masuk" onChange={handleChangeSrtMsk} />
                         </div>
-                        <div className="flex py-6">
-                            <input className="grow rounded h-12" name="suratmasuknr" type={"text"} placeholder=" Nomor surat masuk" />
+                        <div className="flex pt-6">
+                            <input className="grow rounded h-12" name="suratmasuknr" type={"text"} placeholder=" Nomor surat masuk" onChange={handleChangeSrtMsk} />
                         </div>
-                        <div className='pb-6'>
-                            <Editor
-                                onInit={(evt, editor) => editorRef.current = editor}
-                                initialValue="<p>Silahkan tuliskan deskripsi isi surat masuk di sini serta pihak pengirimnya.</p>"
-                                init={{
-                                    height: 500,
-                                    menubar: false,
-                                    plugins: [
-                                        'advlist', 'autolink',
-                                        'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
-                                        'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
-                                    ],
-                                    toolbar: 'undo redo | formatselect | ' +
-                                        'bold italic backcolor | alignleft aligncenter ' +
-                                        'alignright alignjustify | bullist numlist outdent indent | ' +
-                                        'removeformat | help',
-                                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
-                                }}
-                            />
+                        <div className="flex pt-6">
+                            <input className="grow rounded h-12" name="suratmasukdesc" type={"text"} placeholder=" Deskripsi pendek isi surat masuk" onChange={handleChangeSrtMsk} />
+                        </div>
+                        <div className="flex pt-6">
+                            <input className="grow rounded h-12" name="pengirim" type={"text"} placeholder=" Pengirim" onChange={handleChangeSrtMsk} />
+                        </div>
+                        <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
+                            <div className='flex'>
+                                <label className='mr-6'>Upload file pdf surat masuk (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
+                                <input type="file" name="file" accept="application/pdf" onChange={handleFileChange} />
+                            </div>
+                        </div>
+                        <div className='flex justify-center'>
+                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmitSuratMasuk}>Rekam Surat Masuk</button>
                         </div>
                     </form>
                 </div>
+
             </div>
         )
     }
 
-    const BuatSurat = () => {
+    const DaftarSuratMasuk = () => {
+        return (
+            <>
+                <hr className="border-slate-700 border-dotted" />
+                <div className="my-4">
+                    <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar Surat Masuk KartUNS</h3>
+                    <div className='py-4'>
+
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    const SuratKeluar = () => {
         return (
             <div className='flex flex-col bg-slate-700 rounded-md p-2'>
-                <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Buat Surat Keluar</h3>
+                <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Rekam Surat Keluar</h3>
                 <div className='text-slate-500 mt-5 px-6'>
                     <form method='post'>
                         <div className="flex">
@@ -98,10 +196,48 @@ export const PgPersuratan = () => {
         )
     }
 
+    const DaftarSuratKeluar = () => {
+        return (
+            <>
+                <hr className="border-slate-700 border-dotted" />
+                <div className="my-4">
+                    <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar Surat Kaluar KartUNS</h3>
+                    <div className='py-4'>
+
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     const [selected, setSelected] = useState()
+    const [suratmasuk, setSuratMasuk] = useState([]);
+
+    const getSuratMasuk = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.suratmasukendpoint + "all", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
 
     useEffect(() => {
         CreateStatusCookie("Pengelolaan Persuratan");
+        getSuratMasuk()
+            .then((isi) => {
+                // console.log(isi);
+                setSuratMasuk(isi)
+            })
+            .catch((err) => console.log(err))
+        console.log(suratmasuk.suratmasuks)
     }, [])
 
     return (
@@ -111,10 +247,14 @@ export const PgPersuratan = () => {
                 <div className="flex flex-col gap-2 mt-5 pb-10">
                     <div className="flex flex-row justify-center bg-slate-700 gap-6 rounded-md py-6">
                         <button className={selected === "rekam" ? "bg-slate-600 outline outline-green-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-green-600 hover:bg-green-700 px-6 py-2 rounded-md"} onClick={() => setSelected("rekam")}>Rekam Surat Masuk</button>
-                        <button className={selected === "buat" ? "bg-slate-600 outline outline-sky-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-sky-600 hover:bg-sky-700 px-6 py-2 rounded-md"} onClick={() => setSelected("buat")}>Buat Surat Baru</button>
+                        <button className={selected === "buat" ? "bg-slate-600 outline outline-sky-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-sky-600 hover:bg-sky-700 px-6 py-2 rounded-md"} onClick={() => setSelected("buat")}>Rekam Surat Keluar</button>
                     </div>
-                    {selected === "rekam" ? <SuratMasuk /> : <BuatSurat />}
+                    {selected === "rekam" ?
+                        <SuratMasuk />
+                        :
+                        <SuratKeluar />}
                 </div>
+                {selected === "rekam" ? <DaftarSuratMasuk /> : <DaftarSuratKeluar />}
             </div>
         </>
     )

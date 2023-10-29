@@ -1,5 +1,6 @@
 import { NavbarItem } from "../NavbarItem"
 import { useState } from "react"
+import { MdHome } from "react-icons/md";
 
 export const PengurusNavbar = ({ getSelection }) => {
     const [selected, setSelected] = useState();
@@ -7,6 +8,12 @@ export const PengurusNavbar = ({ getSelection }) => {
     return (
         <>
             <div className="flex flex-wrap gap-1 text-white text-sm mt-2 mx-2">
+                <div onClick={() => {
+                    setSelected("");
+                    getSelection("");
+                }}>
+                    <NavbarItem title={<MdHome size={20} />} selected={selected} />
+                </div>
                 <div onClick={() => {
                     setSelected("Cover Story");
                     getSelection("Cover Story");

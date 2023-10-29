@@ -8,4 +8,7 @@ export const APIURLConfig = {
     coverstoryendpoint: "api/covers/",
     agendaendpoint: "api/agendas/",
     pengumumanendpoint: "api/announcements/",
+    suratmasukendpoint: "api/suratmasuks/",
 }
+
+export const appversion = "v0.1.0"

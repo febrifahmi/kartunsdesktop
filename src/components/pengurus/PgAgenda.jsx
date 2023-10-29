@@ -17,6 +17,8 @@ export const PgAgenda = () => {
     const [agenda, setAgenda] = useState([]);
     const [judulagenda, setJudulAgenda] = useState("");
     const [descagenda, setDescAgenda] = useState("");
+    const [startdate, setStartDate] = useState("");
+    const [enddate, setEndDate] = useState("");
     const [agendatext, setAgendaText] = useState("");
     const [agendaimgurl, setAgendaImgUrl] = useState("");
     const [image, setImage] = useState()
@@ -39,8 +41,30 @@ export const PgAgenda = () => {
 
     var newFormData = new FormData();
 
-
-
+    const handleChange = (e) => {
+        // ... get data form
+        newFormData[e.target.name] = e.target.value.trim()
+        if (newFormData["judul"] !== undefined) {
+            setJudulAgenda(newFormData["judul"])
+        }
+        if (newFormData["agendadesc"] !== undefined) {
+            setDescAgenda(newFormData["agendadesc"])
+        }
+        if (newFormData["tanggalmulai"] !== undefined) {
+            setStartDate(newFormData["tanggalmulai"])
+        }
+        if (newFormData["tanggalselesai"] !== undefined) {
+            setEndDate(newFormData["tanggalselesai"])
+        }
+        console.log({
+            judul: judulagenda,
+            agendadesc: descagenda,
+            tanggalmulai: startdate,
+            tanggalselesai: enddate,
+            agendatext: agendatext,
+            agendaimgurl: agendaimgurl
+        })
+    }
 
     useEffect(() => {
         CreateStatusCookie("Manage Agenda KartUNS");
@@ -53,6 +77,52 @@ export const PgAgenda = () => {
         console.log(agenda.agendas)
     }, [])
 
+    const handleImageChange = async (event) => {
+        const file = event.target.files[0];
+        const image = await resizeImage(file);
+        // console.log(image);
+        setAgendaImgUrl(file.name);
+        setImage(image);
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // console.log(e.target);
+        console.log({
+            "judul": judulagenda,
+            "agendadesc": descagenda,
+            "tanggalmulai": startdate,
+            "tanggalselesai": enddate,
+            "agendatext": agendatext,
+            "agendaimgurl": agendaimgurl,
+            "file": image,
+        })
+        // ... submit to RestAPI using fetch api
+        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.agendaendpoint + "create", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+            body: JSON.stringify({
+                "judul": judulagenda,
+                "agendadesc": descagenda,
+                "tanggalmulai": startdate,
+                "tanggalselesai": enddate,
+                "agendatext": agendatext,
+                "agendaimgurl": agendaimgurl,
+                "file": image,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
     return (
         <>
             <div className="px-5">
@@ -61,19 +131,19 @@ export const PgAgenda = () => {
                     <form method='post'>
                         <div>
                             <div className="flex">
-                                <input className="grow rounded h-12" name="judul" type={"text"} placeholder=" Judul agenda" />
+                                <input className="grow rounded h-12" name="judul" type={"text"} placeholder=" Judul agenda" onChange={handleChange} />
                             </div>
                         </div>
                         <div className="flex py-6">
-                            <input className="grow rounded h-12" name="agendadesc" type={"text"} placeholder=" Deskripsi pendek mengenai isi agenda" />
+                            <input className="grow rounded h-12" name="agendadesc" type={"text"} placeholder=" Deskripsi pendek mengenai isi agenda" onChange={handleChange} />
                         </div>
                         <div className="flex pb-6 items-center">
                             <label className='text-white mr-4'>Tanggal mulai</label>
-                            <input className="grow rounded h-12" name="tanggalmulai" type={"date"} />
+                            <input className="grow rounded h-12" name="tanggalmulai" type={"date"} onChange={handleChange} />
                         </div>
                         <div className="flex pb-6 items-center">
                             <label className='text-white mr-4'>Tanggal selesai</label>
-                            <input className="grow rounded h-12" name="tanggalselesai" type={"date"} />
+                            <input className="grow rounded h-12" name="tanggalselesai" type={"date"} onChange={handleChange} />
                         </div>
                         <Editor
                             onInit={(evt, editor) => editorRef.current = editor}
@@ -92,9 +162,18 @@ export const PgAgenda = () => {
                                     'removeformat | help',
                                 content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
                             }}
+                            onEditorChange={(newText) => setAgendaText(newText)}
                         />
+                        <input type="hidden" id="agendatext" name="agendatext" value={agendatext}></input>
+                        <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
+                            <div className='flex'>
+                                <label className='mr-6'>Upload gambar agenda (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
+                                <input type="file" name="imagefile" accept="image/*" onChange={handleImageChange} />
+                            </div>
+                        </div>
+                        <input type="hidden" id="" name="agendaimgurl" value={agendaimgurl}></input>
                         <div className='flex justify-center'>
-                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={""}>Create Agenda</button>
+                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Create Agenda</button>
                         </div>
                     </form>
                 </div>
@@ -102,12 +181,12 @@ export const PgAgenda = () => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Agenda KartUNS</h3>
                     <div className='py-4'>
-                        {agenda.agendas !== undefined && agenda.agendas.length !== 0 ? agenda.agendas.map((item) => (
+                        {agenda.agendas !== undefined && agenda.agendas.length !== 0 ? agenda.agendas.slice(0,10).map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idagenda}>
-                                <div>
-                                    <img className='object-fill rounded-md' src={item.agendaimgurl !== undefined || item.agendaimgurl !== null ? item.agendaimgurl : 'static/img/noimage.png'}></img>
+                                <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
+                                    <img className='object-fill rounded-md' src={item.agendaimgurl !== undefined || item.agendaimgurl !== null ? APIURLConfig.baseurl + "static/uploads/" + item.agendaimgurl : 'static/img/noimage.png'}></img>
                                 </div>
-                                <div className='flex flex-col gap-2'>
+                                <div className='flex flex-col gap-2 w-5/6'>
                                     <div className='text-sm font-bold'>
                                         {item.judul}
                                     </div>
