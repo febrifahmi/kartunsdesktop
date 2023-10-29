@@ -144,7 +144,7 @@ export const PgPengumuman = () => {
                         <input type="hidden" id="pengumumantext" name="pengumumantext" value={pengumumantext}></input>
                         <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                             <div className='flex'>
-                                <label className='mr-6'>Upload gambar pengumuman (max. <span className='text-red'>500Kb</span>)</label>
+                                <label className='mr-6'>Upload gambar pengumuman (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
                                 <input type="file" name="imagefile" accept="image/*" onChange={handleImageChange} />
                             </div>
                         </div>

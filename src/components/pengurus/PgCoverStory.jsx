@@ -144,7 +144,7 @@ export const PgCoverStory = () => {
                         <input type="hidden" id="covertext" name="covertext" value={covertext}></input>
                         <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                             <div className='flex'>
-                                <label className='mr-6'>Upload gambar cover (max. <span className='text-red'>500Kb</span>)</label>
+                                <label className='mr-6'>Upload gambar cover (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
                                 <input type="file" name="imagefile" accept="image/*" onChange={handleImageChange} />
                             </div>
                         </div>
@@ -158,7 +158,7 @@ export const PgCoverStory = () => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>KartUNS Cover Stories</h3>
                     <div className='py-4'>
-                        {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.map((item) => (
+                        {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.slice(0,10).map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idcover}>
                                 <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
                                     <img className='object-fill rounded-md' src={item.coverimgurl !== undefined || item.coverimgurl !== null || item.coverimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.coverimgurl : 'static/img/noimage.png'} alt=''></img>
