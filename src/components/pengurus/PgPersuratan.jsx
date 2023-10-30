@@ -3,6 +3,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { CreateStatusCookie, ReadCookie } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
+import { MdPictureAsPdf } from "react-icons/md";
 
 export const PgPersuratan = () => {
     const editorRef = useRef(null);
@@ -27,16 +28,16 @@ export const PgPersuratan = () => {
         const handleChangeSrtMsk = (e) => {
             // ... get data form
             newFormData[e.target.name] = e.target.value.trim()
-            if(newFormData["suratmasuktitle"] !== undefined){
+            if (newFormData["suratmasuktitle"] !== undefined) {
                 setJudulSurat(newFormData["suratmasuktitle"])
             }
-            if(newFormData["suratmasuknr"] !== undefined){
+            if (newFormData["suratmasuknr"] !== undefined) {
                 setNoSurat(newFormData["suratmasuknr"])
             }
-            if(newFormData["suratmasukdesc"] !== undefined){
+            if (newFormData["suratmasukdesc"] !== undefined) {
                 setDescSurat(newFormData["suratmasukdesc"])
             }
-            if(newFormData["pengirim"] !== undefined){
+            if (newFormData["pengirim"] !== undefined) {
                 setPengirim(newFormData["pengirim"])
             }
             console.log({
@@ -134,14 +135,54 @@ export const PgPersuratan = () => {
         )
     }
 
-    const DaftarSuratMasuk = () => {
+    const DaftarSuratMasuk = (props) => {
+        const data = props.data
+        const [showpdf, setShowPdf] = useState(0)
         return (
             <>
                 <hr className="border-slate-700 border-dotted" />
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar Surat Masuk KartUNS</h3>
                     <div className='py-4'>
-
+                        {data ?
+                            data.suratmasuks.map((item) => (
+                                <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idsuratmasuk}>
+                                    <div className='flex flex-row gap-4'>
+                                        <div className='rounded-md text-red-600 flex justify-center items-center hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/12'>
+                                            <button onClick={() => setShowPdf(item.idsuratmasuk)}>
+                                                <div className='flex flex-col justify-center items-center gap-2'>
+                                                    <MdPictureAsPdf size={48} />
+                                                    <button className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</button>
+                                                </div>
+                                            </button>
+                                        </div>
+                                        <div className='flex flex-col gap-2 w-11/12'>
+                                            <div className='text-sm font-bold'>
+                                                {item.suratmasuktitle}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Deskripsi:</span> {item.suratmasukdesc}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Pengirim:</span> {item.pengirim}
+                                            </div>
+                                            <div className='text-xs text-slate-500'>
+                                                <p>Published: {item.created_at}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {showpdf === item.idsuratmasuk ?
+                                        <div className='my-4'>
+                                            <iframe className='w-full h-96 rounded-md' src={APIURLConfig.baseurl + "static/surat/masuk/" + item.filesuraturi} />
+                                        </div>
+                                        :
+                                        ""
+                                    }
+                                </div>
+                            ))
+                            :
+                            ""
+                        }
                     </div>
                 </div>
             </>
@@ -254,7 +295,7 @@ export const PgPersuratan = () => {
                         :
                         <SuratKeluar />}
                 </div>
-                {selected === "rekam" ? <DaftarSuratMasuk /> : <DaftarSuratKeluar />}
+                {selected === "rekam" ? <DaftarSuratMasuk data={suratmasuk} /> : <DaftarSuratKeluar />}
             </div>
         </>
     )

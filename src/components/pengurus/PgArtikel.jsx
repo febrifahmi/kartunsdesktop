@@ -176,7 +176,6 @@ export const PgArtikel = () => {
                                         <p>Published: {item.created_at}</p>
                                     </div>
                                 </div>
-
                             </div>
                         ))
                             :
