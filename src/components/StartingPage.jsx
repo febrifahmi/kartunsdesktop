@@ -1,6 +1,7 @@
 import { appversion } from "../config"
 import { ReadCookie } from "../config/utils"
 import { InfoModulPengurus } from "./InfoModulPengurus"
+import { LogoKartUNS } from "./LogoKartUNS"
 
 export const StartingPage = () => {
     return (
@@ -8,6 +9,11 @@ export const StartingPage = () => {
             <div className="px-28">
                 <h3 className="font-bold text-center text-lg text-sky-500">Selamat Datang di KartUNS Desktop!</h3>
                 <div className="flex flex-col mt-4 mb-16 text-slate-400">
+                    <div className="flex justify-center">
+                        <div className="w-1/6 my-6">
+                            <LogoKartUNS />
+                        </div>
+                    </div>
                     <div className="flex flex-col gap-4">
                         <h3 className="font-bold text-base text-slate-300">Tentang Aplikasi</h3>
                         <p>Aplikasi <span className="text-green-500 font-bold">KartUNS Desktop</span> versi {appversion} ini dikembangkan dengan maksud memudahkan proses bisnis organisasi KartUNS sekaligus menjadi sistem penggerak keberlanjutan program dan kegiatan KartUNS di masa mendatang.</p>
