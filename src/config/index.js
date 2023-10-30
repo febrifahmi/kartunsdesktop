@@ -11,6 +11,7 @@ export const APIURLConfig = {
     suratmasukendpoint: "api/suratmasuks/",
     letterendpoint: "api/letters/",
     anggaranrabendpoint: "api/anggaranrabs/",
+    anggarankasendpoint: "api/anggarankas/",
 }
 
 export const appversion = "v0.1.0"
