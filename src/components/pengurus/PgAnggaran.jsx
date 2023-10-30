@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
+import { MdTableView } from "react-icons/md";
 
 export const PgAnggaran = () => {
     const editorRef = useRef(null);
@@ -12,15 +13,172 @@ export const PgAnggaran = () => {
         }
     };
 
-    const [selected, setSelected] = useState()
+    let cookie = ReadCookie()
+
+    const [selected, setSelected] = useState();
+    const [anggaranrab, setAnggaranRAB] = useState([]);
+    const [aruskas, setArusKas] = useState([]);
 
     const AnggaranBiaya = () => {
+        const [judulrab, setJudulRab] = useState("");
+        const [descrab, setDescRab] = useState("");
+        const [tahun, setTahun] = useState("");
+        const [fileraburi, setFileRabUri] = useState("");
+        const [filerab, setFileRab] = useState()
+
+        var newFormData = new FormData();
+
+        const handleChangeRAB = (e) => {
+            // ... get data form
+            newFormData[e.target.name] = e.target.value.trim()
+            if (newFormData["rabtitle"] !== undefined) {
+                setJudulRab(newFormData["rabtitle"])
+            }
+            if (newFormData["rabdesc"] !== undefined) {
+                setDescRab(newFormData["rabdesc"])
+            }
+            if (newFormData["tahun"] !== undefined) {
+                setTahun(newFormData["tahun"])
+            }
+            console.log({
+                rabtitle: judulrab,
+                rabdesc: descrab,
+                tahun: tahun,
+                fileraburi: fileraburi,
+                file: filerab,
+            })
+        }
+
+        const getBase64 = async (file) => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        const handleFileChange = async (event) => {
+            const file = await event.target.files[0];
+            // console.log(file);
+            setFileRabUri(file.name);
+            // Convert data to base64
+            let xls = await getBase64(file)
+            console.log("PDF file: ", xls)
+            setFileRab(xls);
+        }
+
+        const handleSubmitRAB = async (e) => {
+            e.preventDefault()
+            console.log({
+                "rabtitle": judulrab,
+                "rabdesc": descrab,
+                "rabyear": tahun,
+                "fileraburi": fileraburi,
+                "file": filerab,
+            })
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggaranrabendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "rabtitle": judulrab,
+                    "rabdesc": descrab,
+                    "rabyear": tahun,
+                    "fileraburi": fileraburi,
+                    "file": filerab,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            return response
+        }
+
+
         return (
             <>
                 <div className='flex flex-col bg-slate-700 rounded-md p-2 pb-10'>
-                    <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Anggaran Biaya</h3>
+                    <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Rencana Anggaran Biaya</h3>
                     <div className='text-slate-500 mt-5 px-6'>
-                        <p>Under Development</p>
+                        <form method='post'>
+                            <div className="flex">
+                                <input className="grow rounded h-12" name="rabtitle" type={"text"} placeholder=" Judul RAB" onChange={handleChangeRAB} />
+                            </div>
+                            <div className="flex pt-6">
+                                <input className="grow rounded h-12" name="rabdesc" type={"text"} placeholder=" Deskripsi singkat kegiatan/RAB" onChange={handleChangeRAB} />
+                            </div>
+                            <div className="flex pt-6">
+                                <input className="grow rounded h-12" name="rabyear" type={"text"} placeholder=" Tahun kegiatan" onChange={handleChangeRAB} />
+                            </div>
+                            <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
+                                <div className='flex'>
+                                    <label className='mr-6'>Upload file excel RAB (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
+                                    <input type="file" name="file" accept=".xls,.xlsx" onChange={handleFileChange} />
+                                </div>
+                            </div>
+                            <div className='flex justify-center'>
+                                <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmitRAB}>Rekam RAB</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    const DaftarRAB = (props) => {
+        const data = props.data
+        const [showxls, setShowXls] = useState(0)
+        return (
+            <>
+                <hr className="border-slate-700 border-dotted" />
+                <div className="my-4">
+                    <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar RAB KartUNS</h3>
+                    <div className='py-4'>
+                        {data !== undefined && data.length !== 0 ?
+                            data.anggaranrab.map((item) => (
+                                <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idrab}>
+                                    <div className='flex flex-row gap-4'>
+                                        <div className='rounded-md text-green-600 flex justify-center items-center hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/12'>
+                                            <a href={APIURLConfig.baseurl+"static/anggaran/rab/"+item.fileraburi}>
+                                                <div className='flex flex-col justify-center items-center gap-2'>
+                                                    <MdTableView size={48} />
+                                                    <button className='text-xs text-white bg-green-700 px-2 rounded-md'>Download</button>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div className='flex flex-col gap-2 w-11/12'>
+                                            <div className='text-sm font-bold'>
+                                                {item.rabtitle}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Deskripsi:</span> {item.rabdesc}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Tahun:</span> {item.rabyear}
+                                            </div>
+                                            <div className='text-xs text-slate-500'>
+                                                <p>Published: {item.created_at}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {showxls === item.idrab ?
+                                        <div className='my-4'>
+                                            <iframe className='w-full h-96 rounded-md' src={APIURLConfig.baseurl + "static/anggaran/rab/" + item.fileraburi} />
+                                        </div>
+                                        :
+                                        ""
+                                    }
+                                </div>
+                            ))
+                            :
+                            "Belum ada data RAB di dalam sistem."
+                        }
                     </div>
                 </div>
             </>
@@ -40,8 +198,39 @@ export const PgAnggaran = () => {
         )
     }
 
+    const DaftarArusKas = () => {
+        return (
+            <>
+
+            </>
+        )
+    }
+
+    const getAnggaranRAB = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.anggaranrabendpoint + "all", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
     useEffect(() => {
         CreateStatusCookie("Pengelolaan Anggaran");
+        getAnggaranRAB()
+            .then((isi) => {
+                console.log("Isi promise: ",isi);
+                setAnggaranRAB(isi)
+            })
+            .catch((err) => console.log(err))
+        console.log("RAB: ", anggaranrab.anggaranrabs)
     }, [])
 
     return (
@@ -55,6 +244,7 @@ export const PgAnggaran = () => {
                     </div>
                     {selected === "rab" ? <AnggaranBiaya /> : <ArusKas />}
                 </div>
+                {selected === "rab" ? <DaftarRAB data={anggaranrab.anggaranrabs} /> : <DaftarArusKas data={""} />}
             </div>
         </>
     )

@@ -9,6 +9,8 @@ export const APIURLConfig = {
     agendaendpoint: "api/agendas/",
     pengumumanendpoint: "api/announcements/",
     suratmasukendpoint: "api/suratmasuks/",
+    letterendpoint: "api/letters/",
+    anggaranrabendpoint: "api/anggaranrabs/",
 }
 
 export const appversion = "v0.1.0"
