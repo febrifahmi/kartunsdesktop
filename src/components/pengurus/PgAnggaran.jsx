@@ -140,7 +140,7 @@ export const PgAnggaran = () => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar RAB KartUNS</h3>
                     <div className='py-4'>
-                        {data !== undefined && data.length !== 0 ?
+                        {data.anggaranrab !== undefined && data.anggaranrab.length !== 0 ?
                             data.anggaranrab.map((item) => (
                                 <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idrab}>
                                     <div className='flex flex-row gap-4'>

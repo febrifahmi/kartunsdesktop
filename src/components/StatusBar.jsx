@@ -4,7 +4,7 @@ import { ReadStatusCookie } from "../config/utils";
 export const StatusBar = ({getStatus}) => {
     const [status, setStatus] = useState("idle")
     const handleAbout = () => {
-        window.alert("KartUNS Desktop © Febri Fahmi Hakim (2023)")
+        window.alert("KartUNS Desktop developed by Febri Fahmi Hakim (2023)")
     }
 
     useEffect(() => {

@@ -12,6 +12,7 @@ export const APIURLConfig = {
     letterendpoint: "api/letters/",
     anggaranrabendpoint: "api/anggaranrabs/",
     anggarankasendpoint: "api/anggarankas/",
+    webinarsendpoint: "api/webinars/",
 }
 
 export const appversion = "v0.1.0"
