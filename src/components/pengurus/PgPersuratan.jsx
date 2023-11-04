@@ -300,7 +300,7 @@ export const PgPersuratan = () => {
                             </div>
                         </div>
                         <div className='flex justify-center'>
-                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmitSuratKeluar}>Rekam Surat Masuk</button>
+                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmitSuratKeluar}>Rekam Surat Keluar</button>
                         </div>
                     </form>
                 </div>
@@ -363,7 +363,7 @@ export const PgPersuratan = () => {
         )
     }
 
-    const [selected, setSelected] = useState()
+    const [selected, setSelected] = useState("buat")
     const [suratmasuk, setSuratMasuk] = useState([]);
     const [suratkeluar, setSuratKeluar] = useState([]);
 
