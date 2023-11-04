@@ -15,14 +15,14 @@ export const PgAnggaran = () => {
 
     let cookie = ReadCookie()
 
-    const [selected, setSelected] = useState();
+    const [selected, setSelected] = useState("kas");
     const [anggaranrab, setAnggaranRAB] = useState([]);
     const [aruskas, setArusKas] = useState([]);
 
     const AnggaranBiaya = () => {
         const [judulrab, setJudulRab] = useState("");
         const [descrab, setDescRab] = useState("");
-        const [tahun, setTahun] = useState("");
+        const [tahun, setTahun] = useState(new Date().getFullYear().toString());
         const [fileraburi, setFileRabUri] = useState("");
         const [filerab, setFileRab] = useState()
 
@@ -113,7 +113,7 @@ export const PgAnggaran = () => {
                                 <input className="grow rounded h-12" name="rabdesc" type={"text"} placeholder=" Deskripsi singkat kegiatan/RAB" onChange={handleChangeRAB} />
                             </div>
                             <div className="flex pt-6">
-                                <input className="grow rounded h-12" name="rabyear" type={"text"} placeholder=" Tahun kegiatan" onChange={handleChangeRAB} />
+                                <input className="grow rounded h-12" name="rabyear" type={"text"} placeholder={tahun ? tahun :" Tahun RAB aktif"} onChange={handleChangeRAB} />
                             </div>
                             <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                                 <div className='flex'>
@@ -182,7 +182,7 @@ export const PgAnggaran = () => {
         const [judularuskas, setJudulArusKas] = useState("");
         const [descaruskas, setDescArusKas] = useState("");
         const [bulan, setBulan] = useState("");
-        const [tahun, setTahun] = useState("");
+        const [tahun, setTahun] = useState(new Date().getFullYear().toString());
         const [filekasuri, setFileKasUri] = useState("");
         const [filekas, setFileKas] = useState()
 
@@ -295,7 +295,7 @@ export const PgAnggaran = () => {
                                 </select>
                             </div>
                             <div className="flex pt-6">
-                                <input className="grow rounded h-12" name="aruskasyear" type={"text"} placeholder=" Tahun Arus Kas aktif" onChange={handleChangeArusKas} />
+                                <input className="grow rounded h-12" name="aruskasyear" type={"text"} placeholder={tahun ? tahun :" Tahun Arus Kas aktif"} onChange={handleChangeArusKas} />
                             </div>
                             <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                                 <div className='flex'>
@@ -354,7 +354,7 @@ export const PgAnggaran = () => {
                                 </div>
                             ))
                             :
-                            "Belum ada data RAB di dalam sistem."
+                            "Belum ada data arus kas di dalam sistem."
                         }
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 import Cookies from 'universal-cookie';
 import Resizer from "react-image-file-resizer";
+import { useState } from 'react';
 
 export const SaveCookie = (data) => {
     const cookies = new Cookies();
@@ -74,15 +75,17 @@ export const RemoveCookie = () => {
     cookies.remove("ispengurus", { maxAge: 900 })
     cookies.remove("istrainer", { maxAge: 900 })
     cookies.remove("isadmin", { maxAge: 900 })
-    if(cookies.get("status", { maxAge: 900 }) !== undefined){
+    if (cookies.get("status", { maxAge: 900 }) !== undefined) {
         cookies.remove("status", { maxAge: 900 })
     }
 }
 
 export const resizeImage = (file) => new Promise(resolve => {
     Resizer.imageFileResizer(file, 400, 300, 'JPEG', 100, 0,
-    uri => {
-      resolve(uri);
-    }, 'base64' );
+        uri => {
+            resolve(uri);
+        }, 'base64');
 });
+
+
 

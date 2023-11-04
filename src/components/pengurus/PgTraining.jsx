@@ -13,7 +13,7 @@ export const PgTraining = () => {
 
     let cookie = ReadCookie()
 
-    const [selected, setSelected] = useState("");
+    const [selected, setSelected] = useState("webinar");
     const [trainingwebinars, setTrainingWebinars] = useState([])
 
     const TrainingWebinar = () => {
@@ -22,7 +22,7 @@ export const PgTraining = () => {
         const [tekswebinar, setTeksWebinar] = useState("");
         const [startdate, setStartDate] = useState("");
         const [enddate, setEndDate] = useState("");
-        const [level, setLevel] = useState("");
+        const [level, setLevel] = useState("Beginner");
         const [price, setPrice] = useState("");
         const [webinarimgurl, setWebinarImgUrl] = useState("");
         const [file, setFile] = useState();
@@ -244,7 +244,7 @@ export const PgTraining = () => {
                 <div className='flex flex-col bg-slate-700 rounded-md p-2'>
                     <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Buat Online Course</h3>
                     <div className='py-4 px-6'>
-                        Under development
+                        <p className='text-slate-500'>Under development</p>
                     </div>
                 </div>
             </>
@@ -297,11 +297,9 @@ export const PgTraining = () => {
                         <button className={selected === "webinar" ? "bg-slate-600 outline outline-green-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-green-600 hover:bg-green-700 px-6 py-2 rounded-md"} onClick={() => setSelected("webinar")}>Webinar</button>
                         <button className={selected === "onlinecourse" ? "bg-slate-600 outline outline-sky-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-sky-600 hover:bg-sky-700 px-6 py-2 rounded-md"} onClick={() => setSelected("onlinecourse")}>Online Course</button>
                     </div>
-                    {selected === "webinar" ? <TrainingWebinar /> : ""}
-                    {selected === "onlinecourse" ? <OnlineCourse /> : ""}
+                    {selected === "webinar" ? <TrainingWebinar /> : <OnlineCourse />}
                 </div>
-                {selected === "webinar" ? <DaftarTrainingWebinar data={trainingwebinars.trainingwebinars} /> : ""}
-                {selected === "onlinecourse" ? <DaftarOnlineCourse /> : ""}
+                {selected === "webinar" ? <DaftarTrainingWebinar data={trainingwebinars.trainingwebinars} /> : <DaftarOnlineCourse />}
             </div>
         </>
     )

@@ -363,7 +363,7 @@ export const PgPersuratan = () => {
         )
     }
 
-    const [selected, setSelected] = useState()
+    const [selected, setSelected] = useState("buat")
     const [suratmasuk, setSuratMasuk] = useState([]);
     const [suratkeluar, setSuratKeluar] = useState([]);
 
