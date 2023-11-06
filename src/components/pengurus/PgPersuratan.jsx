@@ -4,6 +4,7 @@ import { CreateStatusCookie, ReadCookie } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdPictureAsPdf } from "react-icons/md";
+import { ShowUsername } from '../GetUsername';
 
 export const PgPersuratan = () => {
     const editorRef = useRef(null);
@@ -47,6 +48,7 @@ export const PgPersuratan = () => {
                 pengirim: pengirim,
                 filesuraturi: filesuraturi,
                 file: filesurat,
+                author_id: cookie.iduser,
             })
         }
 
@@ -76,6 +78,7 @@ export const PgPersuratan = () => {
                 "pengirim": pengirim,
                 "filesuraturi": filesuraturi,
                 "file": filesurat,
+                "author_id": cookie.iduser,
             })
             // ... submit to RestAPI using fetch api
             const response = await fetch(APIURLConfig.baseurl + APIURLConfig.suratmasukendpoint + "create", {
@@ -91,6 +94,7 @@ export const PgPersuratan = () => {
                     "pengirim": pengirim,
                     "filesuraturi": filesuraturi,
                     "file": filesurat,
+                    "author_id": cookie.iduser,
                 }),
             })
                 .then((response) => response.json())
@@ -166,6 +170,9 @@ export const PgPersuratan = () => {
                                             <div className='text-xs text-slate-400'>
                                                 <span className='font-bold'>Pengirim:</span> {item.pengirim}
                                             </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
+                                            </div>
                                             <div className='text-xs text-slate-500'>
                                                 <p>Published: {item.created_at}</p>
                                             </div>
@@ -221,6 +228,7 @@ export const PgPersuratan = () => {
                 kepada: kepada,
                 filesuratkeluaruri: filesuratkeluaruri,
                 file: filesuratkeluar,
+                author_id: cookie.iduser,
             })
         }
 
@@ -250,6 +258,7 @@ export const PgPersuratan = () => {
                 "kepada": kepada,
                 "filesuratkeluaruri": filesuratkeluaruri,
                 "file": filesuratkeluar,
+                "author_id": cookie.iduser,
             })
             // ... submit to RestAPI using fetch api
             const response = await fetch(APIURLConfig.baseurl + APIURLConfig.letterendpoint + "create", {
@@ -265,6 +274,7 @@ export const PgPersuratan = () => {
                     "kepada": kepada,
                     "filesuratkeluaruri": filesuratkeluaruri,
                     "file": filesuratkeluar,
+                    "author_id": cookie.iduser,
                 }),
             })
                 .then((response) => response.json())
@@ -339,6 +349,9 @@ export const PgPersuratan = () => {
                                             </div>
                                             <div className='text-xs text-slate-400'>
                                                 <span className='font-bold'>Kepada:</span> {item.kepada}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
                                             </div>
                                             <div className='text-xs text-slate-500'>
                                                 <p>Published: {item.created_at}</p>

@@ -3,6 +3,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
+import { ShowUsername } from '../GetUsername';
 
 export const PgCoverStory = () => {
     const editorRef = useRef(null);
@@ -42,17 +43,18 @@ export const PgCoverStory = () => {
     const handleChange = (e) => {
         // ... get data form
         newFormData[e.target.name] = e.target.value.trim()
-        if(newFormData["covertitle"] !== undefined){
+        if (newFormData["covertitle"] !== undefined) {
             setJudulCover(newFormData["covertitle"])
         }
-        if(newFormData["coverdesc"] !== undefined){
+        if (newFormData["coverdesc"] !== undefined) {
             setDescCover(newFormData["coverdesc"])
         }
         console.log({
-            covertitle: judulcover, 
-            coverdesc: desccover, 
-            covertext: covertext, 
-            coverimgurl: coverimgurl
+            covertitle: judulcover,
+            coverdesc: desccover,
+            covertext: covertext,
+            coverimgurl: coverimgurl,
+            author_id: cookie.iduser,
         })
     }
 
@@ -84,6 +86,7 @@ export const PgCoverStory = () => {
             "covertext": covertext,
             "coverimgurl": coverimgurl,
             "file": image,
+            "author_id": cookie.iduser,
         })
         // ... submit to RestAPI using fetch api
         const response = await fetch(APIURLConfig.baseurl + APIURLConfig.coverstoryendpoint + "create", {
@@ -97,7 +100,8 @@ export const PgCoverStory = () => {
                 "coverdesc": desccover,
                 "covertext": covertext,
                 "coverimgurl": coverimgurl,
-                "file": image
+                "file": image,
+                "author_id": cookie.iduser,
             }),
         })
             .then((response) => response.json())
@@ -158,7 +162,7 @@ export const PgCoverStory = () => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>KartUNS Cover Stories</h3>
                     <div className='py-4'>
-                        {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.slice(0,10).map((item) => (
+                        {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.slice(0, 10).map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idcover}>
                                 <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
                                     <img className='object-fill rounded-md' src={item.coverimgurl !== undefined || item.coverimgurl !== null || item.coverimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.coverimgurl : 'static/img/noimage.png'} alt=''></img>
@@ -169,6 +173,9 @@ export const PgCoverStory = () => {
                                     </div>
                                     <div className='text-xs text-slate-400'>
                                         {item.coverdesc}
+                                    </div>
+                                    <div className='text-xs text-slate-400'>
+                                        <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
                                     </div>
                                     <div className='text-xs text-slate-500'>
                                         <p>Published: {item.created_at}</p>

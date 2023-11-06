@@ -3,6 +3,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
+import { ShowUsername } from '../GetUsername';
 
 export const PgPengumuman = () => {
     const editorRef = useRef(null);
@@ -51,7 +52,8 @@ export const PgPengumuman = () => {
             judul: judulpengumuman,
             pengumumandesc: descpengumuman,
             pengumumantext: pengumumantext,
-            pengumumanimgurl: pengumumanimgurl
+            pengumumanimgurl: pengumumanimgurl,
+            author_id: cookie.iduser,
         })
     }
 
@@ -83,6 +85,7 @@ export const PgPengumuman = () => {
             "pengumumantext": pengumumantext,
             "pengumumanimgurl": pengumumanimgurl,
             "file": image,
+            "author_id": cookie.iduser,
         })
         // ... submit to RestAPI using fetch api
         const response = await fetch(APIURLConfig.baseurl + APIURLConfig.pengumumanendpoint + "create", {
@@ -97,6 +100,7 @@ export const PgPengumuman = () => {
                 "pengumumandesc": descpengumuman,
                 "pengumumantext": pengumumantext,
                 "file": image,
+                "author_id": cookie.iduser,
             }),
         })
             .then((response) => response.json())
@@ -169,6 +173,9 @@ export const PgPengumuman = () => {
                                     </div>
                                     <div className='text-xs text-slate-400'>
                                         {item.pengumumandesc}
+                                    </div>
+                                    <div className='text-xs text-slate-400'>
+                                        <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
                                     </div>
                                     <div className='text-xs text-slate-500'>
                                         <p>Published: {item.created_at}</p>

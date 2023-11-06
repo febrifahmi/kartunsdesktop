@@ -3,6 +3,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
+import { ShowUsername } from '../GetUsername';
 
 export const PgArtikel = () => {
     const editorRef = useRef(null);
@@ -171,6 +172,9 @@ export const PgArtikel = () => {
                                     </div>
                                     <div className='text-xs text-slate-400'>
                                         {item.articledesc}
+                                    </div>
+                                    <div className='text-xs text-slate-400'>
+                                        <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
                                     </div>
                                     <div className='text-xs text-slate-500'>
                                         <p>Published: {item.created_at}</p>

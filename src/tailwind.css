@@ -764,6 +764,18 @@ video {
   width: 100%;
 }
 
+.w-4\/6 {
+  width: 66.666667%;
+}
+
+.w-2\/6 {
+  width: 33.333333%;
+}
+
+.w-3\/6 {
+  width: 50%;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -830,6 +842,10 @@ video {
 
 .gap-1 {
   gap: 0.25rem;
+}
+
+.gap-10 {
+  gap: 2.5rem;
 }
 
 .gap-2 {
@@ -1001,6 +1017,10 @@ video {
 
 .object-fill {
   object-fit: fill;
+}
+
+.p-10 {
+  padding: 2.5rem;
 }
 
 .p-2 {

@@ -14,6 +14,7 @@ import { AdmUserMgmt } from "../components/admin/AdmUserMgmt";
 import { AdmSettings } from "../components/admin/AdmSettings";
 import { AdmLogs } from "../components/admin/AdmLogs";
 import { PengurusNavbar } from "../components/pengurus/PengurusNavbar";
+import { AlumniNavbar } from "../components/alumni/AlumNavbar";
 import { PgCoverStory } from "../components/pengurus/PgCoverStory";
 import { PgPersuratan } from "../components/pengurus/PgPersuratan";
 import { PgAgenda } from "../components/pengurus/PgAgenda";
@@ -26,6 +27,10 @@ import { PgAdsApproval } from "../components/pengurus/PgAdsApproval";
 import { PgJobOffers } from "../components/pengurus/PgJobOffers";
 import { PgTraining } from "../components/pengurus/PgTraining";
 import { PgRevenue } from "../components/pengurus/PgRevenue";
+import { AlumProfil } from "../components/alumni/AlumProfil";
+import { AlumKeanggotaan } from "../components/alumni/AlumKeanggotaan";
+import { AlumPasangIklan } from "../components/alumni/AlumPasangIklan";
+import { AlumAgenda } from "../components/alumni/AlumAgenda";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -101,6 +106,11 @@ export const Home = () => {
                             {ReadCookie().ispengurus === true ?
                                 <div>
                                     <PengurusNavbar getSelection={getSelection} />
+                                </div> : ""
+                            }
+                            {ReadCookie().isalumni === true ?
+                                <div>
+                                    <AlumniNavbar getSelection={getSelection} />
                                 </div> : ""
                             }
                         </div>
@@ -208,8 +218,31 @@ export const Home = () => {
                                 <StartingPage />
                                 :
                                 ""}
+                            {/* Active Menu for Alumni */}
+                            {activemenu === "Profil" ?
+                                <div>
+                                    <AlumProfil />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Membership" ?
+                                <div>
+                                    <AlumKeanggotaan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Pasang Iklan" ?
+                                <div>
+                                    <AlumPasangIklan />
+                                </div>
+                                :
+                                ""}
                         </div>
-
+                    {ReadCookie().isalumni === true ?
+                        <div className="px-5">
+                            <AlumAgenda />
+                        </div> : ""
+                    }
                     </div>
                     <div className="rounded-md w-1/6 flex flex-col gap-2">
                         <ProfileCard />
