@@ -61,16 +61,43 @@ export const Home = () => {
         return data
     }
 
+    const getSubmitStatus = (status) => {
+        return status
+    }
+
     useEffect(() => {
         getArticles()
             .then((isi) => setArticles(isi))   // karena result dari getArticles masih berupa Promise, belum datanya, maka data perlu dibaca dan dimasukkan dulu ke useState
             .catch((err) => console.log(err.message))
-    }, [])
+    }, [getSubmitStatus])
 
     const getSelection = (selectiondata) => {
         setActiveMenu(selectiondata);
     }
 
+
+    const ArtikelComponent = (props) => {
+        const data = props.data
+        return (
+            <>
+                {data ? data.articles.slice(0, 10).map((item) => (
+                    <div className="flex-none justify-start p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2" key={item.idarticle}>
+                        <hr className="border-slate-700 py-2 border-dotted" />
+                        <div className="text-sm">{item.articletitle}</div>
+                        <div className="text-xs text-slate-700 mt-2">{item.created_at}</div>
+                    </div>
+                )) : ""}
+                {data !== undefined && data.articles.length !== 0 ?
+                    <div className="flex-none justify-center align-middle p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2">
+                        <hr className="border-slate-700 py-2 border-dotted" />
+                        <div className="text-sm">Load More</div>
+                    </div>
+                    :
+                    ""
+                }
+            </>
+        )
+    }
 
     return (
         <>
@@ -78,21 +105,7 @@ export const Home = () => {
                 <Breadcrumb />
                 <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
                     <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
-                        {articles ? articles.articles.slice(0, 10).map((item) => (
-                            <div className="flex-none justify-start p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2" key={item.idarticle}>
-                                <hr className="border-slate-700 py-2 border-dotted" />
-                                <div className="text-sm">{item.articletitle}</div>
-                                <div className="text-xs text-slate-700 mt-2">{item.created_at}</div>
-                            </div>
-                        )) : ""}
-                        {articles !== undefined && articles.articles.length !== 0 ?
-                            <div className="flex-none justify-center align-middle p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2">
-                                <hr className="border-slate-700 py-2 border-dotted" />
-                                <div className="text-sm">Load More</div>
-                            </div>
-                            :
-                            ""
-                        }
+                        <ArtikelComponent data={articles} />
                     </div>
                 </div>
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
@@ -162,7 +175,7 @@ export const Home = () => {
                                 ""}
                             {activemenu === "Artikel" ?
                                 <div>
-                                    <PgArtikel />
+                                    <PgArtikel status={getSubmitStatus} />
                                 </div>
                                 :
                                 ""}
@@ -238,11 +251,11 @@ export const Home = () => {
                                 :
                                 ""}
                         </div>
-                    {ReadCookie().isalumni === true ?
-                        <div className="px-5">
-                            <AlumAgenda />
-                        </div> : ""
-                    }
+                        {ReadCookie().isalumni === true ?
+                            <div className="px-5">
+                                <AlumAgenda />
+                            </div> : ""
+                        }
                     </div>
                     <div className="rounded-md w-1/6 flex flex-col gap-2">
                         <ProfileCard />

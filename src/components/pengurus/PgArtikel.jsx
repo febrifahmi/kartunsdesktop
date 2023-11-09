@@ -4,14 +4,22 @@ import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils'
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
+import { ValidateArtikel, ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const PgArtikel = () => {
+export const PgArtikel = (props) => {
     const editorRef = useRef(null);
     const log = () => {
         if (editorRef.current) {
             console.log(editorRef.current.getContent());
         }
     };
+
+    const status = props.status
+
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
 
     let cookie = ReadCookie()
 
@@ -21,6 +29,10 @@ export const PgArtikel = () => {
     const [artikeltext, setArtikelText] = useState("");
     const [artikelimgurl, setArtikelImgUrl] = useState("");
     const [image, setImage] = useState()
+    const [submitted, setSubmitted] = useState(false)
+
+    // initialization of form submission status
+    status(submitted);
 
     const getArticles = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -48,24 +60,24 @@ export const PgArtikel = () => {
         if (newFormData["articledesc"] !== undefined) {
             setDescArtikel(newFormData["articledesc"])
         }
-        console.log({
-            articletitle: judulartikel,
-            articledesc: descartikel,
-            articletext: artikeltext,
-            articleimgurl: artikelimgurl
-        })
+        // console.log({
+        //     articletitle: judulartikel,
+        //     articledesc: descartikel,
+        //     articletext: artikeltext,
+        //     articleimgurl: artikelimgurl
+        // })
     }
 
     useEffect(() => {
         CreateStatusCookie("Manage Articles");
         getArticles()
             .then((isi) => {
-                // console.log(isi);
-                setArtikel(isi)
+                // console.log("Isi artikel: ",isi.articles);
+                setArtikel(isi.articles)
             })
             .catch((err) => console.log(err))
-        console.log(artikel.articles)
-    }, [])
+        console.log("Setelah diisi baru", artikel)
+    }, [submitted])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
@@ -86,29 +98,52 @@ export const PgArtikel = () => {
             "author_id": ReadCookie().iduser,
             "file": image,
         })
-        // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "create", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookie.token}`
-            },
-            body: JSON.stringify({
-                "articletitle": judulartikel,
-                "articledesc": descartikel,
-                "articletext": artikeltext,
-                "articleimgurl": artikelimgurl,
-                "author_id": ReadCookie().iduser,
-                "file": image
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data
+
+        let cekdata = {
+            "articletitle": judulartikel,
+            "articledesc": descartikel,
+            "articletext": artikeltext,
+            "articleimgurl": artikelimgurl,
+            "author_id": ReadCookie().iduser,
+            "file": image,
+        }
+
+        // const validation = ValidateArtikel(judulartikel, descartikel, artikeltext, artikelimgurl, ReadCookie().iduser, image);
+        const validation = ValidateInputForm(cekdata)
+
+        if (validation.message === undefined) {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "articletitle": judulartikel,
+                    "articledesc": descartikel,
+                    "articletext": artikeltext,
+                    "articleimgurl": artikelimgurl,
+                    "author_id": ReadCookie().iduser,
+                    "file": image
+                }),
             })
-            .catch((err) => console.log(err))
-        return response
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+
+            if (response.code === "success") {
+                success("Sukses menambah artikel.")
+                setSubmitted(true)
+                status(submitted)
+            }
+            return response
+        } else {
+            failed(validation.message)
+        }
     }
 
     return (
@@ -144,14 +179,14 @@ export const PgArtikel = () => {
                             }}
                             onEditorChange={(newText) => setArtikelText(newText)}
                         />
-                        <input type="hidden" id="articletext" name="articletext" value={artikeltext}></input>
+                        <input type="hidden" id="articletext" name="articletext" value={artikeltext} ></input>
                         <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                             <div className='flex'>
                                 <label className='mr-6'>Upload gambar artikel (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
                                 <input type="file" name="imagefile" accept="image/*" onChange={handleImageChange} />
                             </div>
                         </div>
-                        <input type="hidden" id="" name="articleimgurl" value={artikelimgurl}></input>
+                        <input type="hidden" id="" name="articleimgurl" value={artikelimgurl} ></input>
                         <div className='flex justify-center'>
                             <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Create Article</button>
                         </div>
@@ -161,7 +196,7 @@ export const PgArtikel = () => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Artikel KartUNS</h3>
                     <div className='py-4'>
-                        {artikel.articles !== undefined && artikel.articles.length !== 0 ? artikel.articles.map((item) => (
+                        {artikel !== undefined && artikel.length !== 0 ? artikel.slice(0, 10).map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idarticle}>
                                 <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
                                     <img className='object-fill rounded-md' src={item.articleimgurl !== undefined || item.articleimgurl !== null || item.articleimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : 'static/img/noimage.png'}></img>
@@ -187,6 +222,18 @@ export const PgArtikel = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

@@ -3,6 +3,7 @@ import { ReadCookie } from "../config/utils"
 import { InfoModulAlumni } from "./InfoModulAlumni"
 import { InfoModulPengurus } from "./InfoModulPengurus"
 import { LogoKartUNS } from "./LogoKartUNS"
+import { CopyrightModal } from "./CopyrightModal"
 
 export const StartingPage = () => {
     return (
@@ -42,6 +43,7 @@ export const StartingPage = () => {
                         </div>
                     </div>
                 </div>
+                <CopyrightModal />
             </div>
         </>
     )

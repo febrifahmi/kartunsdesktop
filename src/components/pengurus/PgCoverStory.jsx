@@ -4,6 +4,9 @@ import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils'
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PgCoverStory = () => {
     const editorRef = useRef(null);
@@ -13,6 +16,9 @@ export const PgCoverStory = () => {
         }
     };
 
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
+
     let cookie = ReadCookie()
 
     const [coverstories, setCoverStories] = useState([]);
@@ -21,6 +27,7 @@ export const PgCoverStory = () => {
     const [covertext, setCoverText] = useState("");
     const [coverimgurl, setCoverImgUrl] = useState("");
     const [image, setImage] = useState()
+    const [submitted, setSubmitted] = useState(false)
 
     const getCoverStories = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.coverstoryendpoint + "all", {
@@ -59,15 +66,16 @@ export const PgCoverStory = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Manage Cover Story");
+        CreateStatusCookie("Manage Cover Story")    ;
         getCoverStories()
             .then((isi) => {
-                // console.log(isi);
-                setCoverStories(isi)
+                // console.log(isi.covers);
+                // console.log(coverstories)
+                setCoverStories(isi.covers)
             })
             .catch((err) => console.log(err))
         // console.log(coverstories.covers)
-    }, [])
+    }, [submitted])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
@@ -88,29 +96,50 @@ export const PgCoverStory = () => {
             "file": image,
             "author_id": cookie.iduser,
         })
-        // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.coverstoryendpoint + "create", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookie.token}`
-            },
-            body: JSON.stringify({
-                "covertitle": judulcover,
-                "coverdesc": desccover,
-                "covertext": covertext,
-                "coverimgurl": coverimgurl,
-                "file": image,
-                "author_id": cookie.iduser,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data
+
+        let cekdata = {
+            "covertitle": judulcover,
+            "coverdesc": desccover,
+            "covertext": covertext,
+            "coverimgurl": coverimgurl,
+            "file": image,
+            "author_id": cookie.iduser,
+        }
+
+        let validation = ValidateInputForm(cekdata)
+
+        if (validation.message === undefined) {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.coverstoryendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "covertitle": judulcover,
+                    "coverdesc": desccover,
+                    "covertext": covertext,
+                    "coverimgurl": coverimgurl,
+                    "file": image,
+                    "author_id": cookie.iduser,
+                }),
             })
-            .catch((err) => console.log(err))
-        return response
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+
+            if (response.code === "success") {
+                success("Sukses menambah artikel.")
+                setSubmitted(true)
+            }
+            return response
+        } else {
+            failed(validation.message)
+        }
     }
 
 
@@ -162,7 +191,7 @@ export const PgCoverStory = () => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>KartUNS Cover Stories</h3>
                     <div className='py-4'>
-                        {coverstories.covers !== undefined && coverstories.covers.length !== 0 ? coverstories.covers.slice(0, 10).map((item) => (
+                        {coverstories !== undefined && coverstories.length !== 0 ? coverstories.slice(0, 10).map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idcover}>
                                 <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
                                     <img className='object-fill rounded-md' src={item.coverimgurl !== undefined || item.coverimgurl !== null || item.coverimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.coverimgurl : 'static/img/noimage.png'} alt=''></img>
@@ -189,6 +218,18 @@ export const PgCoverStory = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

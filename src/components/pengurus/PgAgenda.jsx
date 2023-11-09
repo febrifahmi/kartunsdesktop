@@ -4,6 +4,9 @@ import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils'
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PgAgenda = () => {
     const editorRef = useRef(null);
@@ -12,6 +15,8 @@ export const PgAgenda = () => {
             console.log(editorRef.current.getContent());
         }
     };
+
+    const failed = (errmsg) => toast.error(errmsg);
 
     let cookie = ReadCookie()
 
@@ -100,31 +105,51 @@ export const PgAgenda = () => {
             "file": image,
             "author_id": cookie.iduser,
         })
-        // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.agendaendpoint + "create", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookie.token}`
-            },
-            body: JSON.stringify({
-                "judul": judulagenda,
-                "agendadesc": descagenda,
-                "tanggalmulai": startdate,
-                "tanggalselesai": enddate,
-                "agendatext": agendatext,
-                "agendaimgurl": agendaimgurl,
-                "file": image,
-                "author_id": cookie.iduser,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data
+
+        const cekdata = {
+            "judul": judulagenda,
+            "agendadesc": descagenda,
+            "tanggalmulai": startdate,
+            "tanggalselesai": enddate,
+            "agendatext": agendatext,
+            "agendaimgurl": agendaimgurl,
+            "file": image,
+            "author_id": cookie.iduser,
+        }
+
+        const validation = ValidateInputForm(cekdata)
+
+        if (validation.message === undefined) {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.agendaendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "judul": judulagenda,
+                    "agendadesc": descagenda,
+                    "tanggalmulai": startdate,
+                    "tanggalselesai": enddate,
+                    "agendatext": agendatext,
+                    "agendaimgurl": agendaimgurl,
+                    "file": image,
+                    "author_id": cookie.iduser,
+                }),
             })
-            .catch((err) => console.log(err))
-        return response
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            return response
+        } else {
+            failed(validation.message)
+        }
+
+
     }
 
     return (
@@ -198,6 +223,9 @@ export const PgAgenda = () => {
                                         {item.agendadesc}
                                     </div>
                                     <div className='text-xs text-slate-400'>
+                                        <span className='font-bold'>Waktu pelaksanaan: </span>{item.tanggalmulai} s.d {item.tanggalselesai}
+                                    </div>
+                                    <div className='text-xs text-slate-400'>
                                         <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
                                     </div>
                                     <div className='text-xs text-slate-500'>
@@ -212,6 +240,18 @@ export const PgAgenda = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

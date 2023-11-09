@@ -644,6 +644,11 @@ video {
   margin-bottom: 1.5rem;
 }
 
+.my-8 {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 .mb-16 {
   margin-bottom: 4rem;
 }
@@ -752,6 +757,14 @@ video {
   width: 91.666667%;
 }
 
+.w-2\/6 {
+  width: 33.333333%;
+}
+
+.w-3\/6 {
+  width: 50%;
+}
+
 .w-5\/6 {
   width: 83.333333%;
 }
@@ -762,18 +775,6 @@ video {
 
 .w-full {
   width: 100%;
-}
-
-.w-4\/6 {
-  width: 66.666667%;
-}
-
-.w-2\/6 {
-  width: 33.333333%;
-}
-
-.w-3\/6 {
-  width: 50%;
 }
 
 .flex-1 {
@@ -1393,6 +1394,14 @@ video {
 .hover\:bg-yellow-500:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-opacity-80:hover {
+  --tw-bg-opacity: 0.8;
+}
+
+.hover\:bg-cover:hover {
+  background-size: cover;
 }
 
 .hover\:px-2:hover {
