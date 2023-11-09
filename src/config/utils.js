@@ -87,5 +87,9 @@ export const resizeImage = (file) => new Promise(resolve => {
         }, 'base64');
 });
 
+export const buatKodeTagihan = (timestamp, username, ) => {
+    return timestamp + username
+}
+
 
 

@@ -13,6 +13,7 @@ function createWindow() {
         },
         fullscreen: true,
         autoHideMenuBar: true,
+        icon: __dirname + '/icon400.png',
     });
 
     // and load the index.html of the app.

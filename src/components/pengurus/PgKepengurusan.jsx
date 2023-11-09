@@ -22,6 +22,8 @@ export const PgKepengurusan = () => {
         getAllUsers().then((data) => getUsers(data));
     }, [])
 
+    let count = 0;
+
     return (
         <>
             <div className="px-5">
@@ -48,7 +50,6 @@ export const PgKepengurusan = () => {
                         </thead>
                         <tbody className="text-center">
                             {users !== undefined ? users.users.map((item) => {
-                                let count = 0;
                                 if (item.is_pengurus === true) {
                                     count++;
                                     return (

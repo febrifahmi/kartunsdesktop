@@ -4,6 +4,7 @@ import { CreateStatusCookie, ReadCookie } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdTableView } from "react-icons/md";
+import { ShowUsername } from '../GetUsername';
 
 export const PgAnggaran = () => {
     const editorRef = useRef(null);
@@ -46,6 +47,7 @@ export const PgAnggaran = () => {
                 tahun: tahun,
                 fileraburi: fileraburi,
                 file: filerab,
+                author_id: cookie.iduser,
             })
         }
 
@@ -74,6 +76,7 @@ export const PgAnggaran = () => {
                 "rabyear": tahun,
                 "fileraburi": fileraburi,
                 "file": filerab,
+                "author_id": cookie.iduser,
             })
             // ... submit to RestAPI using fetch api
             const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggaranrabendpoint + "create", {
@@ -88,6 +91,7 @@ export const PgAnggaran = () => {
                     "rabyear": tahun,
                     "fileraburi": fileraburi,
                     "file": filerab,
+                    "author_id": cookie.iduser,
                 }),
             })
                 .then((response) => response.json())
@@ -162,6 +166,9 @@ export const PgAnggaran = () => {
                                             <div className='text-xs text-slate-400'>
                                                 <span className='font-bold'>Tahun:</span> {item.rabyear}
                                             </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
+                                            </div>
                                             <div className='text-xs text-slate-500'>
                                                 <p>Published: {item.created_at}</p>
                                             </div>
@@ -210,6 +217,7 @@ export const PgAnggaran = () => {
                 aruskasyear: tahun,
                 filekasuri: filekasuri,
                 file: filekas,
+                author_id: cookie.iduser,
             })
         }
 
@@ -239,6 +247,7 @@ export const PgAnggaran = () => {
                 "aruskasyear": tahun,
                 "filekasuri": filekasuri,
                 "file": filekas,
+                "author_id": cookie.iduser,
             })
             // ... submit to RestAPI using fetch api
             const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggarankasendpoint + "create", {
@@ -254,6 +263,7 @@ export const PgAnggaran = () => {
                     "aruskasyear": tahun,
                     "filekasuri": filekasuri,
                     "file": filekas,
+                    "author_id": cookie.iduser,
                 }),
             })
                 .then((response) => response.json())
@@ -345,6 +355,9 @@ export const PgAnggaran = () => {
                                             </div>
                                             <div className='text-xs text-slate-400'>
                                                 <span className='font-bold'>Tahun:</span> {item.aruskasyear}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
                                             </div>
                                             <div className='text-xs text-slate-500'>
                                                 <p>Published: {item.created_at}</p>

@@ -1,7 +1,9 @@
 import { appversion } from "../config"
 import { ReadCookie } from "../config/utils"
+import { InfoModulAlumni } from "./InfoModulAlumni"
 import { InfoModulPengurus } from "./InfoModulPengurus"
 import { LogoKartUNS } from "./LogoKartUNS"
+import { CopyrightModal } from "./CopyrightModal"
 
 export const StartingPage = () => {
     return (
@@ -33,9 +35,15 @@ export const StartingPage = () => {
                                     <InfoModulPengurus versi={appversion} />
                                 </div> : ""
                             }
+                            {ReadCookie().isalumni === true ?
+                                <div>
+                                    <InfoModulAlumni versi={appversion} />
+                                </div> : ""
+                            }
                         </div>
                     </div>
                 </div>
+                <CopyrightModal />
             </div>
         </>
     )
