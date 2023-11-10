@@ -44,6 +44,7 @@ export const Home = () => {
 
     const [articles, setArticles] = useState();
     const [activemenu, setActiveMenu] = useState();
+    const [submitstatus, setSubmitStatus] = useState(false)
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -62,14 +63,14 @@ export const Home = () => {
     }
 
     const getSubmitStatus = (status) => {
-        return status
+        setSubmitStatus(status)
     }
 
     useEffect(() => {
         getArticles()
             .then((isi) => setArticles(isi))   // karena result dari getArticles masih berupa Promise, belum datanya, maka data perlu dibaca dan dimasukkan dulu ke useState
             .catch((err) => console.log(err.message))
-    }, [getSubmitStatus])
+    }, [submitstatus])
 
     const getSelection = (selectiondata) => {
         setActiveMenu(selectiondata);

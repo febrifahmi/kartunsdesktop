@@ -5,6 +5,9 @@ import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdPictureAsPdf } from "react-icons/md";
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PgPersuratan = () => {
     const editorRef = useRef(null);
@@ -13,6 +16,11 @@ export const PgPersuratan = () => {
             console.log(editorRef.current.getContent());
         }
     };
+
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
+
+    const [submitted, setSubmitted] = useState(false)
 
     let cookie = ReadCookie()
 
@@ -80,30 +88,51 @@ export const PgPersuratan = () => {
                 "file": filesurat,
                 "author_id": cookie.iduser,
             })
-            // ... submit to RestAPI using fetch api
-            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.suratmasukendpoint + "create", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${cookie.token}`
-                },
-                body: JSON.stringify({
-                    "suratmasuktitle": judulsurat,
-                    "suratmasuknr": nosurat,
-                    "suratmasukdesc": descsurat,
-                    "pengirim": pengirim,
-                    "filesuraturi": filesuraturi,
-                    "file": filesurat,
-                    "author_id": cookie.iduser,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    return data
+
+            let cekdata = {
+                "suratmasuktitle": judulsurat,
+                "suratmasuknr": nosurat,
+                "suratmasukdesc": descsurat,
+                "pengirim": pengirim,
+                "filesuraturi": filesuraturi,
+                "file": filesurat,
+                "author_id": cookie.iduser,
+            }
+
+            let validation = ValidateInputForm(cekdata)
+
+            if (validation.message === undefined) {
+                // ... submit to RestAPI using fetch api
+                const response = await fetch(APIURLConfig.baseurl + APIURLConfig.suratmasukendpoint + "create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cookie.token}`
+                    },
+                    body: JSON.stringify({
+                        "suratmasuktitle": judulsurat,
+                        "suratmasuknr": nosurat,
+                        "suratmasukdesc": descsurat,
+                        "pengirim": pengirim,
+                        "filesuraturi": filesuraturi,
+                        "file": filesurat,
+                        "author_id": cookie.iduser,
+                    }),
                 })
-                .catch((err) => console.log(err))
-            return response
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        return data
+                    })
+                    .catch((err) => console.log(err))
+                if (response.code === "success") {
+                    success("Sukses menambah data surat masuk.")
+                    setSubmitted(true)
+                }
+                return response
+            } else {
+                failed(validation.message)
+            }
         }
 
         return (
@@ -260,30 +289,52 @@ export const PgPersuratan = () => {
                 "file": filesuratkeluar,
                 "author_id": cookie.iduser,
             })
-            // ... submit to RestAPI using fetch api
-            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.letterendpoint + "create", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${cookie.token}`
-                },
-                body: JSON.stringify({
-                    "suratkeluartitle": judulsuratkeluar,
-                    "suratkeluarnr": nosuratkeluar,
-                    "suratkeluardesc": descsuratkeluar,
-                    "kepada": kepada,
-                    "filesuratkeluaruri": filesuratkeluaruri,
-                    "file": filesuratkeluar,
-                    "author_id": cookie.iduser,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    return data
+
+            let cekdata = {
+                "suratkeluartitle": judulsuratkeluar,
+                "suratkeluarnr": nosuratkeluar,
+                "suratkeluardesc": descsuratkeluar,
+                "kepada": kepada,
+                "filesuratkeluaruri": filesuratkeluaruri,
+                "file": filesuratkeluar,
+                "author_id": cookie.iduser,
+            }
+
+            let validation = ValidateInputForm(cekdata)
+
+            if (validation.message === undefined) {
+                // ... submit to RestAPI using fetch api
+                const response = await fetch(APIURLConfig.baseurl + APIURLConfig.letterendpoint + "create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cookie.token}`
+                    },
+                    body: JSON.stringify({
+                        "suratkeluartitle": judulsuratkeluar,
+                        "suratkeluarnr": nosuratkeluar,
+                        "suratkeluardesc": descsuratkeluar,
+                        "kepada": kepada,
+                        "filesuratkeluaruri": filesuratkeluaruri,
+                        "file": filesuratkeluar,
+                        "author_id": cookie.iduser,
+                    }),
                 })
-                .catch((err) => console.log(err))
-            return response
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        return data
+                    })
+                    .catch((err) => console.log(err))
+                if (response.code === "success") {
+                    success("Sukses menambah data surat keluar.")
+                    setSubmitted(true)
+                }
+                return response
+            } else {
+                failed(validation.message)
+            }
+
         }
 
         return (
@@ -427,8 +478,8 @@ export const PgPersuratan = () => {
             })
             .catch((err) => console.log(err))
         console.log(suratmasuk.suratmasuks)
-        console.log("Surat Keluar: ",  suratkeluar.letters)
-    }, [])
+        console.log("Surat Keluar: ", suratkeluar.letters)
+    }, [submitted])
 
     return (
         <>
@@ -446,6 +497,18 @@ export const PgPersuratan = () => {
                 </div>
                 {selected === "rekam" ? <DaftarSuratMasuk data={suratmasuk.suratmasuks} /> : <DaftarSuratKeluar data={suratkeluar.letters} />}
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }
