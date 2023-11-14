@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { APIURLConfig } from "../config";
-import { ReadCookie, SaveCookie } from "../config/utils";
+import { ReadCookie, SaveCookie, ReadCookieLocal } from "../config/utils";
 import { MdHomeFilled } from "react-icons/md";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { ProfileCard } from "../components/ProfilCard";
@@ -31,19 +31,30 @@ import { AlumProfil } from "../components/alumni/AlumProfil";
 import { AlumKeanggotaan } from "../components/alumni/AlumKeanggotaan";
 import { AlumPasangIklan } from "../components/alumni/AlumPasangIklan";
 import { AlumAgenda } from "../components/alumni/AlumAgenda";
+import { AlumTraining } from "../components/alumni/AlumTraining";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AlumDonasi } from "../components/alumni/AlumDonasi";
+import { AlumLowongan } from "../components/alumni/AlumLowongan";
+import { PgDonasi } from "../components/pengurus/PgDonasi";
+import { AlumStore } from "../components/alumni/AlumStore";
+import { PgStore } from "../components/pengurus/PgStore";
 
 export const Home = () => {
     const navigate = useNavigate();
     const landing = () => navigate("/");
 
-    if (ReadCookie().token === "" || ReadCookie().token === undefined) {
+    let cookie = ReadCookieLocal()
+
+    console.log("Cookie data:", cookie.ispengurus)
+
+    if (cookie.token === "" || cookie.token === undefined) {
         landing()
     }
 
     const [articles, setArticles] = useState();
     const [activemenu, setActiveMenu] = useState();
+    const [submitstatus, setSubmitStatus] = useState(false)
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -62,14 +73,14 @@ export const Home = () => {
     }
 
     const getSubmitStatus = (status) => {
-        return status
+        setSubmitStatus(status)
     }
 
     useEffect(() => {
         getArticles()
             .then((isi) => setArticles(isi))   // karena result dari getArticles masih berupa Promise, belum datanya, maka data perlu dibaca dan dimasukkan dulu ke useState
             .catch((err) => console.log(err.message))
-    }, [getSubmitStatus])
+    }, [submitstatus])
 
     const getSelection = (selectiondata) => {
         setActiveMenu(selectiondata);
@@ -111,17 +122,18 @@ export const Home = () => {
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
                     <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
                         <div className="flex gap-2 items-center ml-4">
-                            {ReadCookie().isadmin === true ?
+                            {cookie.isadmin === "true" ?
                                 <div>
                                     <AdmNavbar getSelection={getSelection} />
                                 </div> : ""
                             }
-                            {ReadCookie().ispengurus === true ?
+                            {cookie.ispengurus === "true" ?
                                 <div>
                                     <PengurusNavbar getSelection={getSelection} />
-                                </div> : ""
+                                </div>
+                                : ""
                             }
-                            {ReadCookie().isalumni === true ?
+                            {cookie.isalumni === "true" && cookie.ispengurus === "false" ?
                                 <div>
                                     <AlumniNavbar getSelection={getSelection} />
                                 </div> : ""
@@ -227,6 +239,18 @@ export const Home = () => {
                                 </div>
                                 :
                                 ""}
+                            {activemenu === "Donasi Masuk" ?
+                                <div>
+                                    <PgDonasi />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Manage Store" ?
+                                <div>
+                                    <PgStore />
+                                </div>
+                                :
+                                ""}
                             {activemenu === "" || activemenu === undefined ?
                                 <StartingPage />
                                 :
@@ -244,14 +268,38 @@ export const Home = () => {
                                 </div>
                                 :
                                 ""}
+                            {activemenu === "Tambah Ilmu" ?
+                                <div>
+                                    <AlumTraining />
+                                </div>
+                                :
+                                ""}
                             {activemenu === "Pasang Iklan" ?
                                 <div>
                                     <AlumPasangIklan />
                                 </div>
                                 :
                                 ""}
+                            {activemenu === "Lowongan" ?
+                                <div>
+                                    <AlumLowongan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Donasi" ?
+                                <div>
+                                    <AlumDonasi />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Store" ?
+                                <div>
+                                    <AlumStore />
+                                </div>
+                                :
+                                ""}
                         </div>
-                        {ReadCookie().isalumni === true ?
+                        {ReadCookieLocal().isalumni === true && ReadCookieLocal().ispengurus === false ?
                             <div className="px-5">
                                 <AlumAgenda />
                             </div> : ""

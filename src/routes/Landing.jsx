@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { APIURLConfig } from "../config";
-import { SaveCookie } from "../config/utils";
+import { SaveCookie, ReadCookie, SaveCookieLocal, ReadCookieLocal } from "../config/utils";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -11,7 +11,7 @@ export const Landing = () => {
     const kebijakan = () => navigate("/kebijakan");
     const home = () => navigate("/home");
 
-    const failed = () => toast.warning("Login Failed! Check your username and password");
+    const failed = (msg) => toast.warning(msg);
 
     const initialFormData = Object.freeze({
         username: "",
@@ -42,10 +42,17 @@ export const Landing = () => {
             .then((response) => response.json())
             .then((data) => {
                 if (data["code"] === "success") {
-                    SaveCookie(data)
-                    home()
+                    // SaveCookie(data)
+                    SaveCookieLocal(data)
+                    let cookie = ReadCookieLocal()
+                    if (cookie.iduser !== undefined) {
+                        home()
+                    } else {
+                        failed("Failed creating cookie")
+                    }
+
                 } else {
-                    failed()
+                    failed("Login Failed! Check your username and password")
                 }
             })
     }

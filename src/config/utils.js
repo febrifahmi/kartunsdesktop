@@ -18,6 +18,19 @@ export const SaveCookie = (data) => {
     // console.log("Name: " + cookies.get('name'));
 }
 
+export const SaveCookieLocal = (data) => {
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("username", data.logged_in_as);
+    localStorage.setItem("name", data.name);
+    localStorage.setItem("email", data.useremail);
+    localStorage.setItem("tentang", data.tentang);
+    localStorage.setItem("avatar", data.avatar);
+    localStorage.setItem("is_alumni", data.is_alumni);
+    localStorage.setItem("is_pengurus", data.is_pengurus);
+    localStorage.setItem("is_trainer", data.is_trainer);
+    localStorage.setItem("is_admin", data.is_admin);
+}
+
 export const CreateStatusCookie = (status) => {
     const cookies = new Cookies();
     cookies.set("status", status, { maxAge: 900 })
@@ -62,6 +75,33 @@ export const ReadCookie = () => {
     }
 }
 
+export const ReadCookieLocal = () => {
+    const token = localStorage.getItem("token")
+    const username = localStorage.getItem("username")
+    const iduser = localStorage.getItem("iduser")
+    const name = localStorage.getItem("name")
+    const email = localStorage.getItem("email")
+    const tentang = localStorage.getItem("tentang")
+    const avatar = localStorage.getItem("avatar")
+    const isalumni = localStorage.getItem("is_alumni")
+    const ispengurus = localStorage.getItem("is_pengurus")
+    const istrainer = localStorage.getItem("is_trainer")
+    const isadmin = localStorage.getItem("is_admin")
+    return {
+        token,
+        username,
+        iduser,
+        name,
+        email,
+        tentang,
+        avatar,
+        isalumni,
+        ispengurus,
+        istrainer,
+        isadmin,
+    }
+}
+
 export const RemoveCookie = () => {
     const cookies = new Cookies();
     cookies.remove("token", { maxAge: 900 })
@@ -80,6 +120,10 @@ export const RemoveCookie = () => {
     }
 }
 
+export const RemoveCookieLocal = () => {
+    localStorage.clear();
+}
+
 export const resizeImage = (file) => new Promise(resolve => {
     Resizer.imageFileResizer(file, 400, 300, 'JPEG', 100, 0,
         uri => {
@@ -87,7 +131,7 @@ export const resizeImage = (file) => new Promise(resolve => {
         }, 'base64');
 });
 
-export const buatKodeTagihan = (timestamp, username, ) => {
+export const buatKodeTagihan = (timestamp, username,) => {
     return timestamp + username
 }
 

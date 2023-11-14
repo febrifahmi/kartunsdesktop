@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
@@ -19,7 +19,7 @@ export const PgCoverStory = () => {
     const failed = (errmsg) => toast.error(errmsg);
     const success = (msg) => toast.success(msg);
 
-    let cookie = ReadCookie()
+    let cookie = ReadCookieLocal()
 
     const [coverstories, setCoverStories] = useState([]);
     const [judulcover, setJudulCover] = useState("");
@@ -133,7 +133,7 @@ export const PgCoverStory = () => {
                 .catch((err) => console.log(err))
 
             if (response.code === "success") {
-                success("Sukses menambah artikel.")
+                success("Sukses menambah cover story.")
                 setSubmitted(true)
             }
             return response

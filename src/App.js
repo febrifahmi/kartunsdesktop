@@ -1,11 +1,12 @@
 import './tailwind.css';
 import { Routes, Route } from 'react-router';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 import MainNavbar from './components/MainNavbar';
 import { Landing } from './routes/Landing';
 import { Home } from './routes/Home';
 import { Register } from './routes/Register';
 import { KebijakanPrivasi } from './routes/KebijakanPrivasi';
+import { DetailPage } from './routes/DetailPage';
 import { StatusBar } from './components/StatusBar';
 import { useEffect, useState } from 'react';
 import { ReadStatusCookie } from './config/utils';
@@ -25,21 +26,22 @@ function App() {
   useEffect(() => {
     getStatus(ReadStatusCookie())
   })
-  
+
   return (
     <div className="bg-slate-900 flex flex-col h-screen justify-between">
       <header className="bg-slate-900 border-b-1 border-slate-300 sticky top-0 z-50">
         <MainNavbar />
       </header>
       <div className='flex-1 w-full justify-center text-gray-400'>
-        <BrowserRouter>
+        <HashRouter>
           <Routes>
             <Route exact path="/" element={<Landing />} />
             <Route exact path="/home" element={<Home />} />
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/kebijakan" element={<KebijakanPrivasi />} />
+            <Route exact path="/detail" element={<DetailPage />} />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </div>
       <footer className='sticky bottom-0 z-20'>
         <StatusBar getStatus={getStatus} />

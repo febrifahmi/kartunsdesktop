@@ -1,2 +1,2 @@
 # kartunsdesktop
-KartUNS desktop app developed in Electronjs
+KartUNS desktop app developed in Electronjs + React

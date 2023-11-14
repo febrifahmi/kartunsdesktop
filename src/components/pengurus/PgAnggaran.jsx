@@ -1,10 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdTableView } from "react-icons/md";
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PgAnggaran = () => {
     const editorRef = useRef(null);
@@ -14,11 +17,16 @@ export const PgAnggaran = () => {
         }
     };
 
-    let cookie = ReadCookie()
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
+
+    let cookie = ReadCookieLocal()
 
     const [selected, setSelected] = useState("kas");
     const [anggaranrab, setAnggaranRAB] = useState([]);
     const [aruskas, setArusKas] = useState([]);
+    const [submitted, setSubmitted] = useState(false)
+    const [rabsubmitted, setRabSubmitted] = useState(false)
 
     const AnggaranBiaya = () => {
         const [judulrab, setJudulRab] = useState("");
@@ -78,29 +86,50 @@ export const PgAnggaran = () => {
                 "file": filerab,
                 "author_id": cookie.iduser,
             })
-            // ... submit to RestAPI using fetch api
-            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggaranrabendpoint + "create", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${cookie.token}`
-                },
-                body: JSON.stringify({
-                    "rabtitle": judulrab,
-                    "rabdesc": descrab,
-                    "rabyear": tahun,
-                    "fileraburi": fileraburi,
-                    "file": filerab,
-                    "author_id": cookie.iduser,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    return data
+
+            let cekdata = {
+                "rabtitle": judulrab,
+                "rabdesc": descrab,
+                "rabyear": tahun,
+                "fileraburi": fileraburi,
+                "file": filerab,
+                "author_id": cookie.iduser,
+            }
+
+            const validation = ValidateInputForm(cekdata)
+
+            if (validation.message === undefined) {
+
+                // ... submit to RestAPI using fetch api
+                const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggaranrabendpoint + "create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cookie.token}`
+                    },
+                    body: JSON.stringify({
+                        "rabtitle": judulrab,
+                        "rabdesc": descrab,
+                        "rabyear": tahun,
+                        "fileraburi": fileraburi,
+                        "file": filerab,
+                        "author_id": cookie.iduser,
+                    }),
                 })
-                .catch((err) => console.log(err))
-            return response
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        return data
+                    })
+                    .catch((err) => console.log(err))
+                if (response.code === "success") {
+                    success("Sukses menambah data RAB.")
+                    setRabSubmitted(true)
+                }
+                return response
+            } else {
+                failed(validation.message)
+            }
         }
 
 
@@ -117,7 +146,7 @@ export const PgAnggaran = () => {
                                 <input className="grow rounded h-12" name="rabdesc" type={"text"} placeholder=" Deskripsi singkat kegiatan/RAB" onChange={handleChangeRAB} />
                             </div>
                             <div className="flex pt-6">
-                                <input className="grow rounded h-12" name="rabyear" type={"text"} placeholder={tahun ? tahun :" Tahun RAB aktif"} onChange={handleChangeRAB} />
+                                <input className="grow rounded h-12" name="rabyear" type={"text"} placeholder={tahun ? tahun : " Tahun RAB aktif"} onChange={handleChangeRAB} />
                             </div>
                             <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                                 <div className='flex'>
@@ -249,30 +278,52 @@ export const PgAnggaran = () => {
                 "file": filekas,
                 "author_id": cookie.iduser,
             })
-            // ... submit to RestAPI using fetch api
-            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggarankasendpoint + "create", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${cookie.token}`
-                },
-                body: JSON.stringify({
-                    "aruskastitle": judularuskas,
-                    "aruskasdesc": descaruskas,
-                    "aruskasmonth": bulan,
-                    "aruskasyear": tahun,
-                    "filekasuri": filekasuri,
-                    "file": filekas,
-                    "author_id": cookie.iduser,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    return data
+
+            let cekdata = {
+                "aruskastitle": judularuskas,
+                "aruskasdesc": descaruskas,
+                "aruskasmonth": bulan,
+                "aruskasyear": tahun,
+                "filekasuri": filekasuri,
+                "file": filekas,
+                "author_id": cookie.iduser,
+            }
+
+            const validation = ValidateInputForm(cekdata)
+
+            if (validation.message === undefined) {
+
+                // ... submit to RestAPI using fetch api
+                const response = await fetch(APIURLConfig.baseurl + APIURLConfig.anggarankasendpoint + "create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cookie.token}`
+                    },
+                    body: JSON.stringify({
+                        "aruskastitle": judularuskas,
+                        "aruskasdesc": descaruskas,
+                        "aruskasmonth": bulan,
+                        "aruskasyear": tahun,
+                        "filekasuri": filekasuri,
+                        "file": filekas,
+                        "author_id": cookie.iduser,
+                    }),
                 })
-                .catch((err) => console.log(err))
-            return response
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        return data
+                    })
+                    .catch((err) => console.log(err))
+                if (response.code === "success") {
+                    success("Sukses menambah data Arus Kas.")
+                    setSubmitted(true)
+                }
+                return response
+            } else {
+                failed(validation.message)
+            }
         }
 
         return (
@@ -305,11 +356,11 @@ export const PgAnggaran = () => {
                                 </select>
                             </div>
                             <div className="flex pt-6">
-                                <input className="grow rounded h-12" name="aruskasyear" type={"text"} placeholder={tahun ? tahun :" Tahun Arus Kas aktif"} onChange={handleChangeArusKas} />
+                                <input className="grow rounded h-12" name="aruskasyear" type={"text"} placeholder={tahun ? tahun : " Tahun Arus Kas aktif"} onChange={handleChangeArusKas} />
                             </div>
                             <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
                                 <div className='flex'>
-                                    <label className='mr-6'>Upload file excel RAB (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
+                                    <label className='mr-6'>Upload file excel catatan Kas organisasi (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
                                     <input type="file" name="file" accept=".xls,.xlsx" onChange={handleFileChange} />
                                 </div>
                             </div>
@@ -423,7 +474,7 @@ export const PgAnggaran = () => {
             .catch((err) => console.log(err))
         console.log("RAB: ", anggaranrab)
         console.log("Kas: ", aruskas)
-    }, [])
+    }, [submitted, rabsubmitted])
 
     return (
         <>
@@ -438,6 +489,18 @@ export const PgAnggaran = () => {
                 </div>
                 {selected === "rab" ? <DaftarRAB data={anggaranrab} /> : <DaftarArusKas data={aruskas.anggarankas} />}
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

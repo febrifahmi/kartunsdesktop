@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { APIURLConfig } from "../../config"
-import { ReadCookie } from "../../config/utils"
+import { ReadCookie, ReadCookieLocal } from "../../config/utils"
 
 export const PgKepengurusan = () => {
-    let token = ReadCookie().token;
+    let token = ReadCookieLocal().token;
     const [users, getUsers] = useState()
 
     const getAllUsers = () => {

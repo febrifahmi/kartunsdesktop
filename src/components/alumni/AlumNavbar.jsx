@@ -44,6 +44,18 @@ export const AlumniNavbar = ({ getSelection }) => {
                 }}>
                     <NavbarItem title="Lowongan" selected={selected} />
                 </div>
+                <div onClick={() => {
+                    setSelected("Donasi");
+                    getSelection("Donasi");
+                }}>
+                    <NavbarItem title="Donasi" selected={selected} />
+                </div>
+                <div onClick={() => {
+                    setSelected("Store");
+                    getSelection("Store");
+                }}>
+                    <NavbarItem title="Store" selected={selected} />
+                </div>
             </div>
         </>
     )

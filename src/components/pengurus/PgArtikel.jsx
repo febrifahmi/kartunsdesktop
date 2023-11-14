@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
-import { ValidateArtikel, ValidateInputForm } from '../../config/formvalidation';
+import { ValidateInputForm } from '../../config/formvalidation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -21,7 +21,7 @@ export const PgArtikel = (props) => {
     const failed = (errmsg) => toast.error(errmsg);
     const success = (msg) => toast.success(msg);
 
-    let cookie = ReadCookie()
+    let cookie = ReadCookieLocal()
 
     const [artikel, setArtikel] = useState([]);
     const [judulartikel, setJudulArtikel] = useState("");
@@ -95,7 +95,7 @@ export const PgArtikel = (props) => {
             "articledesc": descartikel,
             "articletext": artikeltext,
             "articleimgurl": artikelimgurl,
-            "author_id": ReadCookie().iduser,
+            "author_id": cookie.iduser,
             "file": image,
         })
 
@@ -104,7 +104,7 @@ export const PgArtikel = (props) => {
             "articledesc": descartikel,
             "articletext": artikeltext,
             "articleimgurl": artikelimgurl,
-            "author_id": ReadCookie().iduser,
+            "author_id": cookie.iduser,
             "file": image,
         }
 
@@ -124,7 +124,7 @@ export const PgArtikel = (props) => {
                     "articledesc": descartikel,
                     "articletext": artikeltext,
                     "articleimgurl": artikelimgurl,
-                    "author_id": ReadCookie().iduser,
+                    "author_id": cookie.iduser,
                     "file": image
                 }),
             })
