@@ -1,11 +1,11 @@
-import { ReadCookie, RemoveCookie } from "../config/utils"
+import { ReadCookie, ReadCookieLocal, RemoveCookie, RemoveCookieLocal } from "../config/utils"
 import { APIURLConfig } from "../config"
 import { useNavigate } from "react-router-dom";
 
 export const ProfileCard = () => {
     const navigate = useNavigate();
     const landing = () => navigate("/");
-    const userdata = ReadCookie()
+    const userdata = ReadCookieLocal()
     const handleLogout = async () => {
         const response = await fetch(APIURLConfig.baseurl + APIURLConfig.logoutendpoint, {
             method: "GET",
@@ -14,9 +14,9 @@ export const ProfileCard = () => {
             },
         })
             .then((response) => {
-                console.log(response)
+                // console.log(response)
                 if (response.ok === true) {
-                    RemoveCookie()
+                    RemoveCookieLocal()
                     landing()
                 }
             })

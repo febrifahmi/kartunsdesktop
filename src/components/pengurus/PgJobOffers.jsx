@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, resizeImage, getUserName } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, resizeImage, getUserName, ReadCookieLocal } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PgJobOffers = () => {
     const editorRef = useRef(null);
@@ -13,7 +16,7 @@ export const PgJobOffers = () => {
         }
     };
 
-    let cookie = ReadCookie()
+    let cookie = ReadCookieLocal()
 
     const [lowongan, setLowongan] = useState([])
     const [judullowongan, setJudulLowongan] = useState("");
@@ -23,6 +26,7 @@ export const PgJobOffers = () => {
     const [lowongantext, setLowonganText] = useState("");
     const [offerimgurl, setOfferImgUrl] = useState("");
     const [image, setImage] = useState()
+    const [submitted, setSubmitted] = useState(false)
 
     const DaftarJobOffers = (props) => {
         const data = props.data
@@ -133,7 +137,7 @@ export const PgJobOffers = () => {
             })
             .catch((err) => console.log(err))
         console.log(lowongan.offers)
-    }, [])
+    }, [submitted])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
@@ -153,7 +157,7 @@ export const PgJobOffers = () => {
             "salaryrange": salaryrange,
             "offertext": lowongantext,
             "companylogo": offerimgurl,
-            "author_id": ReadCookie().iduser,
+            "author_id": cookie.iduser,
             "file": image,
         })
         // ... submit to RestAPI using fetch api
@@ -170,7 +174,7 @@ export const PgJobOffers = () => {
                 "salaryrange": salaryrange,
                 "offertext": lowongantext,
                 "companylogo": offerimgurl,
-                "author_id": ReadCookie().iduser,
+                "author_id": cookie.iduser,
                 "file": image,
             }),
         })

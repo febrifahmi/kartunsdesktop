@@ -9,7 +9,7 @@ export const StatusBar = ({ getStatus }) => {
 
     useEffect(() => {
         let message = ReadStatusCookie()
-        console.log("Message: ", message)
+        // console.log("Message: ", message)
         setStatus(message)
         getStatus(message)
     }, [])

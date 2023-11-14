@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
@@ -17,8 +17,9 @@ export const PgAgenda = () => {
     };
 
     const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
 
-    let cookie = ReadCookie()
+    let cookie = ReadCookieLocal()
 
     const [agenda, setAgenda] = useState([]);
     const [judulagenda, setJudulAgenda] = useState("");
@@ -28,6 +29,7 @@ export const PgAgenda = () => {
     const [agendatext, setAgendaText] = useState("");
     const [agendaimgurl, setAgendaImgUrl] = useState("");
     const [image, setImage] = useState()
+    const [submitted, setSubmitted] = useState(false)
 
     const getAgenda = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.agendaendpoint + "all", {
@@ -82,7 +84,7 @@ export const PgAgenda = () => {
             })
             .catch((err) => console.log(err))
         console.log(agenda.agendas)
-    }, [])
+    }, [submitted])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
@@ -106,7 +108,7 @@ export const PgAgenda = () => {
             "author_id": cookie.iduser,
         })
 
-        const cekdata = {
+        let cekdata = {
             "judul": judulagenda,
             "agendadesc": descagenda,
             "tanggalmulai": startdate,
@@ -144,12 +146,14 @@ export const PgAgenda = () => {
                     return data
                 })
                 .catch((err) => console.log(err))
+            if (response.code === "success") {
+                success("Sukses menambah agenda.")
+                setSubmitted(true)
+            }
             return response
         } else {
             failed(validation.message)
         }
-
-
     }
 
     return (

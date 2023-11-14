@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, resizeImage } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
@@ -13,7 +13,7 @@ export const PgPengumuman = () => {
         }
     };
 
-    let cookie = ReadCookie()
+    let cookie = ReadCookieLocal()
 
     const [pengumuman, setPengumuman] = useState([]);
     const [judulpengumuman, setJudulPengumuman] = useState("");

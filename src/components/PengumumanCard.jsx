@@ -30,7 +30,6 @@ export const PengumumanCard = () => {
                 setPengumuman(isi)
             })
             .catch((err) => console.log(err))
-        console.log(pengumuman.pengumumans)
     }, [])
 
     return (

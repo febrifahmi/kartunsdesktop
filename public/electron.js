@@ -1,7 +1,7 @@
 const path = require('path');
 
 const { app, BrowserWindow } = require('electron');
-const isDev = require('electron-is-dev');
+const isDev = app.isPackaged ? false : require('electron-is-dev');
 
 function createWindow() {
     // Create the browser window.
@@ -13,20 +13,35 @@ function createWindow() {
         },
         fullscreen: true,
         autoHideMenuBar: true,
-        icon: __dirname + '/icon400.png',
+        icon: __dirname + "/icon400.png",
     });
 
     // and load the index.html of the app.
     // win.loadFile("index.html");
+    // win.loadURL(
+    //     isDev
+    //         ? 'http://localhost:3000'
+    //         : `file://${path.join(__dirname, '../build/index.html')}`
+    // );
+
     win.loadURL(
         isDev
             ? 'http://localhost:3000'
             : `file://${path.join(__dirname, '../build/index.html')}`
     );
+
+    // win.setIcon(path.join(__dirname, '/icon400.png'));
+
     // Open the DevTools.
     if (isDev) {
         win.webContents.openDevTools({ mode: 'attach' });
     }
+
+    // aktifkan dev tools jika ada error!
+    win.webContents.openDevTools();
+    // win.webContents.on("devtools-opened", () => {
+    //     win.webContents.closeDevTools();
+    // });
 }
 
 // This method will be called when Electron has finished

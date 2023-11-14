@@ -86,6 +86,18 @@ export const PengurusNavbar = ({ getSelection }) => {
                 }}>
                     <NavbarItem title="Revenue Layanan" selected={selected} />
                 </div>
+                <div onClick={() => {
+                    setSelected("Donasi Masuk");
+                    getSelection("Donasi Masuk");
+                }}>
+                    <NavbarItem title="Donasi Masuk" selected={selected} />
+                </div>
+                <div onClick={() => {
+                    setSelected("Manage Store");
+                    getSelection("Manage Store");
+                }}>
+                    <NavbarItem title="Manage Store" selected={selected} />
+                </div>
             </div>
         </>
     )

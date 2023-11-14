@@ -28,7 +28,7 @@ export const AlumAgenda = () => {
             })
             .catch((err) => console.log(err))
         console.log(agenda.agendas)
-    }, [agenda.agendas])
+    }, [])
 
 
     return (

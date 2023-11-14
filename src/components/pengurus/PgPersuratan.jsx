@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdPictureAsPdf } from "react-icons/md";
@@ -20,9 +20,10 @@ export const PgPersuratan = () => {
     const failed = (errmsg) => toast.error(errmsg);
     const success = (msg) => toast.success(msg);
 
-    const [submitted, setSubmitted] = useState(false)
+    const [sksubmitted, setSKSubmitted] = useState(false)
+    const [smsubmitted, setSMSubmitted] = useState(false)
 
-    let cookie = ReadCookie()
+    let cookie = ReadCookieLocal()
 
     const SuratMasuk = () => {
         const [judulsurat, setJudulSurat] = useState("");
@@ -127,7 +128,7 @@ export const PgPersuratan = () => {
                     .catch((err) => console.log(err))
                 if (response.code === "success") {
                     success("Sukses menambah data surat masuk.")
-                    setSubmitted(true)
+                    setSMSubmitted(true)
                 }
                 return response
             } else {
@@ -328,7 +329,7 @@ export const PgPersuratan = () => {
                     .catch((err) => console.log(err))
                 if (response.code === "success") {
                     success("Sukses menambah data surat keluar.")
-                    setSubmitted(true)
+                    setSKSubmitted(true)
                 }
                 return response
             } else {
@@ -479,7 +480,7 @@ export const PgPersuratan = () => {
             .catch((err) => console.log(err))
         console.log(suratmasuk.suratmasuks)
         console.log("Surat Keluar: ", suratkeluar.letters)
-    }, [submitted])
+    }, [sksubmitted, smsubmitted])
 
     return (
         <>
