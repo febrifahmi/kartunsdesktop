@@ -38,7 +38,7 @@ function createWindow() {
     }
 
     // aktifkan dev tools jika ada error!
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
     // win.webContents.on("devtools-opened", () => {
     //     win.webContents.closeDevTools();
     // });

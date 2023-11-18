@@ -21,6 +21,7 @@ export const SaveCookie = (data) => {
 export const SaveCookieLocal = (data) => {
     localStorage.setItem("token", data.access_token);
     localStorage.setItem("username", data.logged_in_as);
+    localStorage.setItem("iduser", data.iduser);
     localStorage.setItem("name", data.name);
     localStorage.setItem("email", data.useremail);
     localStorage.setItem("tentang", data.tentang);
@@ -134,6 +135,5 @@ export const resizeImage = (file) => new Promise(resolve => {
 export const buatKodeTagihan = (timestamp, username,) => {
     return timestamp + username
 }
-
 
 

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { CreateStatusCookie, ReadCookie } from "../config/utils"
 
@@ -30,7 +30,7 @@ export const ArtikelDetail = (props) => {
         getArticle()
             .then((isi) => {
                 // console.log("Isi artikel: ",isi.articles);
-                setDataDonasi(isi.article)
+                setArtikel(isi.article)
             })
             .catch((err) => console.log(err))
         // console.log("Setelah diisi baru", artikel)
@@ -39,7 +39,7 @@ export const ArtikelDetail = (props) => {
     return (
         <>
             <div>
-                <h3>{artikel.articletitle}</h3>
+                <h3></h3>
                 <div>
 
                 </div>

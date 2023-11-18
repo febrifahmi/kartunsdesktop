@@ -4,14 +4,22 @@ import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '..
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-export const PgPengumuman = () => {
+export const PgPengumuman = (props) => {
     const editorRef = useRef(null);
     const log = () => {
         if (editorRef.current) {
             console.log(editorRef.current.getContent());
         }
     };
+
+    const status = props.status
+
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
 
     let cookie = ReadCookieLocal()
 
@@ -21,6 +29,10 @@ export const PgPengumuman = () => {
     const [pengumumantext, setPengumumanText] = useState("");
     const [pengumumanimgurl, setPengumumanImgUrl] = useState("");
     const [image, setImage] = useState()
+    const [submitted, setSubmitted] = useState(false)
+
+    // initialization of form submission status
+    status(submitted);
 
     const getPengumuman = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengumumanendpoint + "all", {
@@ -66,7 +78,7 @@ export const PgPengumuman = () => {
             })
             .catch((err) => console.log(err))
         // console.log(pengumuman.pengumumans)
-    }, [])
+    }, [submitted])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
@@ -87,29 +99,50 @@ export const PgPengumuman = () => {
             "file": image,
             "author_id": cookie.iduser,
         })
-        // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.pengumumanendpoint + "create", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookie.token}`
-            },
-            body: JSON.stringify({
-                "judul": judulpengumuman,
-                "pengumumanimgurl": pengumumanimgurl,
-                "pengumumandesc": descpengumuman,
-                "pengumumantext": pengumumantext,
-                "file": image,
-                "author_id": cookie.iduser,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data
+
+        let cekdata = {
+            "judul": judulpengumuman,
+            "pengumumandesc": descpengumuman,
+            "pengumumantext": pengumumantext,
+            "pengumumanimgurl": pengumumanimgurl,
+            "file": image,
+            "author_id": cookie.iduser,
+        }
+
+        const validation = ValidateInputForm(cekdata)
+
+        if (validation.message === undefined) {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.pengumumanendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "judul": judulpengumuman,
+                    "pengumumanimgurl": pengumumanimgurl,
+                    "pengumumandesc": descpengumuman,
+                    "pengumumantext": pengumumantext,
+                    "file": image,
+                    "author_id": cookie.iduser,
+                }),
             })
-            .catch((err) => console.log(err))
-        return response
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            if (response.code === "success") {
+                success("Sukses menambah pengumuman baru.")
+                setSubmitted(true)
+                status(submitted)
+            }
+            return response
+        } else {
+            failed(validation.message)
+        }
     }
 
     return (
@@ -189,6 +222,18 @@ export const PgPengumuman = () => {
                     </div>
                 </div>
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

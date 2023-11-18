@@ -1,5 +1,5 @@
 import { appversion } from "../config"
-import { ReadCookie } from "../config/utils"
+import { ReadCookie, ReadCookieLocal } from "../config/utils"
 import { InfoModulAlumni } from "./InfoModulAlumni"
 import { InfoModulPengurus } from "./InfoModulPengurus"
 import { LogoKartUNS } from "./LogoKartUNS"
@@ -25,17 +25,17 @@ export const StartingPage = () => {
                         <p>Pada saat awal memulai aplikasi anda akan masuk dalam halaman <span className="text-sky-500">Login</span>. Apabila anda belum terdaftar di dalam sistem, anda dapat klik link <span className="text-sky-500">Daftar</span> untuk menuju ke laman registrasi. Status pendaftaran anda akan dikonfirmasi kemudian oleh Admin sistem.</p>
                         <h4 className="font-bold text-base text-slate-300">2. Modul dalam Aplikasi</h4>
                         <div>
-                            {ReadCookie().isadmin === true ?
+                            {ReadCookieLocal().isadmin === "true" ?
                                 <div>
 
                                 </div> : ""
                             }
-                            {ReadCookie().ispengurus === true ?
+                            {ReadCookieLocal().ispengurus === "true" ?
                                 <div>
                                     <InfoModulPengurus versi={appversion} />
                                 </div> : ""
                             }
-                            {ReadCookie().isalumni === true ?
+                            {ReadCookieLocal().isalumni === "true" ?
                                 <div>
                                     <InfoModulAlumni versi={appversion} />
                                 </div> : ""

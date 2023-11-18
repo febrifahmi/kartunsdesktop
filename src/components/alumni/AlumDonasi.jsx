@@ -101,7 +101,7 @@ export const AlumDonasi = () => {
             console.log({
                 "namadonatur": namadonatur,
                 "bankpengirim": bankpengirim,
-                "jumlahdonasi": jumlahdonasi,
+                "jumlahdonasi": parseInt(jumlahdonasi),
                 "rektujuan": rektujuan,
                 "donatur_id": cookie.iduser,
                 "donasiimgurl": donasiimgurl,
@@ -111,7 +111,7 @@ export const AlumDonasi = () => {
             let cekdata = {
                 "namadonatur": namadonatur,
                 "bankpengirim": bankpengirim,
-                "jumlahdonasi": jumlahdonasi,
+                "jumlahdonasi": parseInt(jumlahdonasi),
                 "rektujuan": rektujuan,
                 "donatur_id": cookie.iduser,
                 "donasiimgurl": donasiimgurl,
@@ -131,7 +131,7 @@ export const AlumDonasi = () => {
                     body: JSON.stringify({
                         "namadonatur": namadonatur,
                         "bankpengirim": bankpengirim,
-                        "jumlahdonasi": jumlahdonasi,
+                        "jumlahdonasi": parseInt(jumlahdonasi),
                         "rektujuan": rektujuan,
                         "donatur_id": cookie.iduser,
                         "donasiimgurl": donasiimgurl,
@@ -144,7 +144,7 @@ export const AlumDonasi = () => {
                         return data
                     })
                     .catch((err) => console.log(err))
-                if (response.code === "success") {
+                if (response.code !== undefined && response.code === "success") {
                     success("Sukses mengonfirmasi bukti transfer donasi.")
                     setSubmitted(true)
                 }

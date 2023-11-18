@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, ReadCookieLocal } from '../../config/utils';
+import { CreateStatusCookie, ReadCookie, ReadCookieLocal, getB64Pdf } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdPictureAsPdf } from "react-icons/md";
@@ -186,7 +186,7 @@ export const PgPersuratan = () => {
                                             <button onClick={() => setShowPdf(item.idsuratmasuk)}>
                                                 <div className='flex flex-col justify-center items-center gap-2'>
                                                     <MdPictureAsPdf size={48} />
-                                                    <button className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</button>
+                                                    <div className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</div>
                                                 </div>
                                             </button>
                                         </div>
@@ -210,7 +210,8 @@ export const PgPersuratan = () => {
                                     </div>
                                     {showpdf === item.idsuratmasuk ?
                                         <div className='my-4'>
-                                            <iframe className='w-full h-96 rounded-md' src={APIURLConfig.baseurl + "static/surat/masuk/" + item.filesuraturi} />
+                                            {/* <iframe title='suratmasuk' className='w-full h-96 rounded-md' src={APIURLConfig.baseurl + "static/surat/masuk/" + item.filesuraturi} /> */}
+                                            <iframe title='suratmasuk' id='showPdf' name='showPdf' className='w-full h-96 rounded-md font-fontawesome' src={`data:application/pdf;base64,${item.filesuraturi}`} />
                                         </div>
                                         :
                                         ""
@@ -374,6 +375,7 @@ export const PgPersuratan = () => {
         const data = props.data
         console.log("Data in child: ", data)
         const [showpdf, setShowPdf] = useState(0)
+
         return (
             <>
                 <hr className="border-slate-700 border-dotted" />
@@ -388,7 +390,7 @@ export const PgPersuratan = () => {
                                             <button onClick={() => setShowPdf(item.idsuratkeluar)}>
                                                 <div className='flex flex-col justify-center items-center gap-2'>
                                                     <MdPictureAsPdf size={48} />
-                                                    <button className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</button>
+                                                    <div className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</div>
                                                 </div>
                                             </button>
                                         </div>
@@ -412,7 +414,8 @@ export const PgPersuratan = () => {
                                     </div>
                                     {showpdf === item.idsuratkeluar ?
                                         <div className='my-4'>
-                                            <iframe className='w-full h-96 rounded-md' src={APIURLConfig.baseurl + "static/surat/keluar/" + item.filesuratkeluaruri} />
+                                            {/* <iframe title='suratkeluar' id='showPdf' name='showPdf' className='w-full h-96 rounded-md font-fontawesome' src={APIURLConfig.baseurl + "static/surat/keluar/" + item.filesuratkeluaruri} /> */}
+                                            <iframe title='suratkeluar' id='showPdf' name='showPdf' className='w-full h-96 rounded-md font-fontawesome' src={`data:application/pdf;base64,${item.filesuratkeluaruri}`} />
                                         </div>
                                         :
                                         ""
@@ -423,7 +426,7 @@ export const PgPersuratan = () => {
                             "Belum ada data surat keluar di dalam sistem."
                         }
                     </div>
-                </div>
+                </div >
             </>
         )
     }
@@ -478,7 +481,7 @@ export const PgPersuratan = () => {
                 setSuratKeluar(isi)
             })
             .catch((err) => console.log(err))
-        console.log(suratmasuk.suratmasuks)
+        console.log("Surat Masuk:", suratmasuk.suratmasuks)
         console.log("Surat Keluar: ", suratkeluar.letters)
     }, [sksubmitted, smsubmitted])
 

@@ -43,6 +43,7 @@ import { PgStore } from "../components/pengurus/PgStore";
 export const Home = () => {
     const navigate = useNavigate();
     const landing = () => navigate("/");
+    const detail = () => navigate("/detail");
 
     let cookie = ReadCookieLocal()
 
@@ -55,6 +56,7 @@ export const Home = () => {
     const [articles, setArticles] = useState();
     const [activemenu, setActiveMenu] = useState();
     const [submitstatus, setSubmitStatus] = useState(false)
+    const [pengsubmitstatus, setPengumumanSubmitStatus] = useState(false)
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -74,6 +76,10 @@ export const Home = () => {
 
     const getSubmitStatus = (status) => {
         setSubmitStatus(status)
+    }
+
+    const getPengumumanSubmitStatus = (status) => {
+        setPengumumanSubmitStatus(status)
     }
 
     useEffect(() => {
@@ -101,7 +107,7 @@ export const Home = () => {
                 {data !== undefined && data.articles.length !== 0 ?
                     <div className="flex-none justify-center align-middle p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2">
                         <hr className="border-slate-700 py-2 border-dotted" />
-                        <div className="text-sm">Load More</div>
+                        <button className="text-sm" onClick={detail}>Load More</button>
                     </div>
                     :
                     ""
@@ -187,7 +193,7 @@ export const Home = () => {
                                 ""}
                             {activemenu === "Artikel" ?
                                 <div>
-                                    <PgArtikel status={getSubmitStatus} />
+                                    <PgArtikel status={getSubmitStatus} submit={pengsubmitstatus} />
                                 </div>
                                 :
                                 ""}
@@ -199,7 +205,7 @@ export const Home = () => {
                                 ""}
                             {activemenu === "Pengumuman" ?
                                 <div>
-                                    <PgPengumuman />
+                                    <PgPengumuman status={getPengumumanSubmitStatus} />
                                 </div>
                                 :
                                 ""}

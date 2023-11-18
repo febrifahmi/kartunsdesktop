@@ -199,7 +199,7 @@ export const PgArtikel = (props) => {
                         {artikel !== undefined && artikel.length !== 0 ? artikel.slice(0, 10).map((item) => (
                             <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idarticle}>
                                 <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
-                                    <img className='object-fill rounded-md' src={item.articleimgurl !== undefined || item.articleimgurl !== null || item.articleimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : 'static/img/noimage.png'}></img>
+                                    <img className='object-fill rounded-md' src={item.articleimgurl !== undefined || item.articleimgurl !== null || item.articleimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
                                 </div>
                                 <div className='flex flex-col gap-2 w-5/6'>
                                     <div className='text-sm font-bold'>
