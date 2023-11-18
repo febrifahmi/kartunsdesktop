@@ -16,6 +16,9 @@ export const PgJobOffers = () => {
         }
     };
 
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
+
     let cookie = ReadCookieLocal()
 
     const [lowongan, setLowongan] = useState([])
@@ -160,31 +163,54 @@ export const PgJobOffers = () => {
             "author_id": cookie.iduser,
             "file": image,
         })
-        // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.joboffersendpoint + "create", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${cookie.token}`
-            },
-            body: JSON.stringify({
-                "offertitle": judullowongan,
-                "offerdesc": desclowongan,
-                "offertype": tipelowongan,
-                "salaryrange": salaryrange,
-                "offertext": lowongantext,
-                "companylogo": offerimgurl,
-                "author_id": cookie.iduser,
-                "file": image,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data
+
+        let cekdata = {
+            "offertitle": judullowongan,
+            "offerdesc": desclowongan,
+            "offertype": tipelowongan,
+            "salaryrange": salaryrange,
+            "offertext": lowongantext,
+            "companylogo": offerimgurl,
+            "author_id": cookie.iduser,
+            "file": image,
+        }
+
+        const validation = ValidateInputForm(cekdata)
+
+
+        if (validation.message === undefined) {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.joboffersendpoint + "create", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "offertitle": judullowongan,
+                    "offerdesc": desclowongan,
+                    "offertype": tipelowongan,
+                    "salaryrange": salaryrange,
+                    "offertext": lowongantext,
+                    "companylogo": offerimgurl,
+                    "author_id": cookie.iduser,
+                    "file": image,
+                }),
             })
-            .catch((err) => console.log(err))
-        return response
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            if (response.code === "success") {
+                success("Sukses menambah penawaran pekerjaan.")
+                setSubmitted(true)
+            }
+            return response
+        } else {
+            failed(validation.message)
+        }
     }
 
     return (
@@ -252,6 +278,18 @@ export const PgJobOffers = () => {
                 </div>
                 <DaftarJobOffers data={lowongan.offers} />
             </div >
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import { CreateStatusCookie, ReadCookie } from "../config/utils"
 import { APIURLConfig } from "../config"
 
-export const PengumumanCard = () => {
+export const PengumumanCard = (props) => {
+    let submit = props.submit
     let cookie = ReadCookie()
 
     const [pengumuman, setPengumuman] = useState([]);
@@ -30,7 +31,7 @@ export const PengumumanCard = () => {
                 setPengumuman(isi)
             })
             .catch((err) => console.log(err))
-    }, [])
+    }, [submit])
 
     return (
         <>

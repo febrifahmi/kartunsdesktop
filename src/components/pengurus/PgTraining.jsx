@@ -3,21 +3,27 @@ import { Editor } from '@tinymce/tinymce-react';
 import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { ShowUsername } from '../GetUsername';
+import { ValidateInputForm } from '../../config/formvalidation';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PgTraining = () => {
-    const editorRef = useRef(null);
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
-        }
-    };
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
 
     let cookie = ReadCookieLocal()
 
     const [selected, setSelected] = useState("webinar");
     const [trainingwebinars, setTrainingWebinars] = useState([])
+    const [submitted, setSubmitted] = useState(false)
 
     const TrainingWebinar = () => {
+        const editorRef = useRef(null);
+        const log = () => {
+            if (editorRef.current) {
+                console.log(editorRef.current.getContent());
+            }
+        };
         const [judulwebinar, setJudulWebinar] = useState("")
         const [descwebinar, setDescWebinar] = useState("")
         const [tekswebinar, setTeksWebinar] = useState("");
@@ -99,33 +105,57 @@ export const PgTraining = () => {
                 "file": file,
                 "author_id": cookie.iduser,
             })
-            // ... submit to RestAPI using fetch api
-            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.webinarsendpoint + "create", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${cookie.token}`
-                },
-                body: JSON.stringify({
-                    "webinartitle": judulwebinar,
-                    "webinardesc": descwebinar,
-                    "webinartext": tekswebinar,
-                    "startdate": startdate,
-                    "enddate": enddate,
-                    "level": level,
-                    "price": price,
-                    "webinarimgurl": webinarimgurl,
-                    "file": file,
-                    "author_id": cookie.iduser,
-                }),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    return data
+
+            let cekdata = {
+                "webinartitle": judulwebinar,
+                "webinardesc": descwebinar,
+                "webinartext": tekswebinar,
+                "startdate": startdate,
+                "enddate": enddate,
+                "level": level,
+                "price": price,
+                "webinarimgurl": webinarimgurl,
+                "file": file,
+                "author_id": cookie.iduser,
+            }
+
+            const validation = ValidateInputForm(cekdata)
+
+            if (validation.message === undefined) {
+                // ... submit to RestAPI using fetch api
+                const response = await fetch(APIURLConfig.baseurl + APIURLConfig.webinarsendpoint + "create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cookie.token}`
+                    },
+                    body: JSON.stringify({
+                        "webinartitle": judulwebinar,
+                        "webinardesc": descwebinar,
+                        "webinartext": tekswebinar,
+                        "startdate": startdate,
+                        "enddate": enddate,
+                        "level": level,
+                        "price": price,
+                        "webinarimgurl": webinarimgurl,
+                        "file": file,
+                        "author_id": cookie.iduser,
+                    }),
                 })
-                .catch((err) => console.log(err))
-            return response
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        return data
+                    })
+                    .catch((err) => console.log(err))
+                if (response.code === "success") {
+                    success("Sukses menambah webinar/pelatihan/course baru.")
+                    setSubmitted(true)
+                }
+                return response
+            } else {
+                failed(validation.message)
+            }
         }
 
 
@@ -284,7 +314,7 @@ export const PgTraining = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Pengelolaan Persuratan");
+        CreateStatusCookie("Pengelolaan Training");
         getTrainingWebinars()
             .then((isi) => {
                 // console.log(isi);
@@ -292,7 +322,7 @@ export const PgTraining = () => {
             })
             .catch((err) => console.log(err))
         console.log(trainingwebinars)
-    }, [])
+    }, [submitted])
 
     return (
         <>
@@ -307,6 +337,18 @@ export const PgTraining = () => {
                 </div>
                 {selected === "webinar" ? <DaftarTrainingWebinar data={trainingwebinars.trainingwebinars} /> : <DaftarOnlineCourse />}
             </div>
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }

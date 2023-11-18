@@ -18,4 +18,4 @@ export const APIURLConfig = {
     donasiendpoint: "api/donations/",
 }
 
-export const appversion = "v0.1.0"
+export const appversion = "v0.1.1"

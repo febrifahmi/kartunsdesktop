@@ -7,6 +7,9 @@ module.exports = {
         'hero-pattern': "url('/img/hero-pattern.svg')",
         'footer-texture': "url('/img/footer-texture.png')",
         'landing-bg': "url('/src/img/library-5641389_1280.jpg')",
+      },
+      fontFamily: {
+        'fontawesome': ['FontAwesome', 'sans-serif'],
       }
     },
   },

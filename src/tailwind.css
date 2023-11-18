@@ -730,6 +730,10 @@ video {
   height: 3rem;
 }
 
+.h-2\/3 {
+  height: 66.666667%;
+}
+
 .h-6 {
   height: 1.5rem;
 }
@@ -754,12 +758,20 @@ video {
   width: 8.333333%;
 }
 
+.w-1\/3 {
+  width: 33.333333%;
+}
+
 .w-1\/6 {
   width: 16.666667%;
 }
 
 .w-11\/12 {
   width: 91.666667%;
+}
+
+.w-2\/3 {
+  width: 66.666667%;
 }
 
 .w-2\/6 {
@@ -884,8 +896,18 @@ video {
           column-gap: 1.5rem;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .overflow-x-auto {
   overflow-x: auto;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .whitespace-nowrap {
@@ -1035,6 +1057,14 @@ video {
   background-size: cover;
 }
 
+.object-contain {
+  object-fit: contain;
+}
+
+.object-cover {
+  object-fit: cover;
+}
+
 .object-fill {
   object-fit: fill;
 }
@@ -1159,6 +1189,10 @@ video {
 
 .align-middle {
   vertical-align: middle;
+}
+
+.font-fontawesome {
+  font-family: FontAwesome, sans-serif;
 }
 
 .text-2xl {

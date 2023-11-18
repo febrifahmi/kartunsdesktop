@@ -10,6 +10,7 @@ export const Landing = () => {
     const navRegister = () => navigate("/register");
     const kebijakan = () => navigate("/kebijakan");
     const home = () => navigate("/home");
+    const [loggingin, setLoggingIn] = useState(false)
 
     const failed = (msg) => toast.warning(msg);
 
@@ -32,6 +33,7 @@ export const Landing = () => {
         e.preventDefault()
         // console.log(formData);
         // ... submit to RestAPI using fetch api
+        setLoggingIn(true)
         const response = await fetch(APIURLConfig.baseurl + APIURLConfig.loginendpoint, {
             method: "POST",
             headers: {
