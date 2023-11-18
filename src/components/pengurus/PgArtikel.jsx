@@ -84,6 +84,8 @@ export const PgArtikel = (props) => {
         const image = await resizeImage(file);
         // console.log(image);
         setArtikelImgUrl(file.name);
+        // // Convert data to base64
+        // let img = await getBase64(image)
         setImage(image);
     }
 

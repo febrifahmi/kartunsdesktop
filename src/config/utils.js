@@ -126,7 +126,7 @@ export const RemoveCookieLocal = () => {
 }
 
 export const resizeImage = (file) => new Promise(resolve => {
-    Resizer.imageFileResizer(file, 400, 300, 'JPEG', 100, 0,
+    Resizer.imageFileResizer(file, 640, 480, 'JPEG', 100, 0,
         uri => {
             resolve(uri);
         }, 'base64');

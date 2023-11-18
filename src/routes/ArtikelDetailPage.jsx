@@ -13,6 +13,16 @@ export const ArtikelDetailPage = ({ params }) => {
     const [artikel, setArtikel] = useState([]);
     const [activearticle, setActiveArticle] = useState(0)
 
+    function ImageExist(url) {
+        var img = new Image();
+        img.src = url;
+        if(img.height === 0){
+            return false
+        } else {
+            return true
+        }
+    }
+
     const getArticles = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
             method: "GET",
@@ -62,10 +72,10 @@ export const ArtikelDetailPage = ({ params }) => {
                                                 <h3 className="text-xl font-bold text-sky-500 mb-4">{item.articletitle}</h3>
                                                 <div className="flex flex-col">
                                                     <div className="text-sm text-slate-500 mb-8">Published: {item.created_at}</div>
-                                                    <div>
-                                                        <img className="w-1/3 rounded-lg" src={item.articleimgurl ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
+                                                    <div className="w-full h-96">
+                                                        <img className="object-cover rounded-lg w-full h-96" src={item.articleimgurl && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
                                                     </div>
-                                                    <div className="text-base mt-8" dangerouslySetInnerHTML={{__html: item.articletext}}>
+                                                    <div className="text-base mt-8" dangerouslySetInnerHTML={{ __html: item.articletext }}>
                                                     </div>
                                                 </div>
                                             </div>
