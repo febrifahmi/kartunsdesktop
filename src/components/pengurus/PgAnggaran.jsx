@@ -28,6 +28,16 @@ export const PgAnggaran = () => {
     const [submitted, setSubmitted] = useState(false)
     const [rabsubmitted, setRabSubmitted] = useState(false)
 
+    const downloadXls = (b64string) => {
+        const linkSource = `data:application/vnd.ms-excel;base64,${b64string}`;
+        const downloadLink = document.createElement('a');
+        const fileName = "download.xls";
+
+        downloadLink.href = linkSource;
+        downloadLink.download = fileName;
+        downloadLink.click();
+    }
+
     const AnggaranBiaya = () => {
         const [judulrab, setJudulRab] = useState("");
         const [descrab, setDescRab] = useState("");
@@ -167,6 +177,7 @@ export const PgAnggaran = () => {
     const DaftarRAB = (props) => {
         const data = props.data
         // const [showxls, setShowXls] = useState(0)
+
         return (
             <>
                 <hr className="border-slate-700 border-dotted" />
@@ -178,12 +189,12 @@ export const PgAnggaran = () => {
                                 <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idrab}>
                                     <div className='flex flex-row gap-4'>
                                         <div className='rounded-md text-green-600 flex justify-center items-center hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/12'>
-                                            <a href={APIURLConfig.baseurl + "static/anggaran/rab/" + item.fileraburi}>
+                                            <div onClick={() => downloadXls(item.fileraburi)}>
                                                 <div className='flex flex-col justify-center items-center gap-2'>
                                                     <MdTableView size={48} />
                                                     <button className='text-xs text-white bg-green-700 px-2 rounded-md'>Download</button>
                                                 </div>
-                                            </a>
+                                            </div>
                                         </div>
                                         <div className='flex flex-col gap-2 w-11/12'>
                                             <div className='text-sm font-bold'>
@@ -387,12 +398,12 @@ export const PgAnggaran = () => {
                                 <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idaruskas}>
                                     <div className='flex flex-row gap-4'>
                                         <div className='rounded-md text-green-600 flex justify-center items-center hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/12'>
-                                            <a href={APIURLConfig.baseurl + "static/anggaran/kas/" + item.filekasuri}>
+                                            <div onClick={() => downloadXls(item.filekasuri)}>
                                                 <div className='flex flex-col justify-center items-center gap-2'>
                                                     <MdTableView size={48} />
                                                     <button className='text-xs text-white bg-green-700 px-2 rounded-md'>Download</button>
                                                 </div>
-                                            </a>
+                                            </div>
                                         </div>
                                         <div className='flex flex-col gap-2 w-11/12'>
                                             <div className='text-sm font-bold'>
