@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
-import { ReadCookie, CreateStatusCookie } from "../config/utils"
+import { ReadCookieLocal, CreateStatusCookie } from "../config/utils"
 
 export const ProfilDetail = () => {
-    let cookie = ReadCookie();
+    let cookie = ReadCookieLocal();
 
     return (
         <>

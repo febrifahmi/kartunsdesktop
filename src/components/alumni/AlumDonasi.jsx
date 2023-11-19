@@ -206,7 +206,7 @@ export const AlumDonasi = () => {
                     <div className='py-4'>
                         {data !== undefined && data.length !== 0 ?
                             data.map((item) => {
-                                if (item.donatur_id === cookie.iduser) {
+                                if (item.donatur_id == cookie.iduser) {
                                     return (
                                         <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.iddonation}>
                                             <div className='flex flex-row gap-4'>

@@ -136,4 +136,14 @@ export const buatKodeTagihan = (timestamp, username,) => {
     return timestamp + username
 }
 
+export const ImageExist = (url) => {
+    var img = new Image();
+    img.src = url;
+    if(img.height === 0){
+        return false
+    } else {
+        return true
+    }
+}
+
 
