@@ -6,7 +6,7 @@ import { ArtikelDetail } from "../components/ArtikelDetail";
 import { APIURLConfig } from "../config";
 import { ArtikelComponent } from "../components/ArticleComponent";
 import { ShowUsername } from "../components/GetUsername";
-import { ReadCookie, ImageExist } from "../config/utils";
+import { ReadCookieLocal, ImageExist } from "../config/utils";
 
 export const ArtikelDetailPage = ({ params }) => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ export const ArtikelDetailPage = ({ params }) => {
     const [artikel, setArtikel] = useState([]);
     const [activearticle, setActiveArticle] = useState(0)
 
-    let cookie = ReadCookie();
+    let cookie = ReadCookieLocal();
 
     const getArticles = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -65,8 +65,10 @@ export const ArtikelDetailPage = ({ params }) => {
                                             <div className="flex flex-col">
                                                 <h3 className="text-xl font-bold text-sky-500 mb-4">{item.articletitle}</h3>
                                                 <div className="flex flex-col">
-                                                    <div className="text-sm text-slate-500 mb-2">Author: {item.author_id} </div>
-                                                    <div className="text-sm text-slate-500 mb-8">Published: {item.created_at}</div>
+                                                    <div className="flex flex-row justify-between mb-6">
+                                                        <div className="text-sm text-slate-500"><span className="font-bold">Author: </span><span><ShowUsername userid={parseInt(item.author_id)} token={cookie.token} /></span> </div>
+                                                        <div className="text-sm text-slate-500 italic">Published: {item.created_at}</div>
+                                                    </div>
                                                     <div className="w-full h-96">
                                                         <img className="object-cover rounded-lg w-full h-96" src={item.articleimgurl && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
                                                     </div>

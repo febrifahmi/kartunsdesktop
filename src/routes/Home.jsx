@@ -98,7 +98,7 @@ export const Home = () => {
         return (
             <>
                 {data ? data.articles.slice(0, 10).map((item) => (
-                    <div className="flex-none justify-start p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2" key={item.idarticle}>
+                    <div className="flex-none justify-start p-5 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md w-1/6 mb-2" key={item.idarticle} onClick={detail}>
                         <hr className="border-slate-700 py-2 border-dotted" />
                         <div className="text-sm">{item.articletitle}</div>
                         <div className="text-xs text-slate-700 mt-2">{item.created_at}</div>
@@ -305,7 +305,7 @@ export const Home = () => {
                                 :
                                 ""}
                         </div>
-                        {ReadCookieLocal().isalumni === true && ReadCookieLocal().ispengurus === false ?
+                        {ReadCookieLocal().isalumni === "true" && ReadCookieLocal().ispengurus === "false" ?
                             <div className="px-5">
                                 <AlumAgenda />
                             </div> : ""

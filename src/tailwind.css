@@ -710,6 +710,10 @@ video {
   margin-top: 2rem;
 }
 
+.mb-6 {
+  margin-bottom: 1.5rem;
+}
+
 .flex {
   display: flex;
 }
@@ -734,6 +738,10 @@ video {
   height: 66.666667%;
 }
 
+.h-20 {
+  height: 5rem;
+}
+
 .h-6 {
   height: 1.5rem;
 }
@@ -752,14 +760,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.h-28 {
-  height: 7rem;
-}
-
-.h-20 {
-  height: 5rem;
 }
 
 .w-1\/12 {
@@ -1063,10 +1063,6 @@ video {
 
 .bg-cover {
   background-size: cover;
-}
-
-.object-contain {
-  object-fit: contain;
 }
 
 .object-cover {
