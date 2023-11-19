@@ -754,6 +754,14 @@ video {
   height: 100vh;
 }
 
+.h-28 {
+  height: 7rem;
+}
+
+.h-20 {
+  height: 5rem;
+}
+
 .w-1\/12 {
   width: 8.333333%;
 }

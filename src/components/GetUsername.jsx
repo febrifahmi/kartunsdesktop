@@ -24,7 +24,10 @@ export const ShowUsername = (props) => {
     }
 
     useEffect(() => {
-        getUserName().then((isi) => setUsername(isi.user.username))
+        getUserName().then((isi) => {
+            console.log(isi);
+            setUsername(isi.user.username)
+        })
         // console.log(username)
     }, [])
 
