@@ -9,23 +9,13 @@ import { KebijakanPrivasi } from './routes/KebijakanPrivasi';
 import { ArtikelDetailPage } from './routes/ArtikelDetailPage';
 import { StatusBar } from './components/StatusBar';
 import { useEffect, useState } from 'react';
-import { ReadStatusCookie } from './config/utils';
+import { ReadStatusCookieLocal } from './config/utils';
 
 
 
 function App() {
   // to get current path location, try to save the location.pathname to cookie and read cookie value from this page
   // or make a footer status bar as a component so that we can use props to get pathname data
-
-  const [status, setStatus] = useState("idle")
-  const getStatus = async (data) => {
-    let message = await data
-    setStatus(message)
-  }
-
-  useEffect(() => {
-    getStatus(ReadStatusCookie())
-  })
 
   return (
     <div className="bg-slate-900 flex flex-col h-screen justify-between">
@@ -44,7 +34,7 @@ function App() {
         </HashRouter>
       </div>
       <footer className='sticky bottom-0 z-20'>
-        <StatusBar getStatus={getStatus} />
+        <StatusBar />
       </footer>
     </div>
   );

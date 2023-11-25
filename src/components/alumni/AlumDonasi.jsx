@@ -58,7 +58,7 @@ export const AlumDonasi = () => {
         const [jumlahdonasi, setJumlahDonasi] = useState(0)
         const [rektujuan, setRekTujuan] = useState("KartUNS Beasiswa")
         const [donasiimgurl, setDonasiImgUrl] = useState("")
-        const [image, setImage] = useState()
+        const [image, setImage] = useState(null)
         const [rupiahdonasi, setRupiahDonasi] = useState()
 
         var newFormData = new FormData();
@@ -224,10 +224,12 @@ export const AlumDonasi = () => {
                                                         <span className='font-bold'>Bank pengirim:</span> {item.bankpengirim}
                                                     </div>
                                                     <div className='text-xs text-slate-400'>
-                                                        <span className='font-bold'>Donasi:</span> {item.jumlahdonasi}
+                                                        <span className='font-bold'>Donasi:</span> {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(
+                                                            item.jumlahdonasi,
+                                                        )}
                                                     </div>
                                                     <div className='text-xs text-slate-400'>
-                                                        <span className='font-bold'>Author:</span> <ShowUsername userid={item.donatur_id} token={cookie.token} />
+                                                        <span className='font-bold'>Donatur:</span> <ShowUsername userid={item.donatur_id} token={cookie.token} />
                                                     </div>
                                                     <div className='text-xs text-slate-500'>
                                                         <p>Published: {item.created_at}</p>

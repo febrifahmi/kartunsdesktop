@@ -1,11 +1,13 @@
 import { MdClose, MdMinimize, MdMaximize } from "react-icons/md";
 import { appversion } from "../config";
 import { IconKartUNSDesktop } from "./IconKartUNSDesktop";
+import { RemoveCookieLocal } from "../config/utils";
 
 export default function MainNavbar() {
     // var remote = window.require('electron');
 
     function closeWindow() {
+        RemoveCookieLocal()
         window.close()
     }
 

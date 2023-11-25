@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { APIURLConfig } from "../config";
-import { SaveCookie, ReadCookie, SaveCookieLocal, ReadCookieLocal } from "../config/utils";
+import { SaveCookie, ReadCookie, SaveCookieLocal, ReadCookieLocal, delay } from "../config/utils";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 
 export const Landing = () => {
     const navigate = useNavigate();
@@ -12,6 +13,7 @@ export const Landing = () => {
     const home = () => navigate("/home");
     const [loggingin, setLoggingIn] = useState(false)
 
+    const success = (msg) => toast.success(msg)
     const failed = (msg) => toast.warning(msg);
 
     const initialFormData = Object.freeze({
@@ -45,23 +47,25 @@ export const Landing = () => {
             .then((data) => {
                 if (data["code"] === "success") {
                     // SaveCookie(data)
+                    console.log(data)
                     SaveCookieLocal(data)
                     let cookie = ReadCookieLocal()
                     if (cookie.iduser !== undefined) {
-                        home()
+                        success("Logging in...")
+                        delay(1000).then(() => home());
                     } else {
                         failed("Failed creating cookie")
                     }
-
                 } else {
                     failed("Login Failed! Check your username and password")
                 }
             })
+            .catch(e => failed(e.message + " Make sure you are connected to internet!"))
     }
 
     return (
         <>
-            <div className="h-full w-full flex flex-col justify-around bg-landing-bg bg-cover">
+            <div className="h-full w-full flex flex-col justify-around bg-landing-bg2 bg-cover">
                 <div className="flex flex-row flex-wrap gap-8 justify-center items-center align-middle text-white">
                     <div>
                         <form className="w-96" method="post">

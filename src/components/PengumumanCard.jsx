@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { CreateStatusCookie, ReadCookie } from "../config/utils"
 import { APIURLConfig } from "../config"
+import { MdInfoOutline } from "react-icons/md";
 
 export const PengumumanCard = (props) => {
     let submit = props.submit
@@ -45,7 +46,10 @@ export const PengumumanCard = (props) => {
                         </div>
                     ))
                     :
-                    "Belum ada pengumuman terbaru."
+                    <div className="text-sm flex flex-row items-center gap-2">
+                        <MdInfoOutline />
+                        Belum ada pengumuman terbaru.
+                    </div>
                 }
             </div>
         </>

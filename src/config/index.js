@@ -1,6 +1,6 @@
 export const APIURLConfig = {
-    // baseurl: "http://localhost:5000/",
-    baseurl: "https://api.kartuns.space/",
+    baseurl: "http://localhost:5000/",
+    // baseurl: "https://api.kartuns.space/",
     userendpoint: "api/users/",
     loginendpoint: "api/users/login",
     logoutendpoint: "api/users/logout",
@@ -16,6 +16,8 @@ export const APIURLConfig = {
     webinarsendpoint: "api/webinars/",
     joboffersendpoint: "api/joboffers/",
     donasiendpoint: "api/donations/",
+    adsendpoint: "api/ads/",
+    membersendpoint: "api/members/",
 }
 
-export const appversion = "v0.1.1"
+export const appversion = "v0.1.2"

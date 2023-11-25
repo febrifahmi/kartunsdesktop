@@ -1,8 +1,11 @@
+import { PelatihanCard } from "../PelatihanCard"
+
 export const AlumTraining = () => {
     return (
         <>
-            <div className="px-5">
-                Training dari dan untuk Alumni, Mahasiswa, dan Umum
+            <div className="px-5 mb-10">
+                <h3 className="font-bold text-center text-lg text-green-500">Pelatihan/Webinars</h3>
+                <PelatihanCard />
             </div>
         </>
     )

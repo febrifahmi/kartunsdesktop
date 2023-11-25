@@ -58,7 +58,7 @@ export const Register = () => {
 
     return (
         <>
-            <div className="h-full w-full flex flex-col justify-around bg-landing-bg bg-cover">
+            <div className="h-full w-full flex flex-col justify-around bg-landing-bg2 bg-cover">
                 <div className="flex flex-row flex-wrap gap-8 justify-center items-center align-middle text-white">
                     <div>
                         <form className="w-96" method="post">

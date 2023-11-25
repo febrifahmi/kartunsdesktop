@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, ReadCookieLocal, getB64Pdf } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, getB64Pdf } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdPictureAsPdf } from "react-icons/md";
@@ -468,7 +468,7 @@ export const PgPersuratan = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Pengelolaan Persuratan");
+        CreateStatusCookieLocal("Pengelolaan Persuratan KartUNS");
         getSuratMasuk()
             .then((isi) => {
                 // console.log(isi);

@@ -6,6 +6,8 @@ export const ProfileCard = () => {
     const navigate = useNavigate();
     const landing = () => navigate("/");
     const userdata = ReadCookieLocal()
+    let re = /(www.gravatar.com)/;
+    
     const handleLogout = async () => {
         const response = await fetch(APIURLConfig.baseurl + APIURLConfig.logoutendpoint, {
             method: "GET",
@@ -29,7 +31,12 @@ export const ProfileCard = () => {
                 {userdata ?
                     <div className="flex items-center bg-slate-800 hover:bg-sky-800 p-4 rounded-md text-sm text-white gap-4">
                         <div>
-                            <img className="rounded-full" width={64} src={userdata.avatar} alt=""></img>
+                            {
+                                userdata.avatar !== "" && re.test(userdata.avatar) == false ?
+                                    <img className='object-fill rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + userdata.avatar}></img>
+                                    :
+                                    <img className='object-fill rounded-full' src={userdata.avatar}></img>
+                            }
                         </div>
                         <div className="flex flex-col">
                             <div className="flex justify-between">
