@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
-import { ReadCookieLocal, getTodayDate } from "../config/utils"
+import { ReadCookieLocal, getTodayDate, getMembershipEndDate, getUserCategory, generateNomorAnggota } from "../config/utils"
 import { ShowUsername } from "./GetUsername";
 import { ValidateInputForm } from "../config/formvalidation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useRef } from "react";
 
 
 export const MembershipDetail = () => {
-    const [membership, setMembership] = useState()
+    const [membership, setMembership] = useState({})
     const [nomoranggota, setNomorAnggota] = useState("")
     const [validfrom, setValidFrom] = useState("")
     const [validthru, setValidThru] = useState("")
@@ -19,8 +20,11 @@ export const MembershipDetail = () => {
 
     let cookie = ReadCookieLocal()
 
+    const today = getTodayDate()
+    const duedate = getMembershipEndDate()
+
     const getMembership = () => {
-        const response = fetch(APIURLConfig.baseurl + APIURLConfig.webinarsendpoint + cookie.iduser, {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.membersendpoint + cookie.iduser, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
@@ -36,10 +40,48 @@ export const MembershipDetail = () => {
         return response
     }
 
-    const DetailMembershipData = () => {
+    const MemberCardCanvas = (props) => {
+        const canvasRef = useRef(null);
+
+        useEffect(() => {
+            // draw canvas
+            const canvas = canvasRef.current;
+            const context = canvas.getContext('2d');
+            const cardbase = new Image();
+            cardbase.src = APIURLConfig.baseurl + "static/img/newmembercard.png"
+            cardbase.onload = function () {
+                context.drawImage(cardbase, 0, 0, props.width, props.height);
+            };
+        }, [])
+
+        return <canvas className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-2xl" ref={canvasRef} width={props.width} height={props.height} />
+    }
+
+    const DetailMembershipData = (props) => {
+        let data = props.data
+        console.log("Data: ", data)
         return (
             <>
-                Detail membership data
+                <div className="flex flex-row gap-10 w-full">
+                    <div>
+                        {/* <img className="object-cover" src={APIURLConfig.baseurl + "static/img/newmembercard.png"}></img> */}
+                        <MemberCardCanvas width={326} height={206} />
+                    </div>
+                    <div className="flex flex-col w-4/6 text-slate-500">
+                        <div>Nomor Anggota: <span className="text-slate-400">{data.member.nomoranggota}</span></div>
+                        <div>Nama: <span className="text-slate-400">{cookie.name}</span></div>
+                        <div>Email: <span className="text-slate-400">{cookie.email}</span></div>
+                        <div>No Telp: <span className="text-slate-400">{data.member.notelp}</span></div>
+                        <div>Pekerjaan: <span className="text-slate-400">{data.member.pekerjaan}</span></div>
+                        <div>Perusahaan: <span className="text-slate-400">{data.member.perusahaan}</span></div>
+                        <div>Kantor: <span className="text-slate-400">{data.member.kantor}</span></div>
+                        <div>Alamat Kantor: <span className="text-slate-400">{data.member.alamatkantor}</span></div>
+                        <div>Mulai Bekerja: <span className="text-slate-400">{data.member.mulaibekerja}</span></div>
+                        <div className='flex justify-center'>
+                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={""}>Edit Membership Data</button>
+                        </div>
+                    </div>
+                </div>
             </>
         )
     }
@@ -51,10 +93,11 @@ export const MembershipDetail = () => {
                 setMembership(isi)
             })
             .catch((err) => console.log(err))
-        console.log(membership)
+        setNomorAnggota(generateNomorAnggota(getTodayDate().split('-').filter(Boolean).join(''), getUserCategory(), cookie.iduser))
+        console.log(membership.member)
     }, [submitted])
 
-    const UpdateMembershipData = () => {
+    const AktifkanMembership = () => {
         const [alamat, setAlamat] = useState("")
         const [notelp, setNoTelp] = useState("")
         const [pekerjaan, setPekerjaan] = useState("Arsitek")
@@ -91,8 +134,8 @@ export const MembershipDetail = () => {
             }
             console.log({
                 nomoranggota: nomoranggota,
-                validfrom: validfrom,
-                validthru: validthru,
+                validfrom: today,
+                validthru: duedate,
                 alamat: alamat,
                 notelp: notelp,
                 pekerjaan: pekerjaan,
@@ -108,8 +151,8 @@ export const MembershipDetail = () => {
             // console.log(e.target);
             console.log({
                 "nomoranggota": nomoranggota,
-                "validfrom": getTodayDate(),
-                "validthru": validthru,
+                "validfrom": today,
+                "validthru": duedate,
                 "alamat": alamat,
                 "notelp": notelp,
                 "pekerjaan": pekerjaan,
@@ -122,8 +165,8 @@ export const MembershipDetail = () => {
 
             let cekdata = {
                 "nomoranggota": nomoranggota,
-                "validfrom": validfrom,
-                "validthru": validthru,
+                "validfrom": today,
+                "validthru": duedate,
                 "alamat": alamat,
                 "notelp": notelp,
                 "pekerjaan": pekerjaan,
@@ -146,8 +189,8 @@ export const MembershipDetail = () => {
                     },
                     body: JSON.stringify({
                         "nomoranggota": nomoranggota,
-                        "validfrom": validfrom,
-                        "validthru": validthru,
+                        "validfrom": today,
+                        "validthru": duedate,
                         "alamat": alamat,
                         "notelp": notelp,
                         "pekerjaan": pekerjaan,
@@ -165,7 +208,7 @@ export const MembershipDetail = () => {
                     })
                     .catch((err) => console.log(err))
                 if (response.code === "success") {
-                    success("Sukses menambah agenda.")
+                    success("Sukses mengaktifkan keanggotaan/membership.")
                     setSubmitted(true)
                 }
                 return response
@@ -177,7 +220,7 @@ export const MembershipDetail = () => {
         return (
             <>
                 <div className="w-full">
-                    <h3 className='font-bold text-center text-green-500'>Update Data Membership</h3>
+                    <h3 className='font-bold text-center text-green-500'>Aktifkan Membership</h3>
                     <div className="gap-2 flex flex-col">
                         <form method="post">
                             <div className="flex pt-6 items-center gap-4 text-slate-500">
@@ -217,7 +260,7 @@ export const MembershipDetail = () => {
                                 <input className="grow rounded h-12 text-slate-500" name="mulaibekerja" type={"date"} onChange={handleChange} />
                             </div>
                             <div className='flex justify-center pt-5'>
-                                <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Update Membership Data</button>
+                                <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Aktifkan Membership</button>
                             </div>
                         </form>
                     </div>
@@ -232,10 +275,10 @@ export const MembershipDetail = () => {
                 <h3 className="text-sky-500 font-bold">Data Keanggotaan/<span className="italic">Membership</span> Anda</h3>
                 <div className="flex flex-row flex-nowrap gap-4 p-4 bg-slate-800 border-solid border-[1px] border-slate-700 rounded-lg my-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-slate-600 overflow-x-auto">
                     {
-                        membership !== undefined && membership.length > 0 ?
-                            <DetailMembershipData />
+                        membership.member !== undefined ?
+                            <DetailMembershipData data={membership} />
                             :
-                            <UpdateMembershipData />
+                            <AktifkanMembership />
                     }
                 </div>
             </div>

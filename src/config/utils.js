@@ -192,11 +192,43 @@ export const getTodayDate = () => {
 
 }
 
-export const getMembershipEndDate = (startdate, maxyears) => {
-    return new Date(startdate.setFullYear(startdate.getFullYear() + maxyears)).toString();
+export const getMembershipEndDate = () => {
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    let today = `${year}-${month}-${day}`;
+    let newdate = new Date(today);
+    let newday = newdate.getDate();
+    let newmonth = newdate.getMonth() + 1;
+    let newyear = newdate.getFullYear()
+
+    let duedate = `${newyear}-${newmonth}-${newday}`;
+    return duedate
 }
 
 // https://masteringjs.io/tutorials/fundamentals/wait-1-second-then
 export function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
+}
+
+export const getUserCategory = () => {
+    let cookie = ReadCookieLocal()
+    if (cookie.isalumni === "true") {
+        return "Alumni"
+    } else {
+        return "Umum"
+    }
+}
+
+export const generateNomorAnggota = (date, usercategory, userid) => {
+    let kategori = ""
+    if (usercategory === "Alumni") {
+        kategori = "01"
+    } else if (usercategory === "Umum") {
+        kategori = "02"
+    }
+    let nomor = date + kategori + userid
+    return nomor
 }
