@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage, ImageExist } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, resizeImage, ImageExist } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
@@ -76,7 +76,7 @@ export const PgAgenda = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Manage Agenda KartUNS");
+        CreateStatusCookieLocal("Pengelolaan Agenda KartUNS");
         getAgenda()
             .then((isi) => {
                 // console.log(isi);

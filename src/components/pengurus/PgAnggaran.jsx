@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, ReadCookieLocal } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdTableView } from "react-icons/md";
@@ -470,7 +470,7 @@ export const PgAnggaran = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Pengelolaan Anggaran");
+        CreateStatusCookieLocal("Pengelolaan Anggaran KartUNS");
         getAnggaranRAB()
             .then((isi) => {
                 console.log("Isi promise: ", isi);

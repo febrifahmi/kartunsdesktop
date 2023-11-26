@@ -19,11 +19,19 @@ export const InfoModulAlumni = (props) => {
                     </li>
                     <li>
                         <p className="font-bold text-green-500">Pasang Iklan</p>
-                        <p>Modul/Fungsi Pasang Iklan digunakan untuk pengaturan informasi berupa iklan secara umum yang dituliskan dan ditayangkan di dalam aplikasi KartUNS. Pengajuan iklan sesuai dengan peraturan dan ketentuan yang berlaku. Isi iklan sepenuhnya merupakan taggungjawab pembuat iklan.</p>
+                        <p>Kenalkan usaha anda kepada seluruh alumni, dosen dan mahasiswa Arsitektur UNS serta pengguna aplikasi KartUNS lainnya.</p>
                     </li>
                     <li>
                         <p className="font-bold text-green-500">Lowongan</p>
                         <p>Modul/Fungsi Lowongan berguna untuk mencari penawaran lowongan pekerjaan baik part time dan full time serta lowongan magang.</p>
+                    </li>
+                    <li>
+                        <p className="font-bold text-green-500">Donasi</p>
+                        <p>Mulai berpartisipasi untuk memberikan nilai manfaat lebih untuk seluruh alumni dan mahasiswa Arsitektur UNS serta masyarakat pada umumnya.</p>
+                    </li>
+                    <li>
+                        <p className="font-bold text-green-500">Store</p>
+                        <p>Dukung keberlanjutan organisasi Keluarga Alumni Arsitektur UNS dengan berbelanja produk-produk unik yang selalu ngarsiteki.</p>
                     </li>
                 </ol>
             </div>

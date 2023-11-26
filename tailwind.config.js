@@ -7,6 +7,7 @@ module.exports = {
         'hero-pattern': "url('/img/hero-pattern.svg')",
         'footer-texture': "url('/img/footer-texture.png')",
         'landing-bg': "url('/src/img/library-5641389_1280.jpg')",
+        'landing-bg2': "url('/src/img/kampusarsi.jpg')",
       },
       fontFamily: {
         'fontawesome': ['FontAwesome', 'sans-serif'],

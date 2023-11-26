@@ -2,7 +2,10 @@ export const AlumStore = () => {
     return (
         <>
             <div className="px-5">
-                Store Page / kalau boleh saran KartUNS bisa buat toko virtual di Ciptaloka dan buat desain-desain merchs.
+                <h3 className="font-bold text-center text-lg text-green-500">KartUNS Store</h3>
+                <div className="text-slate-500 mb-10">
+                    KartUNS Store under development.
+                </div>
             </div>
         </>
     )

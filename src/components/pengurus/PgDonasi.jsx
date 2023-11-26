@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../../config"
-import { CreateStatusCookie, ReadCookie, ReadCookieLocal } from "../../config/utils"
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal } from "../../config/utils"
 import { MdReceiptLong } from "react-icons/md";
 import { ShowUsername } from '../GetUsername';
 
@@ -26,7 +26,7 @@ export const PgDonasi = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Manage Donasi Masuk");
+        CreateStatusCookieLocal("Pengelolaan Donasi Masuk");
         getDonasi()
             .then((isi) => {
                 // console.log("Isi artikel: ",isi.articles);
@@ -64,7 +64,7 @@ export const PgDonasi = () => {
                                             <span className='font-bold'>Donasi:</span> {item.jumlahdonasi}
                                         </div>
                                         <div className='text-xs text-slate-400'>
-                                            <span className='font-bold'>Author:</span> <ShowUsername userid={item.donatur_id} token={cookie.token} />
+                                            <span className='font-bold'>Donatur:</span> <ShowUsername userid={item.donatur_id} token={cookie.token} />
                                         </div>
                                         <div className='text-xs text-slate-500'>
                                             <p>Published: {item.created_at}</p>

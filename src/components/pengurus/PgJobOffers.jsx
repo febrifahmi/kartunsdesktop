@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, resizeImage, getUserName, ReadCookieLocal } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, resizeImage, getUserName, ReadCookieLocal } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
@@ -25,6 +25,8 @@ export const PgJobOffers = () => {
     const [judullowongan, setJudulLowongan] = useState("");
     const [desclowongan, setDescLowongan] = useState("");
     const [tipelowongan, setTipeLowongan] = useState("Magang");
+    const [startdate, setStartDate] = useState("");
+    const [enddate, setEndDate] = useState("");
     const [salaryrange, setSalaryRange] = useState("");
     const [lowongantext, setLowonganText] = useState("");
     const [offerimgurl, setOfferImgUrl] = useState("");
@@ -115,6 +117,12 @@ export const PgJobOffers = () => {
         if (newFormData["offertype"] !== undefined) {
             setTipeLowongan(newFormData["offertype"])
         }
+        if (newFormData["startdate"] !== undefined) {
+            setStartDate(newFormData["startdate"])
+        }
+        if (newFormData["enddate"] !== undefined) {
+            setEndDate(newFormData["enddate"])
+        }
         if (newFormData["salaryrange"] !== undefined) {
             setSalaryRange(newFormData["salaryrange"])
         }
@@ -125,6 +133,8 @@ export const PgJobOffers = () => {
             offertitle: judullowongan,
             offerdesc: desclowongan,
             offertype: tipelowongan,
+            startdate: startdate,
+            enddate: enddate,
             salaryrange: salaryrange,
             offertext: lowongantext,
             offerimgurl: offerimgurl,
@@ -132,7 +142,7 @@ export const PgJobOffers = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Pengaturan Lowongan Kerja/Magang");
+        CreateStatusCookieLocal("Pengaturan Lowongan Kerja/Magang");
         getLowongan()
             .then((isi) => {
                 // console.log(isi);
@@ -157,6 +167,8 @@ export const PgJobOffers = () => {
             "offertitle": judullowongan,
             "offerdesc": desclowongan,
             "offertype": tipelowongan,
+            "startdate": startdate,
+            "enddate": enddate,
             "salaryrange": salaryrange,
             "offertext": lowongantext,
             "companylogo": offerimgurl,
@@ -168,6 +180,8 @@ export const PgJobOffers = () => {
             "offertitle": judullowongan,
             "offerdesc": desclowongan,
             "offertype": tipelowongan,
+            "startdate": startdate,
+            "enddate": enddate,
             "salaryrange": salaryrange,
             "offertext": lowongantext,
             "companylogo": offerimgurl,
@@ -190,6 +204,8 @@ export const PgJobOffers = () => {
                     "offertitle": judullowongan,
                     "offerdesc": desclowongan,
                     "offertype": tipelowongan,
+                    "startdate": startdate,
+                    "enddate": enddate,
                     "salaryrange": salaryrange,
                     "offertext": lowongantext,
                     "companylogo": offerimgurl,
@@ -234,6 +250,14 @@ export const PgJobOffers = () => {
                                 <option value='Kerja Part Time'>Kerja Part Time</option>
                                 <option value='Kerja Full Time'>Kerja Full Time</option>
                             </select>
+                        </div>
+                        <div className="flex pb-6 items-center">
+                            <label className='text-white mr-4'>Tanggal mulai</label>
+                            <input className="grow rounded h-12" name="startdate" type={"date"} onChange={handleChange} />
+                        </div>
+                        <div className="flex pb-6 items-center">
+                            <label className='text-white mr-4'>Tanggal selesai</label>
+                            <input className="grow rounded h-12" name="enddate" type={"date"} onChange={handleChange} />
                         </div>
                         <div className="flex items-center pb-6">
                             <label className="text-white mr-4">Salary range</label>

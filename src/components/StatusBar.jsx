@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
-import { ReadStatusCookie } from "../config/utils";
+import { ReadStatusCookieLocal } from "../config/utils";
 
-export const StatusBar = ({ getStatus }) => {
+export const StatusBar = () => {
     const [status, setStatus] = useState("idle")
     const handleAbout = () => {
         window.alert("KartUNS Desktop developed by Febri Fahmi Hakim (2023)")
     }
-
-    useEffect(() => {
-        let message = ReadStatusCookie()
-        // console.log("Message: ", message)
-        setStatus(message)
-        getStatus(message)
-    }, [])
 
     return (
         <>

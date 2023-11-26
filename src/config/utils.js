@@ -37,15 +37,28 @@ export const CreateStatusCookie = (status) => {
     cookies.set("status", status, { maxAge: 900 })
 }
 
+export const CreateStatusCookieLocal = (status) => {
+    localStorage.setItem("status", status);
+}
+
 export const ReadStatusCookie = () => {
     const cookies = new Cookies();
     const status = cookies.get("status")
     return status
 }
 
+export const ReadStatusCookieLocal = () => {
+    const status = localStorage.getItem("status")
+    return status
+}
+
 export const RemoveStatusCookie = () => {
     const cookies = new Cookies();
     cookies.remove("status", { maxAge: 900 })
+}
+
+export const RemoveStatusCookieLocal = () => {
+    localStorage.removeItem("status")
 }
 
 export const ReadCookie = () => {
@@ -139,7 +152,7 @@ export const buatKodeTagihan = (timestamp, username,) => {
 export const ImageExist = (url) => {
     var img = new Image();
     img.src = url;
-    if(img.height === 0){
+    if (img.height === 0) {
         return false
     } else {
         return true
@@ -147,3 +160,75 @@ export const ImageExist = (url) => {
 }
 
 
+// https://stackoverflow.com/a/1199420
+export function truncate(str, n, useWordBoundary) {
+    if (str.length <= n) { return str; }
+    const subString = str.slice(0, n - 1); // the original check
+    return (useWordBoundary
+        ? subString.slice(0, subString.lastIndexOf(" "))
+        : subString) + " …";
+};
+
+
+export const CheckWebinarDate = (enddate, today) => {
+    let d1 = new Date(enddate);
+    let d2 = new Date(today);
+    if (d2 < d1) {
+        return true
+    } else if (d2 >= d1) {
+        return false
+    }
+}
+
+export const getTodayDate = () => {
+    const date = new Date();
+
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    let currentDate = `${year}-${month}-${day}`;
+    return currentDate
+
+}
+
+export const getMembershipEndDate = () => {
+    let date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    let today = `${year}-${month}-${day}`;
+    let newdate = new Date(today);
+    let newday = newdate.getDate();
+    let newmonth = newdate.getMonth() + 1;
+    let newyear = newdate.getFullYear()
+
+    let duedate = `${newyear}-${newmonth}-${newday}`;
+    return duedate
+}
+
+// https://masteringjs.io/tutorials/fundamentals/wait-1-second-then
+export function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+}
+
+export const getUserCategory = () => {
+    let cookie = ReadCookieLocal()
+    if (cookie.isalumni === "true") {
+        return "Alumni"
+    } else {
+        return "Umum"
+    }
+}
+
+export const generateNomorAnggota = (date, usercategory, userid) => {
+    let kategori = ""
+    if (usercategory === "Alumni") {
+        kategori = "01"
+    } else if (usercategory === "Umum") {
+        kategori = "02"
+    }
+    let nomor = date + kategori + userid
+    return nomor
+}

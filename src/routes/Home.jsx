@@ -193,7 +193,7 @@ export const Home = () => {
                                 ""}
                             {activemenu === "Artikel" ?
                                 <div>
-                                    <PgArtikel status={getSubmitStatus} submit={pengsubmitstatus} />
+                                    <PgArtikel status={getSubmitStatus} submit={submitstatus} />
                                 </div>
                                 :
                                 ""}
@@ -205,7 +205,7 @@ export const Home = () => {
                                 ""}
                             {activemenu === "Pengumuman" ?
                                 <div>
-                                    <PgPengumuman status={getPengumumanSubmitStatus} />
+                                    <PgPengumuman status={getPengumumanSubmitStatus} submit={pengsubmitstatus} />
                                 </div>
                                 :
                                 ""}

@@ -26,7 +26,7 @@ export const ArtikelComponent = (props) => {
 
     return (
         <>
-            <div className="scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600 overflow-auto h-2/3">
+            <div className="scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600 overflow-auto h-full">
                 {data !== undefined ? data.slice(0, 30).map((item) => (
                     <div className="flex flex-row gap-4 justify-start p-2 bg-slate-900 hover:bg-black hover:text-sky-600 hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md mb-2" key={item.idarticle} onClick={() => selection(item.idarticle)}>
                         <div className="w-1/3 h-20">

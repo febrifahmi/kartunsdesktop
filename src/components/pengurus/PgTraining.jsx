@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { ShowUsername } from '../GetUsername';
 import { ValidateInputForm } from '../../config/formvalidation';
@@ -314,7 +314,7 @@ export const PgTraining = () => {
     }
 
     useEffect(() => {
-        CreateStatusCookie("Pengelolaan Training");
+        CreateStatusCookieLocal("Pengelolaan Training/Webinar/e-Course");
         getTrainingWebinars()
             .then((isi) => {
                 // console.log(isi);
