@@ -193,13 +193,8 @@ export const getTodayDate = () => {
 }
 
 export const getMembershipEndDate = () => {
-    let date = new Date();
-    let day = date.getDate();
-    let month = date.getMonth() + 1;
-    let year = date.getFullYear();
-
-    let today = `${year}-${month}-${day}`;
-    let newdate = new Date(today);
+    let newdate = new Date();
+    newdate.setFullYear(newdate.getFullYear() + 5);
     let newday = newdate.getDate();
     let newmonth = newdate.getMonth() + 1;
     let newyear = newdate.getFullYear()

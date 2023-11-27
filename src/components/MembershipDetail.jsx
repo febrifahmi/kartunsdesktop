@@ -6,6 +6,7 @@ import { ValidateInputForm } from "../config/formvalidation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRef } from "react";
+import { EditMemberData } from "./MembershipEdit";
 
 
 export const MembershipDetail = () => {
@@ -13,7 +14,9 @@ export const MembershipDetail = () => {
     const [nomoranggota, setNomorAnggota] = useState("")
     const [validfrom, setValidFrom] = useState("")
     const [validthru, setValidThru] = useState("")
+    const [membercard, setMemberCard] = useState("")
     const [submitted, setSubmitted] = useState(false)
+    const [editmember, setEditMember] = useState(false)
 
     const failed = (errmsg) => toast.error(errmsg);
     const success = (msg) => toast.success(msg);
@@ -41,31 +44,60 @@ export const MembershipDetail = () => {
     }
 
     const MemberCardCanvas = (props) => {
-        const canvasRef = useRef(null);
+        const canvasRef = useRef(null)
 
         useEffect(() => {
             // draw canvas
             const canvas = canvasRef.current;
             const context = canvas.getContext('2d');
             const cardbase = new Image();
-            cardbase.src = APIURLConfig.baseurl + "static/img/newmembercard.png"
+            cardbase.src = "static/img/newmembercard.png"
             cardbase.onload = function () {
                 context.drawImage(cardbase, 0, 0, props.width, props.height);
+                context.font = "bold 18px sans-serif"
+                context.fillStyle = "gold"
+                context.fillText(cookie.name, 30, 120);
+                context.fillStyle = "#3384da"
+                let { width } = context.measureText(cookie.name);
+                context.fillRect(30, 128, width + 10, 1);
+                context.font = "bold 14px sans-serif"
+                context.fillStyle = "white"
+                context.fillText("Card No. " + nomoranggota, 30, 150);
+                context.font = "bold 10px sans-serif"
+                context.fillStyle = "#3384da"
+                context.fillText("Valid Thru. " + validthru, 30, 165);
+                setMemberCard(canvas.toDataURL())
             };
         }, [])
 
-        return <canvas className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-2xl" ref={canvasRef} width={props.width} height={props.height} />
+        return <canvas id="membercard" className="object-fill hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-2xl" ref={canvasRef} width={props.width} height={props.height} />
     }
 
     const DetailMembershipData = (props) => {
+        const canvasRef = useRef(null);
         let data = props.data
         console.log("Data: ", data)
+
+        const downloadMemberCard = (data) => {
+            console.log("Canvas data: ", data)
+            const downloadLink = document.createElement('a');
+            const fileName = "KartUNS_member_card.png";
+            downloadLink.href = data;
+            downloadLink.download = fileName;
+            console.log(downloadLink)
+            downloadLink.click();
+        }
+
         return (
             <>
                 <div className="flex flex-row gap-10 w-full">
-                    <div>
-                        {/* <img className="object-cover" src={APIURLConfig.baseurl + "static/img/newmembercard.png"}></img> */}
-                        <MemberCardCanvas width={326} height={206} />
+                    <div className="flex flex-col gap-4">
+                        <div id="card">
+                            <MemberCardCanvas width={326} height={206} />
+                        </div>
+                        <div className='flex justify-center'>
+                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={() => downloadMemberCard(membercard)}>Download e-Card</button>
+                        </div>
                     </div>
                     <div className="flex flex-col w-4/6 text-slate-500">
                         <div>Nomor Anggota: <span className="text-slate-400">{data.member.nomoranggota}</span></div>
@@ -77,9 +109,6 @@ export const MembershipDetail = () => {
                         <div>Kantor: <span className="text-slate-400">{data.member.kantor}</span></div>
                         <div>Alamat Kantor: <span className="text-slate-400">{data.member.alamatkantor}</span></div>
                         <div>Mulai Bekerja: <span className="text-slate-400">{data.member.mulaibekerja}</span></div>
-                        <div className='flex justify-center'>
-                            <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={""}>Edit Membership Data</button>
-                        </div>
                     </div>
                 </div>
             </>
@@ -94,6 +123,8 @@ export const MembershipDetail = () => {
             })
             .catch((err) => console.log(err))
         setNomorAnggota(generateNomorAnggota(getTodayDate().split('-').filter(Boolean).join(''), getUserCategory(), cookie.iduser))
+        setValidFrom(getTodayDate())
+        setValidThru(getMembershipEndDate())
         console.log(membership.member)
     }, [submitted])
 
@@ -275,11 +306,32 @@ export const MembershipDetail = () => {
                 <h3 className="text-sky-500 font-bold">Data Keanggotaan/<span className="italic">Membership</span> Anda</h3>
                 <div className="flex flex-row flex-nowrap gap-4 p-4 bg-slate-800 border-solid border-[1px] border-slate-700 rounded-lg my-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-slate-600 overflow-x-auto">
                     {
-                        membership.member !== undefined ?
+                        membership.member !== undefined && editmember === false ?
                             <DetailMembershipData data={membership} />
                             :
-                            <AktifkanMembership />
+                            ""
                     }
+                    {
+                        membership.member !== undefined && editmember === true ?
+                            <EditMemberData />
+                            :
+                            ""
+                    }
+                    {
+                        membership.member === undefined ?
+                            <AktifkanMembership />
+                            :
+                            ""
+                    }
+                </div>
+                <div className='flex justify-center'>
+                    <button className='bg-orange-500 hover:bg-orange-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={() => {
+                        if (editmember === false) {
+                            setEditMember(true)
+                        } else {
+                            setEditMember(false)
+                        }
+                    }}>{editmember === true ? <span>Cancel</span> : <span>Edit Membership Data</span>}</button>
                 </div>
             </div>
             <ToastContainer
