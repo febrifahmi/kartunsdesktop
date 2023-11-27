@@ -7,9 +7,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
 export const EditMemberData = () => {
     const [membership, setMembership] = useState({})
-    const [nomoranggota, setNomorAnggota] = useState("")
-    const [validfrom, setValidFrom] = useState("")
-    const [validthru, setValidThru] = useState("")
+    // const [nomoranggota, setNomorAnggota] = useState("")
+    // const [validfrom, setValidFrom] = useState("")
+    // const [validthru, setValidThru] = useState("")
     const [alamat, setAlamat] = useState("")
     const [notelp, setNoTelp] = useState("")
     const [pekerjaan, setPekerjaan] = useState("Arsitek")
@@ -49,11 +49,11 @@ export const EditMemberData = () => {
                 setMembership(isi)
             })
             .catch((err) => console.log(err))
-        if (membership.member !== undefined) {
-            setNomorAnggota(membership.member.nomoranggota)
-            setValidFrom(membership.member.validfrom)
-            setValidThru(membership.member.validthru)
-        }
+        // if (membership.member !== undefined) {
+        //     setNomorAnggota(membership.member.nomoranggota)
+        //     setValidFrom(membership.member.validfrom)
+        //     setValidThru(membership.member.validthru)
+        // }
         console.log(membership.member)
     }, [submitted])
 
@@ -79,9 +79,9 @@ export const EditMemberData = () => {
             setAlamatKantor(newFormData["alamatkantor"])
         }
         console.log({
-            nomoranggota: nomoranggota,
-            validfrom: validfrom,
-            validthru: validthru,
+            // nomoranggota: nomoranggota,
+            // validfrom: validfrom,
+            // validthru: validthru,
             alamat: alamat,
             notelp: notelp,
             pekerjaan: pekerjaan,
@@ -95,9 +95,9 @@ export const EditMemberData = () => {
         e.preventDefault()
         // console.log(e.target);
         console.log({
-            "nomoranggota": nomoranggota,
-            "validfrom": validfrom,
-            "validthru": validthru,
+            // "nomoranggota": nomoranggota,
+            // "validfrom": validfrom,
+            // "validthru": validthru,
             "alamat": alamat,
             "notelp": notelp,
             "pekerjaan": pekerjaan,
@@ -108,9 +108,9 @@ export const EditMemberData = () => {
         })
 
         let cekdata = {
-            "nomoranggota": nomoranggota,
-            "validfrom": validfrom,
-            "validthru": validthru,
+            // "nomoranggota": nomoranggota,
+            // "validfrom": validfrom,
+            // "validthru": validthru,
             "alamat": alamat,
             "notelp": notelp,
             "pekerjaan": pekerjaan,
@@ -124,16 +124,16 @@ export const EditMemberData = () => {
 
         if (validation.message === undefined) {
             // ... submit to RestAPI using fetch api
-            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.membersendpoint + "create", {
-                method: "POST",
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.membersendpoint + "update/"+ membership.member.idmember, {
+                method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${cookie.token}`
                 },
                 body: JSON.stringify({
-                    "nomoranggota": nomoranggota,
-                    "validfrom": validfrom,
-                    "validthru": validthru,
+                    // "nomoranggota": nomoranggota,
+                    // "validfrom": validfrom,
+                    // "validthru": validthru,
                     "alamat": alamat,
                     "notelp": notelp,
                     "pekerjaan": pekerjaan,
@@ -150,7 +150,7 @@ export const EditMemberData = () => {
                 })
                 .catch((err) => console.log(err))
             if (response.code === "success") {
-                success("Sukses mengaktifkan keanggotaan/membership.")
+                success("Sukses melakukan pembaruan data keanggotaan/membership.")
                 setSubmitted(true)
             }
             return response

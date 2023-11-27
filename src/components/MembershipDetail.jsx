@@ -54,18 +54,18 @@ export const MembershipDetail = () => {
             cardbase.src = "static/img/newmembercard.png"
             cardbase.onload = function () {
                 context.drawImage(cardbase, 0, 0, props.width, props.height);
-                context.font = "bold 18px sans-serif"
+                context.font = "bold 22px sans-serif"
                 context.fillStyle = "gold"
-                context.fillText(cookie.name, 30, 120);
+                context.fillText(cookie.name, 40, 170);
                 context.fillStyle = "#3384da"
                 let { width } = context.measureText(cookie.name);
-                context.fillRect(30, 128, width + 10, 1);
-                context.font = "bold 14px sans-serif"
+                context.fillRect(40, 180, width + 10, 1);
+                context.font = "bold 16px sans-serif"
                 context.fillStyle = "white"
-                context.fillText("Card No. " + nomoranggota, 30, 150);
-                context.font = "bold 10px sans-serif"
+                context.fillText("Card No. " + nomoranggota, 40, 203);
+                context.font = "bold 12px sans-serif"
                 context.fillStyle = "#3384da"
-                context.fillText("Valid Thru. " + validthru, 30, 165);
+                context.fillText("Valid Thru. " + validthru, 40, 220);
                 setMemberCard(canvas.toDataURL())
             };
         }, [])
@@ -93,7 +93,7 @@ export const MembershipDetail = () => {
                 <div className="flex flex-row gap-10 w-full">
                     <div className="flex flex-col gap-4">
                         <div id="card">
-                            <MemberCardCanvas width={326} height={206} />
+                            <MemberCardCanvas width={432} height={273} />
                         </div>
                         <div className='flex justify-center'>
                             <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={() => downloadMemberCard(membercard)}>Download e-Card</button>
