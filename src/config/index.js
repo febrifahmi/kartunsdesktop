@@ -20,4 +20,4 @@ export const APIURLConfig = {
     membersendpoint: "api/members/",
 }
 
-export const appversion = "v0.1.2"
+export const appversion = "v0.1.3"
