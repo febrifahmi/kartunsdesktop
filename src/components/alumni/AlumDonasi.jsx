@@ -184,7 +184,7 @@ export const AlumDonasi = () => {
                                     <input type="file" name="imagefile" accept="image/*" onChange={handleImageChange} />
                                 </div>
                             </div>
-                            <input type="hidden" id="" name="adimgurl" value={donasiimgurl} ></input>
+                            <input type="hidden" id="" name="donasiimgurl" value={donasiimgurl} ></input>
                             <div className='flex justify-center'>
                                 <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Kirim Bukti Tranfer</button>
                             </div>

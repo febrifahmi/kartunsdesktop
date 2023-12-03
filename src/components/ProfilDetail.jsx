@@ -6,6 +6,8 @@ export const ProfilDetail = () => {
     let cookie = ReadCookieLocal();
     let re = /(www.gravatar.com)/;
 
+
+
     return (
         <>
             <div className="flex flex-row gap-10 rounded-md mt-8 p-10 border-dotted border-[1px] border-slate-500">
@@ -13,11 +15,11 @@ export const ProfilDetail = () => {
                     {
                         cookie.avatar !== "" && re.test(cookie.avatar) == false ?
                             <div className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-full">
-                                <img className='object-fill rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + cookie.avatar}></img>
+                                <img className='object-cover aspect-square rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + cookie.avatar}></img>
                             </div>
                             :
-                            <div className="">
-                                <img className='object-fill rounded-full' src={cookie.avatar}></img>
+                            <div className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-full">
+                                <img className='object-cover aspect-square rounded-full' src={cookie.avatar}></img>
                             </div>
                     }
 
