@@ -7,7 +7,7 @@ export const ProfileCard = () => {
     const landing = () => navigate("/");
     const userdata = ReadCookieLocal()
     let re = /(www.gravatar.com)/;
-    
+
     const handleLogout = async () => {
         const response = await fetch(APIURLConfig.baseurl + APIURLConfig.logoutendpoint, {
             method: "GET",
@@ -33,9 +33,9 @@ export const ProfileCard = () => {
                         <div>
                             {
                                 userdata.avatar !== "" && re.test(userdata.avatar) == false ?
-                                    <img className='object-fill rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + userdata.avatar}></img>
+                                    <img className='object-cover aspect-square rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + userdata.avatar}></img>
                                     :
-                                    <img className='object-fill rounded-full' src={userdata.avatar}></img>
+                                    <img className='object-cover aspect-square rounded-full' src={userdata.avatar}></img>
                             }
                         </div>
                         <div className="flex flex-col">

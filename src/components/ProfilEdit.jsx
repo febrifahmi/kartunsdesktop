@@ -109,6 +109,7 @@ export const ProfilEdit = (props) => {
             if (response.code === "success") {
                 success("Sukses melakukan pembaruan data pengguna.")
                 setSubmitted(true)
+                localStorage.setItem("avatar", profpic)
             }
             return response
         } else {

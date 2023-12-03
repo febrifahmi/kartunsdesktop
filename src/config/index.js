@@ -18,6 +18,7 @@ export const APIURLConfig = {
     donasiendpoint: "api/donations/",
     adsendpoint: "api/ads/",
     membersendpoint: "api/members/",
+    iuranmembersendpoint: "api/iuranmembers/",
 }
 
 export const appversion = "v0.1.3"
