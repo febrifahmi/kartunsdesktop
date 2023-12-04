@@ -1,13 +1,23 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
-import { ImageExist, truncate, CheckWebinarDate, getTodayDate } from "../config/utils"
+import { ImageExist, truncate, CheckWebinarDate, getTodayDate, ReadCookieLocal } from "../config/utils"
 import { MdInfoOutline } from "react-icons/md";
 import { useRef } from "react";
+import { ValidateInputForm } from "../config/formvalidation";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const PelatihanCard = () => {
     const [webinars, setWebinars] = useState([])
     const [iddaftar, setIdDaftar] = useState(-1)
     const [thiswebinar, setThisWebinar] = useState({})
+    const [peserta, setPeserta] = useState({});
+    const [submitted, setSubmitted] = useState(false)
+
+    const failed = (errmsg) => toast.error(errmsg);
+    const success = (msg) => toast.success(msg);
+
+    let cookie = ReadCookieLocal()
 
     const ref = useRef(-1)
 
@@ -30,6 +40,55 @@ export const PelatihanCard = () => {
     const FormDaftarPelatihan = (props) => {
         const data = props.data
 
+        const handleSubmit = async (e) => {
+            e.preventDefault()
+            // console.log(e.target);
+            console.log({
+                "namapeserta": cookie.name,
+                "training_id": data.idwebinar,
+                "user_id": cookie.iduser,
+            })
+
+            let cekdata = {
+                "namapeserta": cookie.name,
+                "training_id": data.idwebinar,
+                "user_id": cookie.iduser,
+            }
+
+            const validation = ValidateInputForm(cekdata)
+
+            // kurang validasi apakah peserta sudah daftar di pelatihan ini (bisa ditempatkan di tombol daftar jadi disabled saja)
+
+            if (validation.message === undefined) {
+                // ... submit to RestAPI using fetch api
+                const response = await fetch(APIURLConfig.baseurl + APIURLConfig.pesertawebinarsendpoint + "create", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${cookie.token}`
+                    },
+                    body: JSON.stringify({
+                        "namapeserta": cookie.name,
+                        "training_id": data.idwebinar,
+                        "user_id": cookie.iduser,
+                    }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        return data
+                    })
+                    .catch((err) => console.log(err))
+                if (response.code !== undefined && response.code === "success") {
+                    success("Sukses mendaftarkan diri mengikuti pelatihan.")
+                    setSubmitted(true)
+                }
+                return response
+            } else {
+                failed(validation.message)
+            }
+        }
+
         return (
             <>
                 {data && data.idwebinar !== undefined ? (
@@ -41,17 +100,36 @@ export const PelatihanCard = () => {
                             <div className="flex flex-col gap-4">
                                 <div className="text-xl text-center font-bold text-slate-300">{data.webinartitle}</div>
                                 <div className="flex justify-center w-full">
-                                    <div className="w-1/2">
+                                    <div className="">
                                         <img className="object-cover rounded-xl" src={APIURLConfig.baseurl + "static/uploads/" + data.webinarimgurl} ></img>
                                     </div>
                                 </div>
                                 <div className="flex flex-col gap-2">
+                                    <div className="flex flex-row gap-2 text-sm text-slate-400">
+                                        <div className="bg-slate-700 px-2 rounded-full hover:bg-slate-900">Pelaksanaan: <span>{data.startdate} s.d {data.enddate}</span></div>
+                                        <div className="bg-slate-700 px-2 rounded-full hover:bg-slate-900">Biaya: <span>{new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(data.price)}</span></div>
+                                        <div className="bg-slate-700 px-2 rounded-full hover:bg-slate-900">{data.level}</div>
+                                    </div>
                                     <div className="text-sm text-slate-500">
                                         {data.webinardesc}
                                     </div>
                                     <hr className="border-slate-700 my-2 border-dotted" />
                                     <div className="text-slate-400" dangerouslySetInnerHTML={{ __html: data.webinartext ? data.webinartext : "" }}></div>
                                     <hr className="border-slate-700 my-2 border-dotted" />
+                                    <div className='flex justify-center'>
+                                        {peserta.pesertawebinar !== undefined ? peserta.pesertawebinar.map((item) => {
+                                            if (item.user_id == cookie.iduser) {
+                                                if (item.training_id == data.idwebinar) {
+                                                    console.log("Item peserta", item)
+                                                    return <button className='bg-slate-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' disabled>Sudah Terdaftar</button>
+                                                }
+                                            }
+                                        })
+                                            :
+                                            ""
+                                        }
+                                        <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Daftar Pelatihan Ini</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -62,6 +140,23 @@ export const PelatihanCard = () => {
         )
     }
 
+    const getPesertaPelatihan = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pesertawebinarsendpoint + cookie.iduser, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
     useEffect(() => {
         getWebinars()
             .then((isi) => {
@@ -69,8 +164,15 @@ export const PelatihanCard = () => {
                 setWebinars(isi)
             })
             .catch((err) => console.log(err))
+        getPesertaPelatihan()
+            .then((isi) => {
+                // console.log("Isi artikel: ",isi.articles);
+                setPeserta(isi)
+            })
+            .catch((err) => console.log(err))
+        console.log(peserta)
         console.log(webinars.trainingwebinars)
-    }, [])
+    }, [submitted])
 
     return (
         <>
@@ -79,7 +181,7 @@ export const PelatihanCard = () => {
                 <div className="flex flex-row flex-nowrap gap-4 p-4 bg-slate-800 border-solid border-[1px] border-slate-700 rounded-lg my-5 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-thumb-slate-600 overflow-x-auto">
                     {webinars.trainingwebinars !== undefined && webinars.trainingwebinars.length > 0 ?
                         webinars.trainingwebinars.slice(0, 30).map((item) => (
-                            <div className="flex-none w-1/6">
+                            <div className="flex-none w-1/6" key={item.idwebinar}>
                                 <div className="flex flex-col flex-nowrap justify-start p-2 gap-4 bg-slate-900 hover:bg-black hover:border-t-[1px] hover:border-t-solid hover:border-green-500 rounded-md my-2" key={item.idwebinar}>
                                     <div className="flex flex-col gap-4">
                                         <img className=' object-cover rounded-md w-full h-20' src={item.webinarimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.webinarimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.webinarimgurl : 'static/img/noimage.png'}></img>
@@ -119,6 +221,18 @@ export const PelatihanCard = () => {
                     }
                 </div>
             </div >
+            <ToastContainer
+                position="top-center"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="colored"
+            />
         </>
     )
 }
