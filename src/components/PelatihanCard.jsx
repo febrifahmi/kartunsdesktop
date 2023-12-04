@@ -35,11 +35,24 @@ export const PelatihanCard = () => {
                 {data && data.idwebinar !== undefined ? (
                     <div className="flex flex-col gap-4 border-[1px] border-slate-700 rounded-xl p-5">
                         <div className="text-sky-500">
-                            Form Daftar Pelatihan <span>{data.idwebinar}</span>
+                            <span className="px-2 text-sm rounded-full border-[1px] border-sky-500 hover:border-none hover:bg-sky-700 hover:text-white">Form Daftar Pelatihan {data.idwebinar}</span>
                         </div>
                         <div>
                             <div className="flex flex-col gap-4">
-                                <div className="text-xl text-center">{data.webinartitle}</div>
+                                <div className="text-xl text-center font-bold text-slate-300">{data.webinartitle}</div>
+                                <div className="flex justify-center w-full">
+                                    <div className="w-1/2">
+                                        <img className="object-cover rounded-xl" src={APIURLConfig.baseurl + "static/uploads/" + data.webinarimgurl} ></img>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-2">
+                                    <div className="text-sm text-slate-500">
+                                        {data.webinardesc}
+                                    </div>
+                                    <hr className="border-slate-700 my-2 border-dotted" />
+                                    <div className="text-slate-400" dangerouslySetInnerHTML={{ __html: data.webinartext ? data.webinartext : "" }}></div>
+                                    <hr className="border-slate-700 my-2 border-dotted" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -76,7 +89,7 @@ export const PelatihanCard = () => {
                                                 <button className="px-2 rounded-full bg-orange-500 hover:bg-orange-700 text-white font-bold text-sm" onClick={() => {
                                                     setIdDaftar(parseInt(item.idwebinar))
                                                     setThisWebinar(item)
-                                                    console.log("This webinar: ",thiswebinar);
+                                                    console.log("This webinar: ", thiswebinar);
                                                 }}>Daftar</button>
                                                 :
                                                 <button className="px-2 rounded-full bg-slate-500  text-white font-bold text-sm" disabled>Terlaksana</button>

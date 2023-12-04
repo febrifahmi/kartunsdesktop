@@ -139,7 +139,7 @@ export const MembershipDetail = () => {
             setValidFrom(getTodayDate())
             setValidThru(getMembershipEndDate())
         } else if (nomoranggota !== undefined && nomoranggota !== "") {
-            if (membership.member.hasOwnProperty("nomoranggota") && membership.member.hasOwnProperty("validfrom") && membership.member.hasOwnProperty("validthru")) {
+            if (membership.member && membership.member.nomoranggota !== undefined) {
                 setNomorAnggota(membership.member.nomoranggota)
                 setValidFrom(membership.member.validfrom)
                 setValidThru(membership.member.validthru)
