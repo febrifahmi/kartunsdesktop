@@ -2,9 +2,14 @@ import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { ImageExist, truncate, CheckWebinarDate, getTodayDate } from "../config/utils"
 import { MdInfoOutline } from "react-icons/md";
+import { useRef } from "react";
 
 export const PelatihanCard = () => {
     const [webinars, setWebinars] = useState([])
+    const [iddaftar, setIdDaftar] = useState(-1)
+    const [thiswebinar, setThisWebinar] = useState({})
+
+    const ref = useRef(-1)
 
     const getWebinars = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.webinarsendpoint + "all", {
@@ -20,6 +25,28 @@ export const PelatihanCard = () => {
             })
             .catch((err) => console.log(err))
         return response
+    }
+
+    const FormDaftarPelatihan = (props) => {
+        const data = props.data
+
+        return (
+            <>
+                {data && data.idwebinar !== undefined ? (
+                    <div className="flex flex-col gap-4 border-[1px] border-slate-700 rounded-xl p-5">
+                        <div className="text-sky-500">
+                            Form Daftar Pelatihan <span>{data.idwebinar}</span>
+                        </div>
+                        <div>
+                            <div className="flex flex-col gap-4">
+                                <div className="text-xl text-center">{data.webinartitle}</div>
+                            </div>
+                        </div>
+                    </div>
+                ) : "Data undefined"}
+
+            </>
+        )
     }
 
     useEffect(() => {
@@ -45,10 +72,14 @@ export const PelatihanCard = () => {
                                         <img className=' object-cover rounded-md w-full h-20' src={item.webinarimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.webinarimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.webinarimgurl : 'static/img/noimage.png'}></img>
                                         {/* buat if end date adalah kemarin maka button disable */}
                                         {
-                                            CheckWebinarDate(item.startdate, getTodayDate) === true ?
-                                                <button className="px-2 rounded-full bg-orange-500 hover:bg-orange-700 text-white font-bold text-sm">Daftar</button>
+                                            CheckWebinarDate(item.startdate, getTodayDate()) === true ?
+                                                <button className="px-2 rounded-full bg-orange-500 hover:bg-orange-700 text-white font-bold text-sm" onClick={() => {
+                                                    setIdDaftar(parseInt(item.idwebinar))
+                                                    setThisWebinar(item)
+                                                    console.log("This webinar: ",thiswebinar);
+                                                }}>Daftar</button>
                                                 :
-                                                <button className="px-2 rounded-full bg-orange-500 hover:bg-orange-700 text-white font-bold text-sm" disabled>Daftar</button>
+                                                <button className="px-2 rounded-full bg-slate-500  text-white font-bold text-sm" disabled>Terlaksana</button>
                                         }
 
                                     </div>
@@ -65,11 +96,16 @@ export const PelatihanCard = () => {
                         ))
                         :
                         <div className="text-slate-500 flex flex-row gap-2 items-center">
-                            <MdInfoOutline /> 
+                            <MdInfoOutline />
                             Belum ada pelatihan yang ditawarkan.</div>
                     }
                 </div>
-            </div>
+                <div>
+                    {thiswebinar.idwebinar !== undefined ?
+                        <FormDaftarPelatihan data={thiswebinar} /> : ""
+                    }
+                </div>
+            </div >
         </>
     )
 }
