@@ -139,7 +139,7 @@ export const MembershipDetail = () => {
             setValidFrom(getTodayDate())
             setValidThru(getMembershipEndDate())
         } else if (nomoranggota !== undefined && nomoranggota !== "") {
-            if (membership.member.hasOwnProperty("nomoranggota") && membership.member.hasOwnProperty("validfrom") && membership.member.hasOwnProperty("validthru")) {
+            if (membership.member && membership.member.nomoranggota !== undefined) {
                 setNomorAnggota(membership.member.nomoranggota)
                 setValidFrom(membership.member.validfrom)
                 setValidThru(membership.member.validthru)
@@ -522,7 +522,7 @@ export const MembershipDetail = () => {
 
     const DaftarIuranSaya = (props) => {
         const data = props.data
-        console.log("Props: ", data.iuranmember)
+        // console.log("Props: ", data.iuranmember)
         const [showImg, setShowImg] = useState(0)
         return (
             <>
@@ -544,18 +544,23 @@ export const MembershipDetail = () => {
                                                 </div>
                                                 <div className='flex flex-col gap-2 w-11/12'>
                                                     <div className='text-sm font-bold'>
-                                                        {item.nama}
+                                                        {item.namaanggota}
                                                     </div>
                                                     <div className='text-xs text-slate-400'>
                                                         <span className='font-bold'>Bank pengirim:</span> {item.bankpengirim}
                                                     </div>
-                                                    <div className='text-xs text-slate-400'>
-                                                        <span className='font-bold'>Jumlah iuran:</span> {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(
-                                                            item.jumlahiuran,
-                                                        )}
+                                                    <div className="flex flex-row gap-10 text-xs text-slate-400">
+                                                        <div className=''>
+                                                            <span className='font-bold'>Jumlah iuran:</span> {new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR" }).format(
+                                                                item.jumlahiuran,
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <span className="font-bold">Tahun keanggotaan: {item.tahun}</span>
+                                                        </div>
                                                     </div>
                                                     <div className='text-xs text-slate-400'>
-                                                        <span className='font-bold'>Anggota:</span> <ShowUsername userid={item.member_id} token={cookie.token} />
+                                                        <span className='font-bold'>Pengirim:</span> <ShowUsername userid={item.user_id} token={cookie.token} />
                                                     </div>
                                                     <div className='text-xs text-slate-500'>
                                                         <p>Published: {item.created_at}</p>
