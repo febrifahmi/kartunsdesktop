@@ -82,6 +82,8 @@ export const PelatihanCard = () => {
                 if (response.code !== undefined && response.code === "success") {
                     success("Sukses mendaftarkan diri mengikuti pelatihan.")
                     setSubmitted(true)
+                } else {
+                    failed("Gagal mendaftarkan diri mengikuti pelatihan. Anda mungkin sudah terdaftar!")
                 }
                 return response
             } else {
@@ -117,17 +119,19 @@ export const PelatihanCard = () => {
                                     <div className="text-slate-400" dangerouslySetInnerHTML={{ __html: data.webinartext ? data.webinartext : "" }}></div>
                                     <hr className="border-slate-700 my-2 border-dotted" />
                                     <div className='flex justify-center'>
-                                        {peserta.pesertawebinar !== undefined ? peserta.pesertawebinar.map((item) => {
+                                        {/* {peserta.pesertawebinar !== undefined ? peserta.pesertawebinar.map((item) => {
                                             if (item.user_id == cookie.iduser) {
                                                 if (item.training_id == data.idwebinar) {
                                                     console.log("Item peserta", item)
                                                     return <button className='bg-slate-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' disabled>Sudah Terdaftar</button>
-                                                }
+                                                } 
                                             }
                                         })
                                             :
                                             ""
-                                        }
+                                        } */}
+            
+                                        
                                         <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Daftar Pelatihan Ini</button>
                                     </div>
                                 </div>
