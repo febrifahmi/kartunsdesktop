@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { ReadCookieLocal, CreateStatusCookie } from "../config/utils"
+import { Purify } from "../config/utils"
 
 export const ProfilDetail = () => {
     let cookie = ReadCookieLocal();
@@ -37,7 +38,7 @@ export const ProfilDetail = () => {
                 </div>
                 <div className="w-4/6 text-slate-400 gap-2 flex flex-col">
                     <h3 className="font-bold">Tentang</h3>
-                    <span className="text-sm text-slate-400" dangerouslySetInnerHTML={{ __html: cookie.tentang !== "" && cookie.tentang !== null ? cookie.tentang : <span className="italic">(silahkan lengkapi data anda)</span> }}></span>
+                    <span className="text-sm text-slate-400" dangerouslySetInnerHTML={{ __html: cookie.tentang !== "" && cookie.tentang !== null ? Purify(cookie.tentang) : <span className="italic">(silahkan lengkapi data anda)</span> }}></span>
                 </div>
             </div>
         </>

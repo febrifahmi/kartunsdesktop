@@ -22,4 +22,4 @@ export const APIURLConfig = {
     pesertawebinarsendpoint: "api/pesertawebinars/",
 }
 
-export const appversion = "v0.1.3"
+export const appversion = "v0.1.4"

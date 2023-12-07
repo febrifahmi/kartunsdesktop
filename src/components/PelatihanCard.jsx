@@ -6,6 +6,9 @@ import { useRef } from "react";
 import { ValidateInputForm } from "../config/formvalidation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ShowUsername } from "./GetUsername";
+import { Purify } from "../config/utils";
+import * as ReactDOM from 'react-dom';
 
 export const PelatihanCard = () => {
     const [webinars, setWebinars] = useState([])
@@ -35,6 +38,57 @@ export const PelatihanCard = () => {
             })
             .catch((err) => console.log(err))
         return response
+    }
+
+    const WebinarSaya = (props) => {
+        const data = props.peserta
+        console.log("Datanya: ", data)
+        const ListPelatihan = () => {
+            if (data.pesertawebinar !== undefined) {
+                data.pesertawebinar.map((item) => {
+                    console.log("Data item: ", item)
+                    console.log("Webinar ", webinars)
+                    if (webinars && webinars.trainingwebinars.length > 0) {
+                        webinars.trainingwebinars.map((webinar) => {
+                            console.log("Training id: ", item.training_id)
+                            console.log("User id: ", item.user_id)
+                            console.log("Webinar id: ", webinar.idwebinar)
+                            console.log("Iduser: ", cookie.iduser)
+                            if (parseInt(item.user_id) === parseInt(cookie.iduser) && parseInt(item.training_id) === parseInt(webinar.idwebinar)) {
+                                console.log("User terdaftar di pelatihan ", item.training_id)
+                                console.log(webinar.webinartitle);
+                                return (
+                                    <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={webinar.idwebinar}>
+                                        <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
+                                            <img className='object-fill rounded-md' src={webinar.webinarimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + webinar.webinarimgurl) ? APIURLConfig.baseurl + "static/uploads/" + webinar.webinarimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
+                                        </div>
+                                        <div className='flex flex-col gap-2 w-5/6'>
+                                            <div className='text-sm font-bold'>
+                                                {webinar.webinartitle}
+                                            </div>
+                                            <div className='text-xs text-slate-400'>
+                                                {webinar.webinardesc}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            }
+                        }
+                        )
+                    }
+                })
+            }
+        }
+        return (
+            <>
+                <div className="my-4">
+                    <h3 className='font-bold text-lg text-green-500'>Daftar Pelatihan yang Saya Ikuti</h3>
+                    {/* <div id="webinarsaya">
+                    </div> */}
+                    <ListPelatihan />
+                </div>
+            </>
+        )
     }
 
     const FormDaftarPelatihan = (props) => {
@@ -91,6 +145,8 @@ export const PelatihanCard = () => {
             }
         }
 
+
+
         return (
             <>
                 {data && data.idwebinar !== undefined ? (
@@ -116,7 +172,7 @@ export const PelatihanCard = () => {
                                         {data.webinardesc}
                                     </div>
                                     <hr className="border-slate-700 my-2 border-dotted" />
-                                    <div className="text-slate-400" dangerouslySetInnerHTML={{ __html: data.webinartext ? data.webinartext : "" }}></div>
+                                    <div className="text-slate-400" dangerouslySetInnerHTML={{ __html: data.webinartext ? Purify(data.webinartext) : "" }}></div>
                                     <hr className="border-slate-700 my-2 border-dotted" />
                                     <div className='flex justify-center'>
                                         {/* {peserta.pesertawebinar !== undefined ? peserta.pesertawebinar.map((item) => {
@@ -130,8 +186,8 @@ export const PelatihanCard = () => {
                                             :
                                             ""
                                         } */}
-            
-                                        
+
+
                                         <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Daftar Pelatihan Ini</button>
                                     </div>
                                 </div>
@@ -174,8 +230,8 @@ export const PelatihanCard = () => {
                 setPeserta(isi)
             })
             .catch((err) => console.log(err))
-        console.log(peserta)
-        console.log(webinars.trainingwebinars)
+        // console.log("Peserta: ",peserta)
+        // console.log("Webinar: ",webinars)
     }, [submitted])
 
     return (
@@ -225,6 +281,12 @@ export const PelatihanCard = () => {
                     }
                 </div>
             </div >
+            <hr className="border-slate-700 mt-8 border-dotted" />
+            <div>
+                {peserta !== undefined || peserta.pesertawebinar.length > 0 ?
+                    <WebinarSaya peserta={peserta} /> : ""
+                }
+            </div>
             <ToastContainer
                 position="top-center"
                 autoClose={5000}

@@ -83,6 +83,13 @@ export const Register = () => {
                                         <option name="is_alumni" value={1}>Yes</option>
                                     </select>
                                 </div>
+                                <div className="w-full flex justify-between items-center gap-x-6">
+                                    <label className="text-white">Mahasiswa Arsitektur UNS aktif?</label>
+                                    <select name="is_mhsarsuns" className="text-slate-600" onChange={handleChange} >
+                                        <option name="is_mhsarsuns" value={0} >No</option>
+                                        <option name="is_mhsarsuns" value={1}>Yes</option>
+                                    </select>
+                                </div>
                                 <div className="w-full">
                                     <input className="rounded-sm h-8 text-slate-800 w-full" type="password" name="password" placeholder=" Password" onChange={handleChange} />
                                 </div>

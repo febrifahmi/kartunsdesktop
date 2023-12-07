@@ -1,6 +1,7 @@
 import Cookies from 'universal-cookie';
 import Resizer from "react-image-file-resizer";
 import { useState } from 'react';
+import * as DOMPurify from 'dompurify'
 
 export const SaveCookie = (data) => {
     const cookies = new Cookies();
@@ -226,4 +227,10 @@ export const generateNomorAnggota = (date, usercategory, userid) => {
     }
     let nomor = date + kategori + userid
     return nomor
+}
+
+
+export const Purify = (teks) => {
+    const clean = DOMPurify.sanitize(teks);
+    return clean;
 }
