@@ -6,7 +6,7 @@ import { ArtikelDetail } from "../components/ArtikelDetail";
 import { APIURLConfig } from "../config";
 import { ArtikelComponent } from "../components/ArticleComponent";
 import { ShowUsername } from "../components/GetUsername";
-import { ReadCookieLocal, ImageExist } from "../config/utils";
+import { ReadCookieLocal, ImageExist, Purify } from "../config/utils";
 
 export const ArtikelDetailPage = ({ params }) => {
     const navigate = useNavigate();
@@ -72,7 +72,7 @@ export const ArtikelDetailPage = ({ params }) => {
                                                     <div className="w-full h-96">
                                                         <img className="object-cover rounded-lg w-full h-96" src={item.articleimgurl && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
                                                     </div>
-                                                    <div className="text-base mt-8" dangerouslySetInnerHTML={{ __html: item.articletext }}>
+                                                    <div className="text-base mt-8" dangerouslySetInnerHTML={{ __html: Purify(item.articletext) }}>
                                                     </div>
                                                 </div>
                                             </div>

@@ -3,11 +3,39 @@ import { APIURLConfig } from "../config"
 import { ReadCookieLocal, CreateStatusCookie } from "../config/utils"
 import { Purify } from "../config/utils"
 
-export const ProfilDetail = () => {
+export const ProfilDetail = (props) => {
+    let status = props.readstatus
     let cookie = ReadCookieLocal();
     let re = /(www.gravatar.com)/;
 
+    const [profildata, setProfilData] = useState({})
 
+    const getProfilData = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.userendpoint + cookie.iduser, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
+    useEffect(() => {
+        getProfilData()
+            .then((isi) => {
+                // console.log(isi);
+                setProfilData(isi)
+            })
+            .catch((err) => console.log(err))
+        console.log("Profil data: ", profildata)
+    }, [status])
 
     return (
         <>

@@ -54,7 +54,7 @@ export const PelatihanCard = () => {
                             console.log("User id: ", item.user_id)
                             console.log("Webinar id: ", webinar.idwebinar)
                             console.log("Iduser: ", cookie.iduser)
-                            if (parseInt(item.user_id) === parseInt(cookie.iduser) && parseInt(item.training_id) === parseInt(webinar.idwebinar)) {
+                            if (item.user_id == cookie.iduser && item.training_id == webinar.idwebinar) {
                                 console.log("User terdaftar di pelatihan ", item.training_id)
                                 console.log(webinar.webinartitle);
                                 return (
@@ -72,6 +72,8 @@ export const PelatihanCard = () => {
                                         </div>
                                     </div>
                                 )
+                            } else {
+                                return "Error"
                             }
                         }
                         )
@@ -158,7 +160,7 @@ export const PelatihanCard = () => {
                             <div className="flex flex-col gap-4">
                                 <div className="text-xl text-center font-bold text-slate-300">{data.webinartitle}</div>
                                 <div className="flex justify-center w-full">
-                                    <div className="">
+                                    <div>
                                         <img className="object-cover rounded-xl" src={APIURLConfig.baseurl + "static/uploads/" + data.webinarimgurl} ></img>
                                     </div>
                                 </div>

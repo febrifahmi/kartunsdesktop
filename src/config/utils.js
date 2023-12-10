@@ -31,6 +31,7 @@ export const SaveCookieLocal = (data) => {
     localStorage.setItem("is_pengurus", data.is_pengurus);
     localStorage.setItem("is_trainer", data.is_trainer);
     localStorage.setItem("is_admin", data.is_admin);
+    localStorage.setItem("is_mhsarsuns", data.is_mhsarsuns);
 }
 
 export const CreateStatusCookie = (status) => {
@@ -102,6 +103,7 @@ export const ReadCookieLocal = () => {
     const ispengurus = localStorage.getItem("is_pengurus")
     const istrainer = localStorage.getItem("is_trainer")
     const isadmin = localStorage.getItem("is_admin")
+    const ismhsarsuns = localStorage.getItem("is_mhsarsuns")
     return {
         token,
         username,
@@ -114,6 +116,7 @@ export const ReadCookieLocal = () => {
         ispengurus,
         istrainer,
         isadmin,
+        ismhsarsuns
     }
 }
 
@@ -234,3 +237,11 @@ export const Purify = (teks) => {
     const clean = DOMPurify.sanitize(teks);
     return clean;
 }
+
+
+export const getBase64 = async (file) => new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+});

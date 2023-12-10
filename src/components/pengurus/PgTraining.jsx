@@ -6,6 +6,7 @@ import { ShowUsername } from '../GetUsername';
 import { ValidateInputForm } from '../../config/formvalidation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { MdDownload } from "react-icons/md";
 
 export const PgTraining = () => {
     const failed = (errmsg) => toast.error(errmsg);
@@ -16,6 +17,7 @@ export const PgTraining = () => {
     const [selected, setSelected] = useState("webinar");
     const [trainingwebinars, setTrainingWebinars] = useState([])
     const [submitted, setSubmitted] = useState(false)
+    const [pesertawebinar, setPesertaWebinar] = useState([])
 
     const TrainingWebinar = () => {
         const editorRef = useRef(null);
@@ -227,8 +229,88 @@ export const PgTraining = () => {
         )
     }
 
+    const getPesertaWebinar = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pesertawebinarsendpoint + "all", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
     const DaftarTrainingWebinar = (props) => {
         const data = props.data;
+        const peserta = props.peserta;
+        const [show, setShow] = useState(-1)
+        const [pesertacurrent, setPesertaCurrent] = useState([])
+
+        const getJumlahPeserta = (webinar, peserta) => {
+            let count = 0
+            peserta.forEach(item => {
+                if (webinar.idwebinar == item.training_id) {
+                    count++
+                }
+            });
+            return count
+        }
+
+        // preparing xlsx file export
+        const ExcelJS = require('exceljs');
+        const workbook = new ExcelJS.Workbook();
+        workbook.creator = 'KartUNS Desktop';
+        const sheet = workbook.addWorksheet('Peserta Training', { properties: { tabColor: { hex: '#6faf99' } } });
+        sheet.columns = [
+            { header: 'Id', key: 'id', width: 10 },
+            { header: 'UserId', key: 'user_id', width: 10 },
+            { header: 'Nama peserta', key: 'namapeserta', width: 32 },
+            { header: 'Hasil pelatihan', key: 'hasilpelatihan', width: 10, outlineLevel: 1 }
+        ];
+
+        // const idpesertaCol = sheet.getColumn("id");
+        // const useridCol = sheet.getColumn("user_id");
+        // const namapesertaCol = sheet.getColumn("namapeserta");
+        // const hasilCol = sheet.getColumn("hasilpelatihan");
+
+        // // assign row values by object, using column keys
+        // const row = worksheet.getRow(2);
+        // row.values = {
+        //     id: 13,
+        //     name: 'Thing 1',
+        //     dob: new Date()
+        // };
+
+        const getPesertaPelatihanIni = (webinar, allpeserta) => {
+            const pesertanya = []
+            allpeserta.forEach(element => {
+                if (element.training_id == webinar.idwebinar) {
+                    pesertanya.push(element)
+                }
+            });
+            return pesertanya
+        }
+
+        const downloadDataPesertaXls = async (peserta, worksheetobj, workbookobj) => {
+            let count = 1
+            peserta.forEach(element => {
+                const row = worksheetobj.getRow(count+1);
+                row.values = {
+                    id: element.idpeserta,
+                    user_id: element.user_id,
+                    namapeserta: element.namapeserta,
+                    hasilpelatihan: element.hasilpelatihan,
+                }
+            });
+            const buffer = await workbookobj.xlsx.writeBuffer();
+            console.log(buffer)
+        }
+
         return (
             <>
                 <hr className="border-slate-700 border-dotted" />
@@ -239,10 +321,10 @@ export const PgTraining = () => {
                             data.slice(0, 10).map((item) => (
                                 <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idwebinar}>
                                     <div className='flex flex-row gap-4'>
-                                        <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
+                                        <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-3/12'>
                                             <img className='object-fill rounded-md' src={item.webinarimgurl !== undefined || item.webinarimgurl !== null || item.webinarimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.webinarimgurl : 'static/img/noimage.png'}></img>
                                         </div>
-                                        <div className='flex flex-col gap-2 w-11/12'>
+                                        <div className='flex flex-col gap-2 w-9/12'>
                                             <div className='text-sm font-bold'>
                                                 {item.webinartitle}
                                             </div>
@@ -262,6 +344,34 @@ export const PgTraining = () => {
                                                 <p>Published: {item.created_at}</p>
                                             </div>
                                         </div>
+                                        <div className='w-36 flex flex-col justify-center gap-4'>
+                                            <button className='text-xs text-white bg-orange-700 p-2 rounded-md' onClick={() => {
+                                                setShow(item.idwebinar)
+                                            }}>List Peserta</button>
+                                            {show === item.idwebinar && getJumlahPeserta(item, peserta.pesertawebinars) > 0 ? (<button className='text-xs text-white bg-green-700 p-2 rounded-md flex justify-center align-middle'><span className='mr-2' onClick={() => {
+                                                setPesertaCurrent(getPesertaPelatihanIni(item, peserta.pesertawebinars))
+                                                console.log(getPesertaPelatihanIni(item, peserta.pesertawebinars))
+                                                downloadDataPesertaXls(pesertacurrent, sheet, workbook)
+                                            }}><MdDownload /></span>Unduh Data</button>) : ""}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {show === item.idwebinar ? <h3 className='font-bold text-sm flex justify-start text-green-500 mb-2'>Daftar Peserta Pelatihan Ini (Total peserta=<span className='text-yellow-500'>{getJumlahPeserta(item, peserta.pesertawebinars)}</span>): </h3> : ""}
+                                        {show === item.idwebinar ? (
+                                            peserta.pesertawebinars.slice(0, 30).map((x) => {
+                                                if (x.training_id == item.idwebinar) {
+                                                    return (
+                                                        <span className='text-xs mx-1 bg-slate-700 hover:bg-slate-800 px-2 rounded-full'>{x.namapeserta}</span>
+                                                    )
+                                                } else {
+                                                    return ""
+                                                }
+                                            })
+                                        )
+                                            :
+
+                                            ""}
+                                        {show === item.idwebinar && getJumlahPeserta(item, peserta.pesertawebinars) > 0 ? (<span className='text-xs mx-1 bg-slate-700 hover:bg-slate-800 px-2 rounded-full'>Dst.</span>) : ""}
                                     </div>
                                 </div>
                             ))
@@ -321,7 +431,14 @@ export const PgTraining = () => {
                 setTrainingWebinars(isi)
             })
             .catch((err) => console.log(err))
+        getPesertaWebinar()
+            .then((isi) => {
+                // console.log(isi);
+                setPesertaWebinar(isi)
+            })
+            .catch((err) => console.log(err))
         console.log(trainingwebinars)
+        console.log(pesertawebinar)
     }, [submitted])
 
     return (
@@ -335,7 +452,7 @@ export const PgTraining = () => {
                     </div>
                     {selected === "webinar" ? <TrainingWebinar /> : <OnlineCourse />}
                 </div>
-                {selected === "webinar" ? <DaftarTrainingWebinar data={trainingwebinars.trainingwebinars} /> : <DaftarOnlineCourse />}
+                {selected === "webinar" ? <DaftarTrainingWebinar data={trainingwebinars.trainingwebinars} peserta={pesertawebinar} /> : <DaftarOnlineCourse />}
             </div>
             <ToastContainer
                 position="top-center"

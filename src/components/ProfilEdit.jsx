@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { APIURLConfig } from "../config";
 
 export const ProfilEdit = (props) => {
-    const data = props.data
+    const setstatus = props.status
     const editorRef = useRef(null);
     const log = () => {
         if (editorRef.current) {
@@ -27,7 +27,7 @@ export const ProfilEdit = (props) => {
     const [email, setEmail] = useState("")
     const [profpic, setProfpic] = useState("")
     const [image, setImage] = useState()
-    const [submitted, setSubmitted] = useState(false)
+    // const [submitted, setSubmitted] = useState(false)
 
     var newFormData = new FormData();
 
@@ -108,7 +108,8 @@ export const ProfilEdit = (props) => {
                 .catch((err) => console.log(err))
             if (response.code === "success") {
                 success("Sukses melakukan pembaruan data pengguna.")
-                setSubmitted(true)
+                // setSubmitted(true)
+                setstatus("submitted")
                 localStorage.setItem("avatar", profpic)
             }
             return response
