@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { ImageExist, truncate, getBase64, Purify, ReadCookieLocal } from "../config/utils"
-import { MdInfoOutline } from "react-icons/md";
+import { MdInfoOutline, MdCheckCircle } from "react-icons/md";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ValidateInputForm } from "../config/formvalidation";
@@ -237,9 +237,25 @@ export const LowonganCard = () => {
 
     const LamaranSaya = (props) => {
         const datapelamar = props.data
+        const datajoboffers = props.joboffers
+        console.log("Data job offers: ", datajoboffers)
+        const [lamaransaya, setLamaranSaya] = useState([])
         return (
             <>
-
+                <div className="my-4">
+                    <h3 className='font-bold text-lg text-green-500'>Daftar Lamaran Saya</h3>
+                    <div className="mt-4 flex flex-col gap-2">
+                        {datapelamar !== undefined && datapelamar.length > 0 ? datapelamar.map((item) =>
+                            <div className="px-4 py-1 hover:bg-slate-900 rounded-full flex flex-row items-center gap-2">
+                                <span className="text-slate-500"><MdCheckCircle /></span><span className="text-slate-400 hover:text-sky-500 text-sm">{item.namapelamar}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 hover:text-sky-500 text-sm">Lowongan:
+                                    {datajoboffers !== undefined ? datajoboffers.map((lowongan) => (
+                                        item.joboffer_id == lowongan.idoffer ? <span> {lowongan.offertitle}</span> : ""
+                                    )) : ""
+                                    }</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 hover:text-sky-500 text-sm">Pengajuan: {item.created_at}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 hover:text-sky-500 text-sm">Hasil seleksi: {item.hasilseleksiakhir ? item.hasilseleksiakhir : "(belum ada hasil)"}</span>
+                            </div>
+                        ) : ""}
+                    </div>
+                </div>
             </>
         )
     }
@@ -274,7 +290,7 @@ export const LowonganCard = () => {
                 setDataPelamar(isi)
             })
             .catch((err) => console.log(err))
-        console.log(joboffers.offers)
+        console.log("Lowongan: ", joboffers.offers)
         console.log("Data pelamar :", datapelamar)
     }, [])
 
@@ -318,9 +334,10 @@ export const LowonganCard = () => {
                         <FormLamarPekerjaan data={thisoffer} /> : ""
                     }
                 </div>
+                <hr className="border-slate-700 mt-8 border-dotted" />
                 <div className="">
-                    {datapelamar.pelamarkerja !== undefined && datapelamar.pelamarkerja.length > 0?
-                        <LamaranSaya data={datapelamar.pelamarkerja} /> : ""}
+                    {datapelamar.pelamarkerja !== undefined && datapelamar.pelamarkerja.length > 0 ?
+                        <LamaranSaya data={datapelamar.pelamarkerja} joboffers={joboffers.offers} /> : ""}
                 </div>
             </div>
             <ToastContainer

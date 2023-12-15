@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
-import { ReadCookieLocal, CreateStatusCookie } from "../config/utils"
+import { ReadCookieLocal, CreateStatusCookie, CreateStatusCookieLocal, SaveCookieLocal } from "../config/utils"
 import { Purify } from "../config/utils"
 
 export const ProfilDetail = (props) => {
@@ -34,7 +34,7 @@ export const ProfilDetail = (props) => {
                 setProfilData(isi)
             })
             .catch((err) => console.log(err))
-        console.log("Profil data: ", profildata)
+        console.log("Profil data: ", profildata.user)
     }, [status])
 
     return (
@@ -42,7 +42,7 @@ export const ProfilDetail = (props) => {
             <div className="flex flex-row gap-10 rounded-md mt-8 p-10 border-dotted border-[1px] border-slate-500">
                 <div className="w-1/6">
                     {
-                        cookie.avatar !== "" && re.test(cookie.avatar) == false ?
+                        cookie.avatar && cookie.avatar !== undefined && cookie.avatar !== "" && re.test(cookie.avatar) == false ?
                             <div className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-full">
                                 <img className='object-cover aspect-square rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + cookie.avatar}></img>
                             </div>
@@ -53,7 +53,7 @@ export const ProfilDetail = (props) => {
                     }
 
                 </div>
-                <div className="w-1/6 gap-2 flex flex-col">
+                <div className="w-1/6 gap-2 flex flex-col flex-wrap">
                     <div>
                         <span className="font-bold text-sky-500 text-xl" >{cookie.username}</span>
                     </div>
@@ -66,7 +66,7 @@ export const ProfilDetail = (props) => {
                 </div>
                 <div className="w-4/6 text-slate-400 gap-2 flex flex-col">
                     <h3 className="font-bold">Tentang</h3>
-                    <span className="text-sm text-slate-400" dangerouslySetInnerHTML={{ __html: cookie.tentang !== "" && cookie.tentang !== null ? Purify(cookie.tentang) : <span className="italic">(silahkan lengkapi data anda)</span> }}></span>
+                    <span className="text-sm text-slate-400" dangerouslySetInnerHTML={{ __html: profildata.user && profildata.user.tentang !== undefined && profildata.user.tentang !== null ? Purify(profildata.user.tentang) : "Silahkan lengkapi data anda!" }}></span>
                 </div>
             </div>
         </>
