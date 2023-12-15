@@ -87,7 +87,7 @@ export const PelatihanCard = () => {
                             data.pesertawebinar && data.pesertawebinar.length > 0 ? data.pesertawebinar.map((peserta) => (
                                 peserta.user_id == cookie.iduser && peserta.training_id == item.idwebinar ?
                                     <div className="px-4 py-1 hover:bg-slate-900 rounded-full flex flex-row items-center gap-2">
-                                        <span className="text-slate-500"><MdCheckCircle /></span><span className="text-slate-400 text-sm">{item.webinartitle}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 text-sm">Tanggal: {item.startdate} s.d. {item.enddate}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 text-sm">Level: {item.level}</span>
+                                        <span className="text-slate-500"><MdCheckCircle /></span><span className="text-slate-400 hover:text-sky-500 text-sm">{item.webinartitle}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 hover:text-sky-500 text-sm">Tanggal: {item.startdate} s.d. {item.enddate}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 hover:text-sky-500 text-sm">Level: {item.level}</span>
                                     </div> : ""
                             )) : ""
                         )) : ""}
