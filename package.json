@@ -1,6 +1,6 @@
 {
   "name": "kartunsdesktop",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "dependencies": {
     "@supercharge/filesystem": "^2.3.0",

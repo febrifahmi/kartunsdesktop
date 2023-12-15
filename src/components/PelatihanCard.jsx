@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { ImageExist, truncate, CheckWebinarDate, getTodayDate, ReadCookieLocal } from "../config/utils"
-import { MdInfoOutline } from "react-icons/md";
+import { MdInfoOutline, MdCheckCircle, MdCheck } from "react-icons/md";
 import { useRef } from "react";
 import { ValidateInputForm } from "../config/formvalidation";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ShowUsername } from "./GetUsername";
 import { Purify } from "../config/utils";
-import * as ReactDOM from 'react-dom';
+import { render } from 'react-dom';
 
 export const PelatihanCard = () => {
     const [webinars, setWebinars] = useState([])
@@ -42,36 +42,24 @@ export const PelatihanCard = () => {
 
     const WebinarSaya = (props) => {
         const data = props.peserta
-        console.log("Datanya: ", data)
+        const [webinarsaya, setWebinarSaya] = useState([])
+        // console.log("Datanya: ", data)
         const ListPelatihan = () => {
             if (data.pesertawebinar !== undefined) {
-                data.pesertawebinar.map((item) => {
-                    console.log("Data item: ", item)
-                    console.log("Webinar ", webinars)
+                data.pesertawebinar.map((peserta) => {
+                    // console.log("Data item: ", item)
+                    // console.log("Webinar ", webinars)
                     if (webinars && webinars.trainingwebinars.length > 0) {
                         webinars.trainingwebinars.map((webinar) => {
-                            console.log("Training id: ", item.training_id)
-                            console.log("User id: ", item.user_id)
-                            console.log("Webinar id: ", webinar.idwebinar)
-                            console.log("Iduser: ", cookie.iduser)
-                            if (item.user_id == cookie.iduser && item.training_id == webinar.idwebinar) {
-                                console.log("User terdaftar di pelatihan ", item.training_id)
-                                console.log(webinar.webinartitle);
-                                return (
-                                    <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={webinar.idwebinar}>
-                                        <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
-                                            <img className='object-fill rounded-md' src={webinar.webinarimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + webinar.webinarimgurl) ? APIURLConfig.baseurl + "static/uploads/" + webinar.webinarimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
-                                        </div>
-                                        <div className='flex flex-col gap-2 w-5/6'>
-                                            <div className='text-sm font-bold'>
-                                                {webinar.webinartitle}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                {webinar.webinardesc}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
+                            // console.log("Training id: ", item.training_id)
+                            // console.log("User id: ", item.user_id)
+                            // console.log("Webinar id: ", webinar.idwebinar)
+                            // console.log("Iduser: ", cookie.iduser)
+                            if (peserta.user_id == cookie.iduser && peserta.training_id == webinar.idwebinar) {
+                                console.log("User terdaftar di pelatihan ", peserta.training_id, peserta.user_id, parseInt(cookie.iduser))
+                                console.log(webinar);
+                                setWebinarSaya(oldarray => [...oldarray, webinar])
+                                // console.log("Webinar saya: ", webinarsaya)
                             } else {
                                 return "Error"
                             }
@@ -81,13 +69,29 @@ export const PelatihanCard = () => {
                 })
             }
         }
+        useEffect(() => {
+            ListPelatihan()
+            // console.log("Webinar saya: ", webinarsaya)
+        }, [])
+
+        console.log("webinar saya: ", webinarsaya)
+        // return only unique value
+        const mywebinar = [... new Set(webinarsaya)]
+
         return (
             <>
                 <div className="my-4">
                     <h3 className='font-bold text-lg text-green-500'>Daftar Pelatihan yang Saya Ikuti</h3>
-                    {/* <div id="webinarsaya">
-                    </div> */}
-                    <ListPelatihan />
+                    <div id="daftarpelatihan" className="mt-4 flex flex-col gap-2">
+                        {webinarsaya && webinarsaya.length > 0 ? mywebinar.map((item) => (
+                            data.pesertawebinar && data.pesertawebinar.length > 0 ? data.pesertawebinar.map((peserta) => (
+                                peserta.user_id == cookie.iduser && peserta.training_id == item.idwebinar ?
+                                    <div className="px-4 py-1 hover:bg-slate-900 rounded-full flex flex-row items-center gap-2">
+                                        <span className="text-slate-500"><MdCheckCircle /></span><span className="text-slate-400 text-sm">{item.webinartitle}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 text-sm">Tanggal: {item.startdate} s.d. {item.enddate}</span><span className="text-red-500 text-sm"> | </span><span className="text-slate-400 text-sm">Level: {item.level}</span>
+                                    </div> : ""
+                            )) : ""
+                        )) : ""}
+                    </div>
                 </div>
             </>
         )
@@ -177,19 +181,6 @@ export const PelatihanCard = () => {
                                     <div className="text-slate-400" dangerouslySetInnerHTML={{ __html: data.webinartext ? Purify(data.webinartext) : "" }}></div>
                                     <hr className="border-slate-700 my-2 border-dotted" />
                                     <div className='flex justify-center'>
-                                        {/* {peserta.pesertawebinar !== undefined ? peserta.pesertawebinar.map((item) => {
-                                            if (item.user_id == cookie.iduser) {
-                                                if (item.training_id == data.idwebinar) {
-                                                    console.log("Item peserta", item)
-                                                    return <button className='bg-slate-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' disabled>Sudah Terdaftar</button>
-                                                } 
-                                            }
-                                        })
-                                            :
-                                            ""
-                                        } */}
-
-
                                         <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Daftar Pelatihan Ini</button>
                                     </div>
                                 </div>

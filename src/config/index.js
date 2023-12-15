@@ -23,4 +23,4 @@ export const APIURLConfig = {
     pelamarkerjasendpoint: "api/pelamarkerjas/",
 }
 
-export const appversion = "v0.1.4"
+export const appversion = "v0.1.5"
