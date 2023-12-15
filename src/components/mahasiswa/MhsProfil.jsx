@@ -2,12 +2,12 @@ import { useState } from "react"
 import { ProfilDetail } from "../ProfilDetail"
 import { ProfilEdit } from "../ProfilEdit"
 
-export const AlumProfil = () => {
+export const MhsProfil = () => {
     const [update, setUpdate] = useState(false)
     const [datastatus, setDataStatus] = useState(false)
 
     const getProfilEditStatus = (status) => {
-        if(status === "submitted"){
+        if (status === "submitted") {
             setDataStatus(true)
             return true
         } else {

@@ -1,12 +1,41 @@
 import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { ReadCookieLocal, CreateStatusCookie } from "../config/utils"
+import { Purify } from "../config/utils"
 
-export const ProfilDetail = () => {
+export const ProfilDetail = (props) => {
+    let status = props.readstatus
     let cookie = ReadCookieLocal();
     let re = /(www.gravatar.com)/;
 
+    const [profildata, setProfilData] = useState({})
 
+    const getProfilData = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.userendpoint + cookie.iduser, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
+    useEffect(() => {
+        getProfilData()
+            .then((isi) => {
+                // console.log(isi);
+                setProfilData(isi)
+            })
+            .catch((err) => console.log(err))
+        console.log("Profil data: ", profildata)
+    }, [status])
 
     return (
         <>
@@ -37,7 +66,7 @@ export const ProfilDetail = () => {
                 </div>
                 <div className="w-4/6 text-slate-400 gap-2 flex flex-col">
                     <h3 className="font-bold">Tentang</h3>
-                    <span className="text-sm text-slate-400" dangerouslySetInnerHTML={{ __html: cookie.tentang !== "" && cookie.tentang !== null ? cookie.tentang : <span className="italic">(silahkan lengkapi data anda)</span> }}></span>
+                    <span className="text-sm text-slate-400" dangerouslySetInnerHTML={{ __html: cookie.tentang !== "" && cookie.tentang !== null ? Purify(cookie.tentang) : <span className="italic">(silahkan lengkapi data anda)</span> }}></span>
                 </div>
             </div>
         </>

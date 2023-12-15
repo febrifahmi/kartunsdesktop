@@ -20,6 +20,7 @@ export const APIURLConfig = {
     membersendpoint: "api/members/",
     iuranmembersendpoint: "api/iuranmembers/",
     pesertawebinarsendpoint: "api/pesertawebinars/",
+    pelamarkerjasendpoint: "api/pelamarkerjas/",
 }
 
-export const appversion = "v0.1.3"
+export const appversion = "v0.1.5"

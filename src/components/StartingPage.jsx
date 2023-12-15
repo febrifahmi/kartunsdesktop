@@ -2,6 +2,7 @@ import { appversion } from "../config"
 import { ReadCookie, ReadCookieLocal } from "../config/utils"
 import { InfoModulAlumni } from "./InfoModulAlumni"
 import { InfoModulPengurus } from "./InfoModulPengurus"
+import { InfoModulMahasiswa } from "./InfoModulMahasiswa"
 import { LogoKartUNS } from "./LogoKartUNS"
 import { CopyrightModal } from "./CopyrightModal"
 
@@ -38,6 +39,11 @@ export const StartingPage = () => {
                             {ReadCookieLocal().isalumni === "true" ?
                                 <div>
                                     <InfoModulAlumni versi={appversion} />
+                                </div> : ""
+                            }
+                            {ReadCookieLocal().ismhsarsuns === "true" ?
+                                <div>
+                                    <InfoModulMahasiswa versi={appversion} />
                                 </div> : ""
                             }
                         </div>

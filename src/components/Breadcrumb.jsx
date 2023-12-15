@@ -15,6 +15,7 @@ export const Breadcrumb = () => {
                 </div>
                 <div className="mr-4">
                     {cookie.isalumni === "true"? <div className="px-2 bg-slate-800 rounded-full text-xs">Alumni</div>:""}
+                    {cookie.ismhsarsuns === "true"? <div className="px-2 bg-slate-800 rounded-full text-xs">Mahasiswa Arsitektur UNS</div>:""}
                     {cookie.ispengurus === "true"? <div className="px-2 bg-green-700 rounded-full text-xs text-white">Pengurus</div>:""}
                     {cookie.isadmin === "true"? <div className="px-2 bg-orange-700 rounded-full text-xs text-white">Admin</div>:""}
                 </div>

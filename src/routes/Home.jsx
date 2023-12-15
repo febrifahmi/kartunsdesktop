@@ -32,6 +32,7 @@ import { AlumKeanggotaan } from "../components/alumni/AlumKeanggotaan";
 import { AlumPasangIklan } from "../components/alumni/AlumPasangIklan";
 import { AlumAgenda } from "../components/alumni/AlumAgenda";
 import { AlumTraining } from "../components/alumni/AlumTraining";
+import { MhsProfil } from "../components/mahasiswa/MhsProfil";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AlumDonasi } from "../components/alumni/AlumDonasi";
@@ -39,6 +40,10 @@ import { AlumLowongan } from "../components/alumni/AlumLowongan";
 import { PgDonasi } from "../components/pengurus/PgDonasi";
 import { AlumStore } from "../components/alumni/AlumStore";
 import { PgStore } from "../components/pengurus/PgStore";
+import { MhsNavbar } from "../components/mahasiswa/MhsNavbar";
+import { MhsTraining } from "../components/mahasiswa/MhsTraining";
+import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
+import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -47,7 +52,7 @@ export const Home = () => {
 
     let cookie = ReadCookieLocal()
 
-    console.log("Cookie data:", cookie.ispengurus)
+    console.log("Cookie data:", cookie)
 
     if (cookie.token === "" || cookie.token === undefined) {
         landing()
@@ -142,6 +147,11 @@ export const Home = () => {
                             {cookie.isalumni === "true" && cookie.ispengurus === "false" ?
                                 <div>
                                     <AlumniNavbar getSelection={getSelection} />
+                                </div> : ""
+                            }
+                            {cookie.ismhsarsuns === "true" ?
+                                <div>
+                                    <MhsNavbar getSelection={getSelection} />
                                 </div> : ""
                             }
                         </div>
@@ -304,10 +314,34 @@ export const Home = () => {
                                 </div>
                                 :
                                 ""}
+                            {/* Active Menu for Mahasiswa */}
+                            {activemenu === "Profil Mahasiswa" ?
+                                <div>
+                                    <MhsProfil />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Ikut Pelatihan" ?
+                                <div>
+                                    <MhsTraining />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Mau Magang/Kerja" ?
+                                <div>
+                                    <MhsLowongan />
+                                </div>
+                                :
+                                ""}
                         </div>
                         {ReadCookieLocal().isalumni === "true" && ReadCookieLocal().ispengurus === "false" ?
                             <div className="px-5">
                                 <AlumAgenda />
+                            </div> : ""
+                        }
+                        {ReadCookieLocal().ismhsarsuns === "true" ?
+                            <div className="px-5">
+                                <MhsAgenda />
                             </div> : ""
                         }
                     </div>
