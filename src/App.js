@@ -7,6 +7,7 @@ import { Home } from './routes/Home';
 import { Register } from './routes/Register';
 import { KebijakanPrivasi } from './routes/KebijakanPrivasi';
 import { ArtikelDetailPage } from './routes/ArtikelDetailPage';
+import { KebijakanLayanan } from './routes/KebijakanLayanan';
 import { StatusBar } from './components/StatusBar';
 import { useEffect, useState } from 'react';
 import { ReadStatusCookieLocal } from './config/utils';
@@ -29,6 +30,7 @@ function App() {
             <Route exact path="/home" element={<Home />} />
             <Route exact path="/register" element={<Register />} />
             <Route exact path="/kebijakan" element={<KebijakanPrivasi />} />
+            <Route exact path="/layanan" element={<KebijakanLayanan />} />
             <Route exact path="/detail" element={<ArtikelDetailPage />} />
           </Routes>
         </HashRouter>

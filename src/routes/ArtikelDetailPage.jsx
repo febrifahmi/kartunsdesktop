@@ -7,6 +7,7 @@ import { APIURLConfig } from "../config";
 import { ArtikelComponent } from "../components/ArticleComponent";
 import { ShowUsername } from "../components/GetUsername";
 import { ReadCookieLocal, ImageExist, Purify } from "../config/utils";
+import { Footer } from "../components/Footer";
 
 export const ArtikelDetailPage = ({ params }) => {
     const navigate = useNavigate();
@@ -52,42 +53,48 @@ export const ArtikelDetailPage = ({ params }) => {
         <>
             <div className="bg-slate-900 flex flex-col">
                 <Breadcrumb />
-                <div className="bg-slate-800 px-5 py-5 m-2 rounded-md flex flex-row gap-10">
-                    <div className="flex flex-col w-2/6">
-                        <ArtikelComponent data={artikel} getSelection={getSelection} />
-                    </div>
-                    <div className="w-4/6">
-                        {
-                            activearticle !== "" || activearticle !== undefined ?
-                                artikel.map((item) => {
-                                    if (item.idarticle === activearticle) {
-                                        return (
-                                            <div className="flex flex-col">
-                                                <h3 className="text-xl font-bold text-sky-500 mb-4">{item.articletitle}</h3>
+                <div className="bg-slate-800 px-5 py-5 m-2 rounded-md flex flex-col gap-10">
+                    <div className="flex flex-row gap-10">
+                        <div className="flex flex-col w-2/6">
+                            <ArtikelComponent data={artikel} getSelection={getSelection} />
+                        </div>
+                        <div className="w-4/6">
+                            {
+                                activearticle !== "" && activearticle !== undefined && activearticle !== 0 ?
+                                    artikel.map((item) => {
+                                        if (item.idarticle === activearticle) {
+                                            return (
                                                 <div className="flex flex-col">
-                                                    <div className="flex flex-row justify-between mb-6">
-                                                        <div className="text-sm text-slate-500"><span className="font-bold">Author: </span><span><ShowUsername userid={parseInt(item.author_id)} token={cookie.token} /></span> </div>
-                                                        <div className="text-sm text-slate-500 italic">Published: {item.created_at}</div>
-                                                    </div>
-                                                    <div className="w-full h-96">
-                                                        <img className="object-cover rounded-lg w-full h-96" src={item.articleimgurl && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
-                                                    </div>
-                                                    <div className="text-base mt-8" dangerouslySetInnerHTML={{ __html: Purify(item.articletext) }}>
+                                                    <h3 className="text-xl font-bold text-sky-500 mb-4">{item.articletitle}</h3>
+                                                    <div className="flex flex-col">
+                                                        <div className="flex flex-row justify-between mb-6">
+                                                            <div className="text-sm text-slate-500"><span className="font-bold">Author: </span><span><ShowUsername userid={parseInt(item.author_id)} token={cookie.token} /></span> </div>
+                                                            <div className="text-sm text-slate-500 italic">Published: {item.created_at}</div>
+                                                        </div>
+                                                        <div className="w-full h-96">
+                                                            <img className="object-cover rounded-lg w-full h-96" src={item.articleimgurl && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
+                                                        </div>
+                                                        <span className="text-base mt-8" dangerouslySetInnerHTML={{ __html: Purify(item.articletext) }}>
+                                                        </span>
+                                                        <span className="text-slate-500 text-sm mt-4">(Redaksi KartUNS, {item.created_at.slice(0, 10)})</span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    }
-                                })
-                                :
-                                ""
-                        }
+                                            )
+                                        }
+                                    })
+                                    :
+                                    ""
+                            }
+                        </div>
+                    </div>
+                    <div className="flex justify-center w-full mb-4">
+                        <button className="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white w-1/12 " onClick={home}>Back</button>
+                    </div>
+                    <div>
+                        <Footer />
                     </div>
                 </div>
-                <div className="flex justify-center w-full">
-                    <button className="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md mb-8 text-white w-1/12 " onClick={home}>Back</button>
-                </div>
-            </div>
+            </div >
         </>
     )
 }

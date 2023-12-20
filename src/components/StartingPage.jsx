@@ -14,7 +14,7 @@ export const StartingPage = () => {
                 <div className="flex flex-col mt-4 mb-16 text-slate-400">
                     <div className="flex justify-center">
                         <div className="w-1/6 my-6">
-                            <LogoKartUNS />
+                            <LogoKartUNS width={150} />
                         </div>
                     </div>
                     <div className="flex flex-col gap-4">

@@ -80,7 +80,7 @@ export const PgDonasi = () => {
                             </div>
                         ))
                         :
-                        "Belum ada data donasi saya di dalam sistem."
+                        "Belum ada data donasi masuk di dalam sistem."
                     }
                 </div>
             </div>

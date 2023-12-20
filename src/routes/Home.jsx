@@ -44,6 +44,7 @@ import { MhsNavbar } from "../components/mahasiswa/MhsNavbar";
 import { MhsTraining } from "../components/mahasiswa/MhsTraining";
 import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
 import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
+import { Footer } from "../components/Footer";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -337,11 +338,13 @@ export const Home = () => {
                         {ReadCookieLocal().isalumni === "true" && ReadCookieLocal().ispengurus === "false" ?
                             <div className="px-5">
                                 <AlumAgenda />
+                                <Footer />
                             </div> : ""
                         }
                         {ReadCookieLocal().ismhsarsuns === "true" ?
                             <div className="px-5">
                                 <MhsAgenda />
+                                <Footer />
                             </div> : ""
                         }
                     </div>

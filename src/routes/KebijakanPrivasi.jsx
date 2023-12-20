@@ -4,6 +4,7 @@ import { CreateStatusCookie } from "../config/utils";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Footer } from "../components/Footer"
 
 export const KebijakanPrivasi = () => {
     const navigate = useNavigate();
@@ -40,7 +41,10 @@ export const KebijakanPrivasi = () => {
 
                         <p className="mb-8">Kami dapat melakukan penyesuaian terhadap kebijakan privasi ini sewaktu-waktu, tanpa harus menyampaikan informasi sebelumnya kepada Anda. Meskipun demikian, kami mencoba untuk setransparan mungkin dan akan menyediakan tautan sejarah perubahan kebijakan privasi sebelumnya.</p>
                     </div>
-                    <button className="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md mb-8 text-white" onClick={landing}>Back</button>
+                    <div className="flex justify-center">
+                        <button className="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md mb-8 text-white" onClick={landing}>Back</button>
+                    </div>
+                    <Footer />
                 </div>
             </div>
         </>
