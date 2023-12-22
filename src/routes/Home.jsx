@@ -7,7 +7,7 @@ import { Breadcrumb } from "../components/Breadcrumb";
 import { ProfileCard } from "../components/ProfilCard";
 import { PengumumanCard } from "../components/PengumumanCard";
 import { StartingPage } from "../components/StartingPage";
-import { Ads } from "../components/Ads";
+import { Ads } from "../components/AdsComponent";
 import { AdmNavbar } from "../components/admin/AdmNavbar";
 import { AdmDashboard } from "../components/admin/AdmDashboard";
 import { AdmUserMgmt } from "../components/admin/AdmUserMgmt";
@@ -44,6 +44,7 @@ import { MhsNavbar } from "../components/mahasiswa/MhsNavbar";
 import { MhsTraining } from "../components/mahasiswa/MhsTraining";
 import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
 import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
+import { Footer } from "../components/Footer";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -128,6 +129,11 @@ export const Home = () => {
                 <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
                     <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
                         <ArtikelComponent data={articles} />
+                    </div>
+                </div>
+                <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
+                    <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
+                        {cookie.isalumni === "true" || cookie.ismhsarsuns === "true" && cookie.ispengurus === "false" ? <Ads /> : ""}
                     </div>
                 </div>
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
@@ -337,11 +343,18 @@ export const Home = () => {
                         {ReadCookieLocal().isalumni === "true" && ReadCookieLocal().ispengurus === "false" ?
                             <div className="px-5">
                                 <AlumAgenda />
+                                <Footer />
                             </div> : ""
                         }
                         {ReadCookieLocal().ismhsarsuns === "true" ?
                             <div className="px-5">
                                 <MhsAgenda />
+                                <Footer />
+                            </div> : ""
+                        }
+                        {ReadCookieLocal().ispengurus === "true" ?
+                            <div className="px-5">
+                                <Footer />
                             </div> : ""
                         }
                     </div>

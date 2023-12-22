@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { APIURLConfig } from "../config";
 import { SaveCookie, ReadCookie, SaveCookieLocal, ReadCookieLocal, delay } from "../config/utils";
 import { ToastContainer, toast } from 'react-toastify';
@@ -11,7 +11,10 @@ export const Landing = () => {
     const navRegister = () => navigate("/register");
     const kebijakan = () => navigate("/kebijakan");
     const home = () => navigate("/home");
+    const landing = () => navigate("/")
     const [loggingin, setLoggingIn] = useState(false)
+
+    const cookie = ReadCookieLocal()
 
     const success = (msg) => toast.success(msg)
     const failed = (msg) => toast.warning(msg);
@@ -62,6 +65,14 @@ export const Landing = () => {
             })
             .catch(e => failed(e.message + " Make sure you are connected to internet!"))
     }
+
+    useEffect(() => {
+        if (cookie.token !== null && cookie.token !== "") {
+            home()
+        } else {
+            landing()
+        }
+    }, [])
 
     return (
         <>

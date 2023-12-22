@@ -222,7 +222,7 @@ export const AlumPasangIklan = () => {
                             <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm mt-4 mb-8' onClick={handleSubmit}>Pasang Iklan</button>
                         </div>
                     </form>
-                    <div className='text-xs text-slate-500 italic'>*) Pengajuan iklan sesuai dengan <span className='font-bold' onClick={() => {
+                    <div className='text-xs text-slate-500 italic'>*) Pengajuan iklan sesuai dengan <span className='font-bold underline text-sky-500' onClick={() => {
                         if (showadrule === false) {
                             setAdRule(true)
                         } else {

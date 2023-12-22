@@ -1,12 +1,14 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, resizeImage, getBase64 } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { ShowUsername } from '../GetUsername';
 import { ValidateInputForm } from '../../config/formvalidation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { MdDownload } from "react-icons/md";
+import { truncate } from '../../config/utils';
+import QRCode from 'qrcode'
 
 export const PgTraining = () => {
     const failed = (errmsg) => toast.error(errmsg);
@@ -18,6 +20,7 @@ export const PgTraining = () => {
     const [trainingwebinars, setTrainingWebinars] = useState([])
     const [submitted, setSubmitted] = useState(false)
     const [pesertawebinar, setPesertaWebinar] = useState([])
+    const [certificate, setCertificate] = useState("")
 
     const TrainingWebinar = () => {
         const editorRef = useRef(null);
@@ -299,7 +302,7 @@ export const PgTraining = () => {
         const downloadDataPesertaXls = async (peserta, worksheetobj, workbookobj) => {
             let count = 1
             peserta.forEach(element => {
-                const row = worksheetobj.getRow(count+1);
+                const row = worksheetobj.getRow(count + 1);
                 row.values = {
                     id: element.idpeserta,
                     user_id: element.user_id,
@@ -348,11 +351,11 @@ export const PgTraining = () => {
                                             <button className='text-xs text-white bg-orange-700 p-2 rounded-md' onClick={() => {
                                                 setShow(item.idwebinar)
                                             }}>List Peserta</button>
-                                            {show === item.idwebinar && getJumlahPeserta(item, peserta.pesertawebinars) > 0 ? (<button className='text-xs text-white bg-green-700 p-2 rounded-md flex justify-center align-middle'><span className='mr-2' onClick={() => {
+                                            {show === item.idwebinar && getJumlahPeserta(item, peserta.pesertawebinars) > 0 ? (<button className='text-xs text-white bg-green-700 p-2 rounded-md flex justify-center align-middle' onClick={() => {
                                                 setPesertaCurrent(getPesertaPelatihanIni(item, peserta.pesertawebinars))
                                                 console.log(getPesertaPelatihanIni(item, peserta.pesertawebinars))
                                                 downloadDataPesertaXls(pesertacurrent, sheet, workbook)
-                                            }}><MdDownload /></span>Unduh Data</button>) : ""}
+                                            }}><span className='mr-2'><MdDownload /></span>Unduh Data</button>) : ""}
                                         </div>
                                     </div>
                                     <div>
@@ -388,9 +391,173 @@ export const PgTraining = () => {
         return (
             <>
                 <div className='flex flex-col bg-slate-700 rounded-md p-2'>
-                    <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Buat Online Course</h3>
+                    <h3 className='font-bold text-lg text-slate-500 px-6 pt-6'>Buat Online Course</h3>
                     <div className='py-4 px-6'>
                         <p className='text-slate-500'>Under development</p>
+                    </div>
+                </div>
+            </>
+        )
+    }
+
+    const SertifikatCanvas = (props) => {
+        const canvasRef = useRef(null)
+        const bgimg = props.certbg
+        const data = props.data
+
+        useEffect(() => {
+            // draw canvas
+            const canvas = canvasRef.current;
+            const context = canvas.getContext('2d');
+            const logokartuns = new Image();
+            logokartuns.src = 'static/img/logokartunsinvert.png'
+            const qrcode = new Image();
+            QRCode.toDataURL(props.certno)
+                .then(url => {
+                    qrcode.src = url
+                })
+                .catch(err => {
+                    console.error(err)
+                })
+            const sertifikatbase = new Image();
+            sertifikatbase.src = bgimg ? bgimg : "static/img/noimage.png"
+            sertifikatbase.onload = function () {
+                context.drawImage(sertifikatbase, 0, 0, props.width, props.height);
+                context.font = "bold 22px sans-serif"
+                context.fillStyle = "black"
+                context.fillText(data.name, 350, 200);
+                context.fillStyle = "#3384da"
+                let { width } = context.measureText(data.name);
+                context.fillRect(350, 200, width, 1);
+                context.font = "bold 16px sans-serif"
+                context.fillStyle = "black"
+                context.fillText("Certificate No. " + props.certno, 40, 203);
+                context.font = "bold 12px sans-serif"
+                context.fillStyle = "#3384da"
+                context.fillText("Valid Thru. ", 40, 220);
+                qrcode.onload = function () {
+                    context.drawImage(qrcode, 290, 140, 96, 96)
+                }
+                logokartuns.onload = function () {
+                    context.drawImage(logokartuns, 350, 50, 150, 80)
+                }
+                setCertificate(canvas.toDataURL())
+            };
+        }, [bgimg, props.certno])
+
+        return <canvas id="certificate" className="object-fill hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-2xl pb-10" ref={canvasRef} width={props.width} height={props.height} />
+    }
+
+    const BuatSertifikat = () => {
+        const [certdate, setCertDate] = useState("")
+        const [certtext, setCertText] = useState("")
+        const [certnumber, setCertNumber] = useState("")
+        const [certtitle, setCertTitle] = useState("")
+        const [penerimaid, setPenerimaId] = useState("")
+        const [webinarid, setWebinarId] = useState(0)
+        const [selectedwebinar, setSelectedWebinar] = useState({})
+        const [certimgurl, setCertImgUrl] = useState("")
+        const [image, setImage] = useState()
+        const [pesertawebinarini, setPesertaWebinarIni] = useState([])
+
+        const handleSertifikatImageChange = async (event) => {
+            const file = event.target.files[0];
+            // resize and convert to base64
+            const image = await resizeImage(file);
+            // console.log(image);
+            setCertImgUrl(file.name);
+            setImage(image);
+        }
+
+        const getPesertaPelatihanIni = (webinar, allpeserta) => {
+            const pesertanya = []
+            allpeserta.forEach(element => {
+                if (element.training_id == webinar.idwebinar) {
+                    pesertanya.push(element)
+                }
+            });
+            return pesertanya
+        }
+
+        var newFormData = new FormData();
+
+        const handleChange = (e) => {
+            // ... get data form
+            newFormData[e.target.name] = e.target.value.trim()
+            if (newFormData["certtitle"] !== undefined) {
+                setCertTitle(newFormData["certtitle"])
+            }
+            newFormData[e.target.name] = e.target.value.trim()
+            if (newFormData["certnumber"] !== undefined) {
+                setCertNumber(newFormData["certnumber"])
+            }
+            newFormData[e.target.name] = e.target.value.trim()
+            if (newFormData["webinar_id"] !== undefined) {
+                setWebinarId(newFormData["webinar_id"])
+            }
+            console.log({
+                certtitle: certtitle,
+                certnumber: certnumber,
+                certtext: certtext,
+                certdate: certdate,
+                certimgurl: certimgurl,
+                penerima_id: penerimaid,
+                webinar_id: webinarid,
+            })
+        }
+
+        const cetakSertifikatDigital = () => {
+            // loop for each peserta webinar create canvas and download sertifikat automatically
+        }
+
+        return (
+            <>
+                <div className='flex flex-col bg-slate-700 rounded-md p-2'>
+                    <h3 className='font-bold text-lg text-green-500 px-6 pt-6'>Buat Sertifikat Otomatis</h3>
+                    <div className='py-4 px-6 text-white'>
+                        <form method='post'>
+                            <div className="flex pt-6">
+                                <label><span className='font-bold'>Judul sertifikat:</span> <span className='text-slate-400'>{certtitle !== undefined && certtitle !== "" ? certtitle : "(anda belum memilih pelatihan/webinar)"}</span></label>
+                                <input className="grow rounded h-12" name="certtitle" type="hidden" value={certtitle} />
+                            </div>
+                            <div className="flex pt-6">
+                                <label><span className='font-bold'>Nomor sertifikat:</span> <span className='text-slate-400'>{certnumber !== undefined && certnumber !== "" ? certnumber : "(anda belum memilih pelatihan/webinar)"}</span></label>
+                                <input className="grow rounded h-12" name="certnumber" type="hidden" value={certnumber} />
+                            </div>
+                            <div className="flex pt-6">
+                                <input className="grow rounded h-12" name="certdate" type={"text"} placeholder=" Akan dicetak otamatis" onChange={handleChange} />
+                            </div>
+                            <div className="flex items-center pt-6">
+                                <label className="text-white mr-4">Pilih pelatihan/webinar:</label>
+                                <select name="webinar_id" className="text-slate-600 h-10 rounded-md" onChange={handleChange}>
+                                    <option value="">Silahkan pilih salah satu</option>
+                                    {trainingwebinars !== undefined && trainingwebinars.trainingwebinars.length > 0 ? trainingwebinars.trainingwebinars.map((item) => (
+                                        <option value={item.idwebinar} onSelect={() => {
+                                            setWebinarId(item.idwebinar)
+                                            setCertTitle(item.webinartitle)
+                                            setPesertaWebinarIni(getPesertaPelatihanIni(item, pesertawebinar))
+                                        }}>{truncate(item.webinartitle, 40, 8)}</option>
+                                    )) : <option value="">Belum ada pelatihan/webinar untuk dipilih</option>}
+                                </select>
+                            </div>
+                            {pesertawebinarini ? <div>Peserta Webinar Ini: {pesertawebinarini.length}</div> : ""}
+                            <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
+                                <div className='flex'>
+                                    <label className='mr-6'>Upload background sertifikat (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
+                                    <input type="file" name="imagefile" accept="image/*" onChange={handleSertifikatImageChange} />
+                                </div>
+                            </div>
+                            <input type="hidden" id="" name="certbgimgurl" value={certimgurl}></input>
+                            <div className='flex justify-center'>
+                                <button className='bg-slate-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={""} disabled>Generate Sertifikat</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div className='w-full px-6'>
+                        {/* {certimgurl !== undefined && certimgurl !== "" ?
+                            <SertifikatCanvas width={842} height={595} data={namapeserta} certbg={image !== undefined ? image : "static/img/noimage.png"} certno={certnumber} />
+                            :
+                            ""} */}
                     </div>
                 </div>
             </>
@@ -449,8 +616,12 @@ export const PgTraining = () => {
                     <div className="flex flex-row justify-center bg-slate-700 gap-6 rounded-md py-6">
                         <button className={selected === "webinar" ? "bg-slate-600 outline outline-green-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-green-600 hover:bg-green-700 px-6 py-2 rounded-md"} onClick={() => setSelected("webinar")}>Webinar</button>
                         <button className={selected === "onlinecourse" ? "bg-slate-600 outline outline-sky-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-sky-600 hover:bg-sky-700 px-6 py-2 rounded-md"} onClick={() => setSelected("onlinecourse")}>Online Course</button>
+                        <button className={selected === "buatsertifikat" ? "bg-slate-600 outline outline-orange-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-orange-600 hover:bg-orange-700 px-6 py-2 rounded-md"} onClick={() => setSelected("buatsertifikat")}>Buat Sertifikat</button>
                     </div>
-                    {selected === "webinar" ? <TrainingWebinar /> : <OnlineCourse />}
+                    {selected === "webinar" ? <TrainingWebinar /> : ""}
+                    {selected === "onlinecourse" ? <OnlineCourse /> : ""}
+                    {selected === "buatsertifikat" ? <BuatSertifikat /> : ""}
+
                 </div>
                 {selected === "webinar" ? <DaftarTrainingWebinar data={trainingwebinars.trainingwebinars} peserta={pesertawebinar} /> : <DaftarOnlineCourse />}
             </div>
