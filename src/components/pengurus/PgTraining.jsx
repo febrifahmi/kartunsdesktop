@@ -549,7 +549,7 @@ export const PgTraining = () => {
                             </div>
                             <input type="hidden" id="" name="certbgimgurl" value={certimgurl}></input>
                             <div className='flex justify-center'>
-                                <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={""}>Generate Sertifikat</button>
+                                <button className='bg-slate-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={""} disabled>Generate Sertifikat</button>
                             </div>
                         </form>
                     </div>
