@@ -40,6 +40,7 @@ export const PgAdsApproval = () => {
 
     const [adsdata, setAdsData] = useState([])
     const [submitted, setSubmitted] = useState(false)
+    const [approved, setApproved] = useState(false)
     const [showadrule, setAdRule] = useState(false)
 
     const [judulcampaign, setJudulCampaign] = useState("")
@@ -154,6 +155,31 @@ export const PgAdsApproval = () => {
         }
     }
 
+    const handleApproveAd = async (adsid) => {
+        // ... submit to RestAPI using fetch api
+        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "update/" + adsid, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+            body: JSON.stringify({
+                "is_blocked": false,
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                // console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        if (response.code !== undefined && response.code === "success") {
+            success("Sukses menyetujui unit iklan.")
+            setApproved(true)
+        }
+        return response
+    }
+
     useEffect(() => {
         getAllAds()
             .then((isi) => {
@@ -162,7 +188,7 @@ export const PgAdsApproval = () => {
             })
             .catch((err) => console.log(err))
         console.log("All ads: ", allads)
-    }, [submitted])
+    }, [submitted, approved])
 
     return (
         <>
@@ -255,56 +281,59 @@ export const PgAdsApproval = () => {
                             {
                                 allads.ads !== undefined && allads.ads.length > 0 ?
                                     allads.ads.map((item) => (
-                                        <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idad}>
-                                            <div className='w-5/6 flex flex-row gap-4'>
-                                                <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
-                                                    <img className='object-fill rounded-md' src={item.adimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.adimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
+                                        <form method="put">
+                                            <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idad}>
+                                                <div className='w-5/6 flex flex-row gap-4'>
+                                                    <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
+                                                        <img className='object-fill rounded-md' src={item.adimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.adimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
+                                                    </div>
+                                                    <div className='flex flex-col gap-2 w-5/6'>
+                                                        <div className='text-sm font-bold'>
+                                                            {item.adcampaigntitle}
+                                                        </div>
+                                                        <div className='text-xs text-slate-400'>
+                                                            {item.adcampaigndesc}
+                                                        </div>
+                                                        <div className='text-xs text-slate-400'>
+                                                            <span className='font-bold'>Author:</span> <ShowUsername userid={item.advertiser_id} token={cookie.token} />
+                                                        </div>
+                                                        <div className='text-xs text-slate-500'>
+                                                            <p>Published: {item.created_at}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className='flex flex-col gap-2 w-5/6'>
-                                                    <div className='text-sm font-bold'>
-                                                        {item.adcampaigntitle}
-                                                    </div>
-                                                    <div className='text-xs text-slate-400'>
-                                                        {item.adcampaigndesc}
-                                                    </div>
-                                                    <div className='text-xs text-slate-400'>
-                                                        <span className='font-bold'>Author:</span> <ShowUsername userid={item.advertiser_id} token={cookie.token} />
-                                                    </div>
-                                                    <div className='text-xs text-slate-500'>
-                                                        <p>Published: {item.created_at}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className='w-1/6 flex flex-col gap-4 justify-center items-center align-middle'>
-                                                {
-                                                    item.is_paid ?
-                                                        <div className='flex flex-col gap-2'>
-                                                            <div className='bg-green-600 px-2 rounded font-bold text-sm'>Lunas</div>
-                                                        </div>
-                                                        :
-                                                        <div className='flex flex-col gap-2'>
-                                                            <button className='bg-orange-500 hover:bg-orange-600 px-2 rounded font-bold text-sm'>Belum Lunas</button>
-                                                        </div>
-                                                }
-                                                {
-                                                    item.is_blocked == 1 && item.is_paid === true ?
-                                                        <div className='flex flex-col gap-2'>
-                                                            <button className='bg-green-600 px-2 rounded font-bold text-sm'>Approve</button>
-                                                        </div>
-                                                        :
-                                                        item.advertiser_id != cookie.iduser ?
+                                                <div className='w-1/6 flex flex-col gap-4 justify-center items-center align-middle'>
+                                                    {
+                                                        item.is_paid ?
                                                             <div className='flex flex-col gap-2'>
-                                                                <button className='bg-slate-600 px-2 rounded font-bold text-sm' disabled>Approve</button>
+                                                                <div className='bg-green-600 px-2 rounded font-bold text-sm'>Lunas</div>
                                                             </div>
                                                             :
                                                             <div className='flex flex-col gap-2'>
-                                                                <button className='bg-green-600 px-2 rounded font-bold text-sm'>Approve</button>
+                                                                <button className='bg-orange-500 hover:bg-orange-600 px-2 rounded font-bold text-sm'>Belum Lunas</button>
                                                             </div>
-
-
-                                                }
+                                                    }
+                                                    {
+                                                        item.is_blocked === true && item.is_paid === true ?
+                                                            <div className='flex flex-col gap-2'>
+                                                                <button className='bg-green-600 px-2 rounded font-bold text-sm' onClick={() => handleApproveAd(item.idad)}>Approve</button>
+                                                            </div>
+                                                            :
+                                                            item.is_blocked === true && item.advertiser_id != cookie.iduser ?
+                                                                <div className='flex flex-col gap-2'>
+                                                                    <button className='bg-slate-600 px-2 rounded font-bold text-sm' disabled>Approve</button>
+                                                                </div>
+                                                                :
+                                                                item.is_blocked !== false ?
+                                                                    <div className='flex flex-col gap-2'>
+                                                                        <button className='bg-green-600 px-2 rounded font-bold text-sm' onClick={() => handleApproveAd(item.idad)}>Approve</button>
+                                                                    </div>
+                                                                    :
+                                                                    <div className="text-xs border-[1px] border-sky-500 border-solid px-2 rounded-full text-sky-500">Sudah tayang</div>
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     ))
                                     :
                                     "Belum ada data ads"
