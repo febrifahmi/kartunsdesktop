@@ -9,20 +9,12 @@ function createWindow() {
         width: 800,
         height: 600,
         webPreferences: {
-            nodeIntegration: false,
+            nodeIntegration: false, // keep the security of Electron app safe 
         },
         fullscreen: true,
         autoHideMenuBar: true,
         icon: __dirname + "/icon400.png",
     });
-
-    // and load the index.html of the app.
-    // win.loadFile("index.html");
-    // win.loadURL(
-    //     isDev
-    //         ? 'http://localhost:3000'
-    //         : `file://${path.join(__dirname, '../build/index.html')}`
-    // );
 
     win.loadURL(
         isDev

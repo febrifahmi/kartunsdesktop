@@ -245,3 +245,12 @@ export const getBase64 = async (file) => new Promise((resolve, reject) => {
     reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
 });
+
+
+export const validateAlumniFlag = (isalumni, ismhsw) => {
+    if((isalumni == true || isalumni == 1) && (ismhsw == true || ismhsw == 1)){
+        return false
+    } else {
+        return true
+    }
+}

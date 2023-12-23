@@ -28,7 +28,7 @@ export const PgKeanggotaan = () => {
     return (
         <>
             <div className="px-5">
-            <h3 className="font-bold text-center text-lg text-green-500">Data Keanggotaan Sistem KartUNS</h3>
+                <h3 className="font-bold text-center text-lg text-green-500">Data Keanggotaan Sistem KartUNS</h3>
                 <div className="mt-5 pb-10">
                     <h3 className="font-bold text-center text-base text-green-500 my-6">Data Alumni</h3>
                     <table class="table-auto border-y-[1px] border-slate-500 w-full text-sm">
@@ -50,7 +50,7 @@ export const PgKeanggotaan = () => {
                         <tbody className="text-center">
                             {users !== undefined ? users.users.map((item) => {
                                 if (item.is_alumni === true && item.is_admin === false) {
-                                    countalumni = countalumni+1
+                                    countalumni = countalumni + 1
                                     return (
                                         <tr className="border-slate-500 border-y-[1px] border-dotted" key={item.iduser}>
                                             <td>{countalumni}</td>

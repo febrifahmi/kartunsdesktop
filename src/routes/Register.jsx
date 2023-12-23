@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { APIURLConfig } from "../config";
-import { CreateStatusCookie } from '../config/utils';
+import { CreateStatusCookie, validateAlumniFlag } from '../config/utils';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -12,7 +12,7 @@ export const Register = () => {
 
     CreateStatusCookie("Register User")
 
-    const failed = () => toast.warning("Registration Failed! User may already exist!");
+    const failed = (msg) => toast.warning(msg);
 
     const initialFormData = Object.freeze({
         username: "",
@@ -20,6 +20,7 @@ export const Register = () => {
         last_name: "",
         email: "",
         is_alumni: 0,
+        is_mhsarsuns: 0,
         password: ""
     });
 
@@ -34,26 +35,31 @@ export const Register = () => {
         });
     }
     console.log(formData);
+    const validation = validateAlumniFlag(formData.is_alumni, formData.is_mhsarsuns)
     // console.log(APIURLConfig.baseurl+APIURLConfig.loginendpoint)
     const handleSubmit = async (e) => {
         e.preventDefault()
         // console.log(formData);
         // ... submit to RestAPI using fetch api
-        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.registerendpoint, {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formData),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                if (data["code"] === "success") {
-                    navLanding()
-                } else {
-                    failed()
-                }
+        if(validation === true){
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.registerendpoint, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
             })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data["code"] === "success") {
+                        navLanding()
+                    } else {
+                        failed("Registration Failed! User may already exist!")
+                    }
+                })
+        } else {
+            failed("Registrasi gagal. Pilih salah satu role saja: mahasiswa atau alumni!")
+        }
     }
 
     return (

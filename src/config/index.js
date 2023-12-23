@@ -21,6 +21,7 @@ export const APIURLConfig = {
     iuranmembersendpoint: "api/iuranmembers/",
     pesertawebinarsendpoint: "api/pesertawebinars/",
     pelamarkerjasendpoint: "api/pelamarkerjas/",
+    servertimeendpoint: "api/servertime/",
 }
 
-export const appversion = "v0.1.5"
+export const appversion = "v0.1.6"

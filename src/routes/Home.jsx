@@ -150,12 +150,12 @@ export const Home = () => {
                                 </div>
                                 : ""
                             }
-                            {cookie.isalumni === "true" && cookie.ispengurus === "false" ?
+                            {cookie.isalumni === "true" && cookie.ismhsarsuns === "false" && cookie.ispengurus === "false" ?
                                 <div>
                                     <AlumniNavbar getSelection={getSelection} />
                                 </div> : ""
                             }
-                            {cookie.ismhsarsuns === "true" ?
+                            {cookie.ismhsarsuns === "true" && cookie.isalumni === "false" ?
                                 <div>
                                     <MhsNavbar getSelection={getSelection} />
                                 </div> : ""

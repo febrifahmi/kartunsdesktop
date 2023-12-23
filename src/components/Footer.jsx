@@ -1,5 +1,5 @@
 import { LogoKartUNS } from "./LogoKartUNS"
-import { FaYoutube, FaSquareInstagram, FaFacebook} from "react-icons/fa6";
+import { FaYoutube, FaSquareInstagram, FaFacebook } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 
@@ -27,9 +27,9 @@ export const Footer = () => {
                         </div>
                         <div className="w-1/2 flex flex-row gap-4 items-between">
                             <div className="hover:text-red-500"><FaYoutube size={32} /></div>
-                            <div className="hover:text-pink-600" onClick={() => window.open("https://www.instagram.com/kart_uns/?hl=en")}><FaSquareInstagram size={32} /></div>
+                            <div className="hover:text-pink-600" onClick={() => window.open("https://www.instagram.com/kart_uns/?hl=en", "menubar=no")}><FaSquareInstagram size={32} /></div>
                             <div className="hover:text-sky-700"><FaFacebook size={32} /></div>
-                            <div className="hover:text-yellow-500" onClick={() => window.open("mailto:kartunsalumni@gmail.com")}><MdEmail size={32} /></div>
+                            <div className="hover:text-yellow-500" onClick={() => window.open("mailto:kartunsalumni@gmail.com", "menubar=no")}><MdEmail size={32} /></div>
                         </div>
                     </div>
                 </div>
