@@ -2,7 +2,8 @@ import { useState, useEffect } from "react"
 import { APIURLConfig } from "../config"
 import { truncate } from "../config/utils"
 
-export const Ads = () => {
+export const Ads = (props) => {
+    const adsdetail = props.goto
     const [allads, setAllAds] = useState([])
 
     const getAllAds = () => {
@@ -33,14 +34,14 @@ export const Ads = () => {
 
     return (
         <>
-            <div className="flex flex-row gap-10">
+            <button className="flex flex-row gap-8" onClick={adsdetail}>
                 {allads.ads !== undefined && allads.ads.length > 0 ?
-                    allads.ads.map((item) => (
-                        item.is_blocked == false || item.is_blocked == true ?
+                    allads.ads.slice(0,10).map((item) => (
+                        item.is_blocked == false ?
                             <div className="flex flex-row gap-2 h-16 w-40 px-2 items-center rounded-lg border-solid border-[1px] border-slate-700 hover:bg-black hover:text-sky-500">
                                 <img className="rounded-lg object-cover h-[48px] w-[48px]" src={item.adimgurl !== undefined && item.adimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : "static/img/noimage.png"}></img>
                                 <div className="flex flex-wrap w-20">
-                                    <div className="text-xs">{truncate(item.adcampaigntitle, 36, 8)}</div>
+                                    <div className="text-xs text-left">{truncate(item.adcampaigntitle, 36, 8)}</div>
                                 </div>
                             </div>
                             :
@@ -49,7 +50,7 @@ export const Ads = () => {
                     :
                     ""
                 }
-            </div>
+            </button>
         </>
     )
 }

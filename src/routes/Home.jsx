@@ -50,6 +50,7 @@ export const Home = () => {
     const navigate = useNavigate();
     const landing = () => navigate("/");
     const detail = () => navigate("/detail");
+    const adsdetail = () => navigate("/adsdetail");
 
     let cookie = ReadCookieLocal()
 
@@ -131,11 +132,13 @@ export const Home = () => {
                         <ArtikelComponent data={articles} />
                     </div>
                 </div>
-                <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
-                    <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
-                        {cookie.isalumni === "true" || cookie.ismhsarsuns === "true" && cookie.ispengurus === "false" ? <Ads /> : ""}
+                {(cookie.isalumni === "true" || cookie.ismhsarsuns === "true") && cookie.ispengurus === "false" ?
+                    <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
+                        <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
+                            <Ads goto={adsdetail} />
+                        </div>
                     </div>
-                </div>
+                    : ""}
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
                     <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
                         <div className="flex gap-2 items-center ml-4">
