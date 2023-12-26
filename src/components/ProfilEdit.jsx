@@ -25,6 +25,7 @@ export const ProfilEdit = (props) => {
     const [firstname, setFirstName] = useState("")
     const [lastname, setLastName] = useState("")
     const [email, setEmail] = useState("")
+    const [newpass, setNewPass] = useState("")
     const [profpic, setProfpic] = useState("")
     const [image, setImage] = useState()
     // const [submitted, setSubmitted] = useState(false)

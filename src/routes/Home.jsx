@@ -33,6 +33,7 @@ import { AlumPasangIklan } from "../components/alumni/AlumPasangIklan";
 import { AlumAgenda } from "../components/alumni/AlumAgenda";
 import { AlumTraining } from "../components/alumni/AlumTraining";
 import { MhsProfil } from "../components/mahasiswa/MhsProfil";
+import { MhsBeasiswa } from "../components/mahasiswa/MhsBeasiswa";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AlumDonasi } from "../components/alumni/AlumDonasi";
@@ -64,6 +65,7 @@ export const Home = () => {
     const [activemenu, setActiveMenu] = useState();
     const [submitstatus, setSubmitStatus] = useState(false)
     const [pengsubmitstatus, setPengumumanSubmitStatus] = useState(false)
+    const [jumlahads, setJumlahAds] = useState(-1)
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -93,6 +95,12 @@ export const Home = () => {
         getArticles()
             .then((isi) => setArticles(isi))   // karena result dari getArticles masih berupa Promise, belum datanya, maka data perlu dibaca dan dimasukkan dulu ke useState
             .catch((err) => console.log(err.message))
+        getAllAds()
+            .then((isi) => {
+                // console.log(isi);
+                setJumlahAds(isi.ads.length);
+            })
+            .catch((err) => console.log(err))
     }, [submitstatus])
 
     const getSelection = (selectiondata) => {
@@ -123,6 +131,24 @@ export const Home = () => {
         )
     }
 
+    const getAllAds = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "all", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
+    console.log(jumlahads)
+
     return (
         <>
             <div className="w-full bg-slate-900">
@@ -132,7 +158,7 @@ export const Home = () => {
                         <ArtikelComponent data={articles} />
                     </div>
                 </div>
-                {(cookie.isalumni === "true" || cookie.ismhsarsuns === "true") && cookie.ispengurus === "false" ?
+                {(cookie.isalumni === "true" || cookie.ismhsarsuns === "true") && cookie.ispengurus === "false" && jumlahads > 0 ?
                     <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
                         <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
                             <Ads goto={adsdetail} />
@@ -339,6 +365,12 @@ export const Home = () => {
                             {activemenu === "Mau Magang/Kerja" ?
                                 <div>
                                     <MhsLowongan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Beasiswa KartUNS" ?
+                                <div>
+                                    <MhsBeasiswa />
                                 </div>
                                 :
                                 ""}

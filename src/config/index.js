@@ -22,6 +22,7 @@ export const APIURLConfig = {
     pesertawebinarsendpoint: "api/pesertawebinars/",
     pelamarkerjasendpoint: "api/pelamarkerjas/",
     servertimeendpoint: "api/servertime/",
+    pengajuanbeasiswa: "api/pengajuanbeasiswa/",
 }
 
 export const appversion = "v0.1.6"

@@ -26,7 +26,7 @@ export const Ads = (props) => {
         getAllAds()
             .then((isi) => {
                 // console.log(isi);
-                setAllAds(isi)
+                setAllAds(isi);
             })
             .catch((err) => console.log(err))
         console.log("All ads: ", allads)

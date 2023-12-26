@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { CreateStatusCookie, truncate } from "../config/utils";
+import { CreateStatusCookie, ReadCookieLocal, truncate, ImageExist, Purify } from "../config/utils";
 import { Breadcrumb } from "../components/Breadcrumb";
 import { APIURLConfig } from "../config";
 import { Ads } from "../components/AdsComponent";
 import { ShowUsername } from "../components/GetUsername";
-import { ReadCookieLocal, ImageExist, Purify } from "../config/utils";
 import { Footer } from "../components/Footer";
 
 export const AdsDetailPage = () => {
@@ -14,6 +13,8 @@ export const AdsDetailPage = () => {
 
     const [allads, setAllAds] = useState([])
     const [selected, setSelected] = useState(-1)
+
+    const cookie = ReadCookieLocal();
 
     const getAllAds = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "all", {
@@ -52,11 +53,12 @@ export const AdsDetailPage = () => {
                                 {allads.ads !== undefined && allads.ads.length > 0 ?
                                     allads.ads.slice(0, 10).map((item) => (
                                         item.is_blocked == false ?
-                                            <button className="flex flex-row gap-8" onClick={() => setSelected(item.idad)}>
-                                                <div className={selected === item.idad ? "flex flex-row gap-4 h-16 w-60 px-2 items-center rounded-lg border-solid border-[1px] border-slate-800 bg-black hover:bg-black hover:text-sky-500" : "flex flex-row gap-4 h-16 w-60 px-2 items-center rounded-lg border-solid border-[1px] border-slate-800 bg-slate-900 hover:bg-black hover:text-sky-500"}>
+                                            <button className="flex flex-row gap-8 w-full" onClick={() => setSelected(item.idad)}>
+                                                <div className={selected === item.idad ? "flex flex-row grow gap-4 h-16 w-60 px-2 items-center rounded-lg border-solid border-[1px] border-slate-800 bg-black hover:bg-black text-sky-500 hover:text-sky-500" : "flex flex-row grow gap-4 h-16 w-60 px-2 items-center rounded-lg border-solid border-[1px] border-slate-800 bg-slate-900 hover:bg-black hover:text-sky-500"}>
                                                     <img className="rounded-lg object-cover h-[48px] w-[48px]" src={item.adimgurl !== undefined && item.adimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : "static/img/noimage.png"}></img>
-                                                    <div className="flex flex-wrap w-full">
-                                                        <div className="text-xs text-left grow">{truncate(item.adcampaigntitle, 36, 8)}</div>
+                                                    <div className="flex flex-col gap-1 flex-wrap w-full">
+                                                        <div className="text-xs font-bold text-left grow">{truncate(item.adcampaigntitle, 64, 8)}</div>
+                                                        <div className="text-xs text-left text-slate-600">Pengiklan: <ShowUsername userid={item.advertiser_id} token={cookie.token} display="name" /></div>
                                                     </div>
                                                 </div>
                                             </button>
@@ -76,8 +78,9 @@ export const AdsDetailPage = () => {
                                             <div className="flex flex-col gap-6">
                                                 <h3 className="text-xl font-bold text-sky-500">{item.adcampaigntitle}</h3>
                                                 <div>
-                                                    <img className="w-48 h-48 object-cover rounded-lg" src={item.adimgurl !== undefined && item.adimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : "static/img/noimage.png"}></img>
+                                                    <img className="w-full h-96 object-cover rounded-lg" src={item.adimgurl !== undefined && item.adimgurl !== "" ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : "static/img/noimage.png"}></img>
                                                 </div>
+                                                <div className="text-sm text-slate-500 italic">Published: {item.updated_at}</div>
                                                 <div className="text-sm text-slate-500">{item.adcampaigndesc}</div>
                                                 <div dangerouslySetInnerHTML={{ __html: item.adcampaigntext ? Purify(item.adcampaigntext) : "" }}></div>
                                             </div>
@@ -92,9 +95,9 @@ export const AdsDetailPage = () => {
                     <div className="flex justify-center w-full mb-4">
                         <button className="bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white w-1/12 " onClick={home}>Back</button>
                     </div>
-                </div>
-                <div>
-                    <Footer />
+                    <div>
+                        <Footer />
+                    </div>
                 </div>
             </div>
         </>
