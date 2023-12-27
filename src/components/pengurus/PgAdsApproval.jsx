@@ -16,6 +16,7 @@ export const PgAdsApproval = () => {
     };
 
     const [allads, setAllAds] = useState([])
+    const [selected, setSelected] = useState("buatapproveiklan");
 
     const getAllAds = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "all", {
@@ -194,6 +195,14 @@ export const PgAdsApproval = () => {
         <>
             <div className="px-5">
                 <h3 className='font-bold text-center text-lg text-green-500'>Buat Iklan dan Persetujuan Iklan</h3>
+                <div className="flex flex-col gap-2 mt-5 pb-10">
+                    <div className="flex flex-row justify-center bg-slate-700 gap-6 rounded-md py-6">
+                        <button className={selected === "buatapproveiklan" ? "bg-slate-600 outline outline-green-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-green-600 hover:bg-green-700 px-6 py-2 rounded-md"} onClick={() => setSelected("buatapproveiklan")}>Buat & Approve Iklan</button>
+                        <button className={selected === "buattarifiklan" ? "bg-slate-600 outline outline-sky-500 outline-[1px] px-6 py-2 rounded-md font-bold" : "bg-sky-600 hover:bg-sky-700 px-6 py-2 rounded-md"} onClick={() => setSelected("buattarifiklan")}>Tarif Iklan</button>
+                    </div>
+                    {selected === "buatapproveiklan" ? "" : ""}
+                    {selected === "buattarifiklan" ? "" : ""}
+                </div>
                 <div className='py-4'>
                     <div className="text-slate-900 mt-5">
 

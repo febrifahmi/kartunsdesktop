@@ -61,7 +61,7 @@ export const ProfileCard = (props) => {
     return (
         <>
             <div>
-                {profildata.user !== undefined ?
+                {profildata && profildata.user !== undefined ?
                     <div className="flex items-center bg-slate-800 hover:bg-sky-800 p-4 rounded-md text-sm text-white gap-4">
                         <div>
                             {

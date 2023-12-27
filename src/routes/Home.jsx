@@ -46,6 +46,7 @@ import { MhsTraining } from "../components/mahasiswa/MhsTraining";
 import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
 import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
 import { Footer } from "../components/Footer";
+import { PgProfil } from "../components/pengurus/PgProfil";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -229,6 +230,12 @@ export const Home = () => {
                                 :
                                 ""}
                             {/* Active Menu for Pengurus */}
+                            {activemenu === "Profil Pengurus" ?
+                                <div>
+                                    <PgProfil getstatus={getProfilEditStatus} />
+                                </div>
+                                :
+                                ""}
                             {activemenu === "Cover Story" ?
                                 <div>
                                     <PgCoverStory />

@@ -218,7 +218,11 @@ export const PgKeanggotaan = () => {
                         <div className="px-4 rounded-lg">
                             <DataTable
                                 columns={columns}
-                                data={users.users}
+                                data={users.users.filter((item) => {
+                                    if(item.is_admin === false){
+                                        return item
+                                    }
+                                })}
                                 theme="kartunsdark"
                                 pagination
                                 customStyles={customStyles}
