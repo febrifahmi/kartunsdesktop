@@ -1,10 +1,10 @@
-import { ReadCookie, ReadCookieLocal, RemoveCookie, RemoveCookieLocal } from "../config/utils"
+import { ReadCookieLocal, RemoveCookieLocal } from "../config/utils"
 import { APIURLConfig } from "../config"
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 export const ProfileCard = (props) => {
-    const userid = props.userid
+    // const userid = props.userid
     const datastatus = props.datastatus
     const navigate = useNavigate();
     const landing = () => navigate("/");
@@ -49,14 +49,14 @@ export const ProfileCard = (props) => {
     }
 
     useEffect(() => {
-        getProfilData(userid)
+        getProfilData(cookie.iduser)
             .then((isi) => {
                 // console.log(isi);
                 setProfilData(isi)
             })
             .catch((err) => console.log(err))
         console.log("Profil data: ", profildata.user)
-    }, [datastatus])
+    }, [])
 
     return (
         <>

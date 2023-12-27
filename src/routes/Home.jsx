@@ -405,7 +405,7 @@ export const Home = () => {
                         }
                     </div>
                     <div className="rounded-md w-1/6 flex flex-col gap-2">
-                        <ProfileCard userid={cookie.iduser} datastatus={datastatus} />
+                        <ProfileCard datastatus={datastatus} />
                         <PengumumanCard />
                     </div>
                 </div>
