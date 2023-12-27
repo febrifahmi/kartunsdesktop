@@ -1,9 +1,10 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ProfilDetail } from "../ProfilDetail"
 import { ProfilEdit } from "../ProfilEdit"
 import { UbahPassword } from "../ProfilUbahPassword"
 
-export const MhsProfil = () => {
+export const MhsProfil = (props) => {
+    const getstatus = props.getstatus
     const [update, setUpdate] = useState(false)
     const [changepass, setChangePass] = useState(false)
     const [datastatus, setDataStatus] = useState(false)
@@ -29,7 +30,14 @@ export const MhsProfil = () => {
         }
     }
 
-    console.log(update)
+    useEffect(() => {
+        getstatus(datastatus);
+        setDataStatus(false);
+        setChangePass(false);
+        setPassUpdated(false);
+    }, [passupdated])
+
+    
     return (
         <>
             <div className="px-5">
@@ -42,7 +50,7 @@ export const MhsProfil = () => {
                             <ProfilEdit status={getProfilEditStatus} />
                     }
                     {
-                        changepass === true && passupdated === false ?
+                        changepass === true ?
                             <UbahPassword status={getPassUpdateStatus} />
                             :
                             ""
@@ -55,7 +63,7 @@ export const MhsProfil = () => {
                                 <button className="w-28 bg-orange-500 hover:bg-orange-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4" onClick={() => setUpdate(false)}>Cancel</button>
                         }
                         {
-                            changepass === false ?
+                            changepass === false && passupdated === false ?
                                 <button className="w-36 bg-red-500 hover:bg-red-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4" onClick={() => setChangePass(true)}>Ubah Password</button>
                                 :
                                 <button className="w-28 bg-orange-500 hover:bg-orange-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4" onClick={() => setChangePass(false)}>Cancel</button>

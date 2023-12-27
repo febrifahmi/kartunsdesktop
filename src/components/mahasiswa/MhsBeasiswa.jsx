@@ -21,6 +21,10 @@ export const MhsBeasiswa = () => {
     const failed = (errmsg) => toast.error(errmsg);
     const success = (msg) => toast.success(msg);
 
+    const getPengajuanBsw = () => {
+        
+    }
+
     var newFormData = new FormData();
 
     const handleChange = (e) => {
@@ -136,6 +140,19 @@ export const MhsBeasiswa = () => {
         }
     }
 
+    const DaftarPengajuanBeasiswaSaya = () => {
+        return (
+            <>
+                <div className="">
+                    <h3 className='font-bold text-lg text-green-500'>Daftar Pengajuan Beasiswa Saya</h3>
+                    <div id="daftarpengajuanbeasiswasaya" className="mt-4 flex flex-col gap-2">
+
+                    </div>
+                </div>
+            </>
+        )
+    }
+
     return (
         <>
             <div className="px-5">
@@ -175,6 +192,10 @@ export const MhsBeasiswa = () => {
                             {submitting === false ? <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={handleSubmit}>Ajukan Proposal</button> : <button className='bg-slate-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' disabled>Submitting...</button>}
                         </div>
                     </form>
+                </div>
+                <hr className="border-slate-700 mt-8 border-dotted" />
+                <div className="my-4">
+                    <DaftarPengajuanBeasiswaSaya />
                 </div>
             </div>
             <ToastContainer

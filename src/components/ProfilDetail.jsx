@@ -42,9 +42,9 @@ export const ProfilDetail = (props) => {
             <div className="flex flex-row gap-10 rounded-md mt-8 p-10 border-dotted border-[1px] border-slate-500">
                 <div className="w-1/6">
                     {
-                        cookie.avatar && cookie.avatar !== undefined && cookie.avatar !== "" && re.test(cookie.avatar) == false ?
+                        profildata.user !== undefined && profildata.user.profpic !== "" && re.test(profildata.user.profpic) == false ?
                             <div className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-full">
-                                <img className='object-cover aspect-square rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + cookie.avatar}></img>
+                                <img className='object-cover aspect-square rounded-full' src={APIURLConfig.baseurl + "static/profiles/" + profildata.user.profpic}></img>
                             </div>
                             :
                             <div className="hover:outline hover:outline-offset-2 hover:outline-[1px] hover:outline-slate-700 rounded-full">

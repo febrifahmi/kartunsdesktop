@@ -66,6 +66,7 @@ export const Home = () => {
     const [submitstatus, setSubmitStatus] = useState(false)
     const [pengsubmitstatus, setPengumumanSubmitStatus] = useState(false)
     const [jumlahads, setJumlahAds] = useState(-1)
+    const [datastatus, setDataStatus] = useState(false)
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -89,6 +90,16 @@ export const Home = () => {
 
     const getPengumumanSubmitStatus = (status) => {
         setPengumumanSubmitStatus(status)
+    }
+
+    const getProfilEditStatus = (status) => {
+        if (status === "submitted") {
+            setDataStatus(true)
+            return true
+        } else {
+            setDataStatus(false)
+            return false
+        }
     }
 
     useEffect(() => {
@@ -309,7 +320,7 @@ export const Home = () => {
                             {/* Active Menu for Alumni */}
                             {activemenu === "Profil" ?
                                 <div>
-                                    <AlumProfil />
+                                    <AlumProfil getstatus={getProfilEditStatus} />
                                 </div>
                                 :
                                 ""}
@@ -352,7 +363,7 @@ export const Home = () => {
                             {/* Active Menu for Mahasiswa */}
                             {activemenu === "Profil Mahasiswa" ?
                                 <div>
-                                    <MhsProfil />
+                                    <MhsProfil getstatus={getProfilEditStatus} />
                                 </div>
                                 :
                                 ""}
@@ -394,7 +405,7 @@ export const Home = () => {
                         }
                     </div>
                     <div className="rounded-md w-1/6 flex flex-col gap-2">
-                        <ProfileCard />
+                        <ProfileCard userid={cookie.iduser} datastatus={datastatus} />
                         <PengumumanCard />
                     </div>
                 </div>
