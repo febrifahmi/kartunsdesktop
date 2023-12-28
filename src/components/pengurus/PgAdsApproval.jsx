@@ -593,9 +593,9 @@ export const PgAdsApproval = () => {
                 name: "Action",
                 selector: row => {
                     return (
-                        <div className="flex flex-row gap-2 text-white my-1">
-                            <button className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg" onClick={() => console.log(row.idadrate)}><MdEditSquare /></button>
-                            <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.idadrate)}><MdDelete /></button>
+                        <div className="flex flex-col gap-2 text-white my-1">
+                            <button className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg" onClick={() => console.log(row.idadrate)}>Aktifkan</button>
+                            {row.is_active === true ? <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.idadrate)}>Non-aktifkan</button>:<button className="p-2 bg-slate-500 rounded-lg" onClick={() => console.log(row.idadrate)} disabled>Non-aktifkan</button>}
                         </div>
                     )
                 },

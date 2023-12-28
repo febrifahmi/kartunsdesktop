@@ -13,11 +13,29 @@ export const Landing = () => {
     const home = () => navigate("/home");
     const landing = () => navigate("/")
     const [loggingin, setLoggingIn] = useState(false)
+    const [sessionstatus, setSessionStatus] = useState("")
 
     const cookie = ReadCookieLocal()
 
     const success = (msg) => toast.success(msg)
     const failed = (msg) => toast.warning(msg);
+
+    const cekToken = async (id) => {
+        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.userendpoint + id, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                return data
+            })
+            .catch(e => failed(e.message))
+        return response
+    }
 
     const initialFormData = Object.freeze({
         username: "",
@@ -67,12 +85,19 @@ export const Landing = () => {
     }
 
     useEffect(() => {
-        if (cookie.token !== null && cookie.token !== "") {
-            home()
+        if (cookie && cookie.token !== undefined && cookie.token !== null && cookie.token !== "") {
+            cekToken(cookie.iduser)
+                .then((isi) => setSessionStatus(isi.code))
+                .catch((e) => console.log(e))
+            if (sessionstatus === "success") {
+                home()
+            } else {
+                landing()
+            }
         } else {
             landing()
         }
-    }, [])
+    }, [sessionstatus])
 
     return (
         <>
