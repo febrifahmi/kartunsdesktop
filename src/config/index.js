@@ -17,6 +17,7 @@ export const APIURLConfig = {
     joboffersendpoint: "api/joboffers/",
     donasiendpoint: "api/donations/",
     adsendpoint: "api/ads/",
+    adratesendpoint: "api/adrates/",
     membersendpoint: "api/members/",
     iuranmembersendpoint: "api/iuranmembers/",
     pesertawebinarsendpoint: "api/pesertawebinars/",

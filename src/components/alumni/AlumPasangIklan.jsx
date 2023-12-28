@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookie, ReadCookieLocal, resizeImage } from '../../config/utils';
+import { CreateStatusCookie, ReadCookieLocal, resizeImage, calcHargaIklan } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { ShowUsername } from '../GetUsername';
 import { ValidateInputForm } from '../../config/formvalidation';
@@ -22,6 +22,7 @@ export const AlumPasangIklan = () => {
     const success = (msg) => toast.success(msg);
 
     const [adsdata, setAdsData] = useState([])
+    const [adrates, setAdRates] = useState([])
     const [submitted, setSubmitted] = useState(false)
     const [showadrule, setAdRule] = useState(false)
 
@@ -83,6 +84,22 @@ export const AlumPasangIklan = () => {
         return response
     }
 
+    const getAdRates = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.adratesendpoint + "all", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
     useEffect(() => {
         CreateStatusCookie("Pasang Iklan");
         getAds()
@@ -91,7 +108,14 @@ export const AlumPasangIklan = () => {
                 setAdsData(isi.ads)
             })
             .catch((err) => console.log(err))
-        console.log("Setelah diisi baru", adsdata)
+        getAdRates()
+            .then((isi) => {
+                // console.log("Isi adrates: ", isi.adrates);
+                setAdRates(isi.adrates)
+            })
+            .catch((err) => console.log(err))
+        console.log("Setelah diisi baru ", adsdata)
+        console.log("Adrates ", adrates)
     }, [submitted])
 
     const currentDate = new Date();
@@ -190,6 +214,9 @@ export const AlumPasangIklan = () => {
                                 <option value={360}>12 bulan</option>
                                 <option value={720}>24 bulan</option>
                             </select>
+                        </div>
+                        <div className='text-white pb-6'>
+                            <div>Perkiraan harga iklan anda: <span>{adrates && adrates.adrates !== undefined && adrates.adrates.length > 0 ? adrates.adrates : <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan. Kontak pengurus untuk informasi lebih lanjut.</span>}</span></div>
                         </div>
                         <Editor
                             onInit={(evt, editor) => editorRef.current = editor}

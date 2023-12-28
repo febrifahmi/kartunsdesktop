@@ -257,10 +257,22 @@ export const validateAlumniFlag = (isalumni, ismhsw) => {
 }
 
 // https://stackoverflow.com/a/75318704
-export const handleDownloadExcel = (dataSource,sheetName,fileName) => {
+export const handleDownloadExcel = (dataSource, sheetName, fileName) => {
     const ws = utils.json_to_sheet(dataSource);
     const wb = utils.book_new();
     utils.book_append_sheet(wb, ws, sheetName);
-    writeFileXLSX(wb, `${fileName}.xlsx`);        
+    writeFileXLSX(wb, `${fileName}.xlsx`);
 };
 
+
+export const calcHargaIklan = (jumlahhari, adrate) => {
+    let totalprice = 0
+    if (jumlahhari > 31) {
+        totalprice = jumlahhari * adrate.adrateperharibulanan
+    } else if (jumlahhari > 365) {
+        totalprice = jumlahhari * adrate.adrateperharitahunan
+    } else {
+        totalprice = jumlahhari * adrate.adrateperhariharian
+    }
+    return totalprice
+}
