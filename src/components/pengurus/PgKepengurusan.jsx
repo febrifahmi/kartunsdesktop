@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { APIURLConfig } from "../../config"
-import { ReadCookie, ReadCookieLocal } from "../../config/utils"
+import { ReadCookieLocal, handleDownloadExcel } from "../../config/utils"
+import DataTable, { createTheme } from 'react-data-table-component';
+import { MdLockReset, MdDelete, MdEditSquare } from "react-icons/md";
+import { ShowUsername } from "../GetUsername";
 
 export const PgKepengurusan = () => {
     let token = ReadCookieLocal().token;
@@ -15,6 +18,8 @@ export const PgKepengurusan = () => {
             },
         })
             .then((response) => response.json())
+            .then((data) => { return data })
+            .catch((e) => console.log(e))
         return data
     }
 
@@ -22,60 +27,127 @@ export const PgKepengurusan = () => {
         getAllUsers().then((data) => getUsers(data));
     }, [])
 
-    let count = 0;
+    // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
+    createTheme('kartunsdark', {
+        text: {
+            primary: '#94a3b8',
+            secondary: '#64748b',
+        },
+        background: {
+            default: '#334155',
+        },
+        context: {
+            background: '#cb4b16',
+            text: '#FFFFFF',
+        },
+        divider: {
+            default: '#1e293b',
+        },
+        action: {
+            button: 'rgba(0,0,0,.54)',
+            hover: 'rgba(0,0,0,.08)',
+            disabled: 'rgba(0,0,0,.12)',
+        },
+    }, 'dark');
+
+    //  Internally, customStyles will deep merges your customStyles with the default styling.
+    const customStyles = {
+        headCells: {
+            style: {
+                fontSize: '14px',
+                justifyContent: 'center',
+                backgroundColor: '#0f172a',
+            },
+        },
+        cells: {
+            style: {
+                justifyContent: 'center',
+            }
+        }
+    };
+
+    const columns = [
+        {
+            name: "Avatar",
+            selector: row => row.profpic,
+        },
+        {
+            name: "Username",
+            selector: row => row.username,
+        },
+        {
+            name: "Nama",
+            selector: row => row.first_name + " " + row.last_name,
+        },
+        {
+            name: "Email",
+            selector: row => row.email,
+        },
+        {
+            name: "Alumni",
+            selector: row => row.is_alumni.toString(),
+        },
+        {
+            name: "Pengurus",
+            selector: row => row.is_pengurus.toString(),
+        },
+        {
+            name: "Mahasiswa",
+            selector: row => row.is_mhsarsuns.toString(),
+        },
+        {
+            name: "Created",
+            selector: row => row.created_at,
+        },
+        {
+            name: "Action",
+            selector: row => {
+                return (
+                    <div className="flex flex-row gap-2 text-white my-1">
+                        <button className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg" onClick={() => console.log(row.iduser)}><MdEditSquare /></button>
+                        <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.iduser)}><MdDelete /></button>
+                        <button className="p-2 bg-sky-500 hover:bg-sky-600 rounded-lg" onClick={() => console.log(row.iduser)}><MdLockReset /></button>
+                    </div>
+                )
+            },
+        },
+    ]
+
+    const downloadExcelUser = (data) => {
+        handleDownloadExcel(data, "datapengurus", "Data_Pengurus_KartUNS")
+    };
 
     return (
         <>
             <div className="px-5">
                 <h3 className="font-bold text-center text-lg text-green-500">Data Kepengurusan</h3>
                 <div className="mt-5 pb-10">
-                    <div className="flex justify-end">
-                        <button className="rounded-full bg-green-800 hover:bg-green-600 px-2 font-bold text-sm mb-2">Add User</button>
+                <div className="flex justify-between mb-4 px-4">
+                        <h3 className="font-bold text-left text-base text-green-500 px-4">Data Pengurus</h3>
+                        {
+                            users && users.users !== undefined && users.users.length > 0 ?
+                                <button className="px-4 py-1 bg-green-600 hover:bg-green-700 rounded-full text-white text-sm" onClick={() => downloadExcelUser(users.users)}>Export Data Pengurus</button>
+                                :
+                                ""
+                        }
                     </div>
-                    <table class="table-auto border-y-[1px] border-slate-500 w-full text-sm">
-                        <thead className="text-center">
-                            <tr className="text-slate-500">
-                                <th>No</th>
-                                <th>Profile</th>
-                                <th>Username</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Alumni</th>
-                                <th>Pengurus</th>
-                                <th>Admin</th>
-                                <th>AdmVerified</th>
-                                <th>Created</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-center">
-                            {users !== undefined ? users.users.map((item) => {
-                                if (item.is_pengurus === true) {
-                                    count++;
-                                    return (
-                                        <tr className="border-slate-500 border-y-[1px] border-dotted" key={item.iduser}>
-                                            <td>{count}</td>
-                                            <td className="rounded-full flex justify-center">
-                                                <img className="rounded-full" width={16} src={item.profpic} alt=""></img>
-                                            </td>
-                                            <td>{item.username}</td>
-                                            <td>{item.first_name} {item.last_name}</td>
-                                            <td>{item.email}</td>
-                                            <td>{item.is_alumni ? "true" : "false"}</td>
-                                            <td>{item.is_pengurus ? "true" : "false"}</td>
-                                            <td>{item.is_admin ? "true" : "false"}</td>
-                                            <td>{item.admin_verified ? "true" : "false"}</td>
-                                            <td>{item.created_at}</td>
-                                            <td className="flex gap-1 justify-center">
-                                                <button className="rounded-full bg-green-800 hover:bg-green-600 px-2">Edit</button>
-                                                <button className="rounded-full bg-red-800 px-2 hover:bg-red-600">Remove</button>
-                                            </td>
-                                        </tr>
-                                    )
-                                }
-                            }) : ""}
-                        </tbody>
-                    </table>
+                    {users && users.users !== undefined && users.users.length > 0 ?
+                        <div className="px-4 rounded-lg">
+                            <DataTable
+                                columns={columns}
+                                data={users.users.filter((item) => {
+                                    if(item.is_pengurus === true && item.is_admin === false){
+                                        return item
+                                    }
+                                })}
+                                theme="kartunsdark"
+                                pagination
+                                customStyles={customStyles}
+                            />
+                        </div>
+                        :
+                        ""
+                    }
                 </div>
             </div>
         </>

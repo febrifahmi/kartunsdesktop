@@ -3,7 +3,7 @@ import { ProfilDetail } from "../ProfilDetail"
 import { ProfilEdit } from "../ProfilEdit"
 import { UbahPassword } from "../ProfilUbahPassword"
 
-export const AlumProfil = (props) => {
+export const PgProfil = (props) => {
     const getstatus = props.getstatus
     const [update, setUpdate] = useState(false)
     const [changepass, setChangePass] = useState(false)

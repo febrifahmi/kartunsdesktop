@@ -2,6 +2,7 @@ import Cookies from 'universal-cookie';
 import Resizer from "react-image-file-resizer";
 import { useState } from 'react';
 import * as DOMPurify from 'dompurify'
+import { utils, writeFileXLSX } from 'xlsx';
 
 export const SaveCookie = (data) => {
     const cookies = new Cookies();
@@ -248,9 +249,30 @@ export const getBase64 = async (file) => new Promise((resolve, reject) => {
 
 
 export const validateAlumniFlag = (isalumni, ismhsw) => {
-    if((isalumni == true || isalumni == 1) && (ismhsw == true || ismhsw == 1)){
+    if ((isalumni == true || isalumni == 1) && (ismhsw == true || ismhsw == 1)) {
         return false
     } else {
         return true
     }
+}
+
+// https://stackoverflow.com/a/75318704
+export const handleDownloadExcel = (dataSource, sheetName, fileName) => {
+    const ws = utils.json_to_sheet(dataSource);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, sheetName);
+    writeFileXLSX(wb, `${fileName}.xlsx`);
+};
+
+
+export const calcHargaIklan = (jumlahhari, adrate) => {
+    let totalprice = 0
+    if (jumlahhari > 31) {
+        totalprice = jumlahhari * adrate.adrateperharibulanan
+    } else if (jumlahhari > 365) {
+        totalprice = jumlahhari * adrate.adrateperharitahunan
+    } else {
+        totalprice = jumlahhari * adrate.adrateperhariharian
+    }
+    return totalprice
 }

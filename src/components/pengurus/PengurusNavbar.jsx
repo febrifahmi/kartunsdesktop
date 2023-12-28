@@ -15,6 +15,12 @@ export const PengurusNavbar = ({ getSelection }) => {
                     <NavbarItem title={<MdHome size={20} />} selected={selected} />
                 </div>
                 <div onClick={() => {
+                    setSelected("Profil Pengurus");
+                    getSelection("Profil Pengurus");
+                }}>
+                    <NavbarItem title="Profil Pengurus" selected={selected} />
+                </div>
+                <div onClick={() => {
                     setSelected("Cover Story");
                     getSelection("Cover Story");
                 }}>

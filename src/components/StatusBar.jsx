@@ -13,7 +13,7 @@ export const StatusBar = () => {
         setInterval(() => {
             const now = new Date().toLocaleString();
             setTime(now)
-        }, 5000)
+        }, 1000)
     }, [time])
 
     return (

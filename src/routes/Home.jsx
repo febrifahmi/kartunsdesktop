@@ -33,6 +33,7 @@ import { AlumPasangIklan } from "../components/alumni/AlumPasangIklan";
 import { AlumAgenda } from "../components/alumni/AlumAgenda";
 import { AlumTraining } from "../components/alumni/AlumTraining";
 import { MhsProfil } from "../components/mahasiswa/MhsProfil";
+import { MhsBeasiswa } from "../components/mahasiswa/MhsBeasiswa";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AlumDonasi } from "../components/alumni/AlumDonasi";
@@ -45,11 +46,13 @@ import { MhsTraining } from "../components/mahasiswa/MhsTraining";
 import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
 import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
 import { Footer } from "../components/Footer";
+import { PgProfil } from "../components/pengurus/PgProfil";
 
 export const Home = () => {
     const navigate = useNavigate();
     const landing = () => navigate("/");
     const detail = () => navigate("/detail");
+    const adsdetail = () => navigate("/adsdetail");
 
     let cookie = ReadCookieLocal()
 
@@ -63,6 +66,8 @@ export const Home = () => {
     const [activemenu, setActiveMenu] = useState();
     const [submitstatus, setSubmitStatus] = useState(false)
     const [pengsubmitstatus, setPengumumanSubmitStatus] = useState(false)
+    const [jumlahads, setJumlahAds] = useState(-1)
+    const [datastatus, setDataStatus] = useState(false)
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -88,10 +93,26 @@ export const Home = () => {
         setPengumumanSubmitStatus(status)
     }
 
+    const getProfilEditStatus = (status) => {
+        if (status === "submitted") {
+            setDataStatus(true)
+            return true
+        } else {
+            setDataStatus(false)
+            return false
+        }
+    }
+
     useEffect(() => {
         getArticles()
             .then((isi) => setArticles(isi))   // karena result dari getArticles masih berupa Promise, belum datanya, maka data perlu dibaca dan dimasukkan dulu ke useState
             .catch((err) => console.log(err.message))
+        getAllAds()
+            .then((isi) => {
+                // console.log(isi);
+                setJumlahAds(isi.ads.length);
+            })
+            .catch((err) => console.log(err))
     }, [submitstatus])
 
     const getSelection = (selectiondata) => {
@@ -122,6 +143,24 @@ export const Home = () => {
         )
     }
 
+    const getAllAds = () => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "all", {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
+    }
+
+    console.log(jumlahads)
+
     return (
         <>
             <div className="w-full bg-slate-900">
@@ -131,11 +170,13 @@ export const Home = () => {
                         <ArtikelComponent data={articles} />
                     </div>
                 </div>
-                <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
-                    <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
-                        {cookie.isalumni === "true" || cookie.ismhsarsuns === "true" && cookie.ispengurus === "false" ? <Ads /> : ""}
+                {(cookie.isalumni === "true" || cookie.ismhsarsuns === "true") && cookie.ispengurus === "false" && jumlahads > 0 ?
+                    <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
+                        <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
+                            <Ads goto={adsdetail} />
+                        </div>
                     </div>
-                </div>
+                    : ""}
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
                     <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
                         <div className="flex gap-2 items-center ml-4">
@@ -189,6 +230,12 @@ export const Home = () => {
                                 :
                                 ""}
                             {/* Active Menu for Pengurus */}
+                            {activemenu === "Profil Pengurus" ?
+                                <div>
+                                    <PgProfil getstatus={getProfilEditStatus} />
+                                </div>
+                                :
+                                ""}
                             {activemenu === "Cover Story" ?
                                 <div>
                                     <PgCoverStory />
@@ -280,7 +327,7 @@ export const Home = () => {
                             {/* Active Menu for Alumni */}
                             {activemenu === "Profil" ?
                                 <div>
-                                    <AlumProfil />
+                                    <AlumProfil getstatus={getProfilEditStatus} />
                                 </div>
                                 :
                                 ""}
@@ -323,7 +370,7 @@ export const Home = () => {
                             {/* Active Menu for Mahasiswa */}
                             {activemenu === "Profil Mahasiswa" ?
                                 <div>
-                                    <MhsProfil />
+                                    <MhsProfil getstatus={getProfilEditStatus} />
                                 </div>
                                 :
                                 ""}
@@ -336,6 +383,12 @@ export const Home = () => {
                             {activemenu === "Mau Magang/Kerja" ?
                                 <div>
                                     <MhsLowongan />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Beasiswa KartUNS" ?
+                                <div>
+                                    <MhsBeasiswa />
                                 </div>
                                 :
                                 ""}
@@ -359,7 +412,7 @@ export const Home = () => {
                         }
                     </div>
                     <div className="rounded-md w-1/6 flex flex-col gap-2">
-                        <ProfileCard />
+                        <ProfileCard datastatus={datastatus} />
                         <PengumumanCard />
                     </div>
                 </div>

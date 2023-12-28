@@ -4,8 +4,10 @@ import { APIURLConfig } from "../config";
 export const ShowUsername = (props) => {
     const userid = props.userid
     const token = props.token
+    const display = props.display
 
     const [username, setUsername] = useState("");
+    const [name, setName] = useState("");
 
     const getUserName = () => {
         const response = fetch(APIURLConfig.baseurl + APIURLConfig.userendpoint + userid, {
@@ -27,13 +29,14 @@ export const ShowUsername = (props) => {
         getUserName().then((isi) => {
             // console.log(isi);
             setUsername(isi.user.username)
+            setName(isi.user.first_name + " " + isi.user.last_name)
         })
         // console.log(username)
     }, [])
 
     return (
         <>
-            <span>{username}</span>
+            <span>{display === "name" ? name : username}</span>
         </>
     )
 }
