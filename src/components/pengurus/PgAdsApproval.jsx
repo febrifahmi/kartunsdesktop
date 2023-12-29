@@ -197,7 +197,7 @@ export const PgAdsApproval = () => {
         useEffect(() => {
             getAdRates()
                 .then((isi) => {
-                    console.log("Isi: ", isi.adrates);
+                    // console.log("Isi: ", isi.adrates);
                     isi.adrates.forEach(element => {
                         if (element.is_active === true) {
                             setAdrate(element)
@@ -360,11 +360,22 @@ export const PgAdsApproval = () => {
                                                         <span className='font-bold'>Author:</span> <ShowUsername userid={item.advertiser_id} token={cookie.token} />
                                                     </div>
                                                     <div className='text-xs text-slate-500'>
-                                                        <p>Published: {item.created_at}</p>
+                                                        <p>Published: {Intl.DateTimeFormat("id-ID", {
+                                                            dateStyle: 'medium',
+                                                            timeStyle: 'long',
+                                                            timeZone: 'Asia/Jakarta',
+                                                        }).format(new Date(item.created_at))}</p>
+                                                    </div>
+                                                    <div className='text-xs text-slate-500'>
+                                                        <p>Updated: {Intl.DateTimeFormat("id-ID", {
+                                                            dateStyle: 'medium',
+                                                            timeStyle: 'long',
+                                                            timeZone: 'Asia/Jakarta',
+                                                        }).format(new Date(item.updated_at))}</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div className='w-1/6 flex flex-col gap-4 justify-center items-center align-middle'>
+                                            <div className='w-1/6 flex flex-col gap-2 justify-center items-center align-middle'>
                                                 {
                                                     item.is_paid ?
                                                         <div className='flex flex-col gap-2'>
@@ -392,6 +403,14 @@ export const PgAdsApproval = () => {
                                                                 </div>
                                                                 :
                                                                 <div className="text-xs border-[1px] border-sky-500 border-solid px-2 rounded-full text-sky-500">Sudah tayang</div>
+                                                }
+                                                {
+                                                    item.is_blocked === false ?
+                                                        <div className='flex flex-col gap-2'>
+                                                            <button className='bg-red-500 px-2 rounded font-bold text-sm' onClick={() => console.log(item.idad)}>Unpublish</button>
+                                                        </div>
+                                                        :
+                                                        ""
                                                 }
                                             </div>
                                         </div>
@@ -632,7 +651,17 @@ export const PgAdsApproval = () => {
             },
             {
                 name: "Status aktivasi",
-                selector: row => row.is_active.toString(),
+                selector: row => {
+                    if (row.is_active === true) {
+                        return (
+                            <spav className="px-2 rounded-full bg-green-700 text-white text-xs font-bold">aktif</spav>
+                        )
+                    } else {
+                        return (
+                            <spav className="px-2 rounded-full bg-orange-700 text-white text-xs font-bold">nonaktif</spav>
+                        )
+                    }
+                },
             },
             {
                 name: "Created",

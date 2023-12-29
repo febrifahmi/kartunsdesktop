@@ -276,3 +276,22 @@ export const calcHargaIklan = (jumlahhari, adrate) => {
     }
     return totalprice
 }
+
+
+// https://stackoverflow.com/a/31687334
+export const cekDurasiTayangAds = (publishdate, today, campaignduration) => {
+    // publishdate is updated_at not created_at
+    let published = new Date(publishdate)
+    let dd = published.getDate()
+    let mm = published.getMonth()
+    let yyyy = published.getFullYear()
+    let enddate = new Date(yyyy, mm, dd + parseInt(campaignduration))
+    // compare enddate with today's date
+    let d1 = new Date(enddate);
+    let d2 = new Date(today);
+    if (d2 <= d1) {
+        return true
+    } else if (d2 > d1) {
+        return false
+    }
+}
