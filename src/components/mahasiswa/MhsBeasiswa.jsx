@@ -1,9 +1,10 @@
-import { useState } from "react"
-import { ReadCookieLocal, getBase64 } from "../../config/utils"
+import { useEffect, useState } from "react"
+import { ReadCookieLocal, getBase64, downloadPDF } from "../../config/utils"
 import { APIURLConfig } from "../../config"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ValidateInputForm } from "../../config/formvalidation";
+import DataTable, { createTheme } from 'react-data-table-component';
 
 export const MhsBeasiswa = () => {
     const [namamahasiswa, setNamaMahasiswa] = useState("")
@@ -15,14 +16,28 @@ export const MhsBeasiswa = () => {
     const [dokportofolio, setDokPortofolio] = useState("")
     const [fileportofolio, setFilePortofolio] = useState()
     const [submitting, setSubmitting] = useState(false)
+    const [pengajuanbsw, setPengajuanBsw] = useState([])
 
     const cookie = ReadCookieLocal()
 
     const failed = (errmsg) => toast.error(errmsg);
     const success = (msg) => toast.success(msg);
 
-    const getPengajuanBsw = () => {
-        
+    const getPengajuanBsw = (userid) => {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengajuanbeasiswa + userid, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+        return response
     }
 
     var newFormData = new FormData();
@@ -140,18 +155,147 @@ export const MhsBeasiswa = () => {
         }
     }
 
-    const DaftarPengajuanBeasiswaSaya = () => {
+    const DaftarPengajuanBeasiswaSaya = (props) => {
+        const databeasiswa = props.data
+        console.log(databeasiswa)
+
+        // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
+        createTheme('kartunsdark', {
+            text: {
+                primary: '#94a3b8',
+                secondary: '#64748b',
+            },
+            background: {
+                default: '#334155',
+            },
+            context: {
+                background: '#cb4b16',
+                text: '#FFFFFF',
+            },
+            divider: {
+                default: '#1e293b',
+            },
+            action: {
+                button: 'rgba(0,0,0,.54)',
+                hover: 'rgba(0,0,0,.08)',
+                disabled: 'rgba(0,0,0,.12)',
+            },
+        }, 'dark');
+
+        //  Internally, customStyles will deep merges your customStyles with the default styling.
+        const customStyles = {
+            headCells: {
+                style: {
+                    fontSize: '14px',
+                    justifyContent: 'center',
+                    backgroundColor: '#0f172a',
+                },
+            },
+            cells: {
+                style: {
+                    justifyContent: 'center',
+                }
+            }
+        };
+
+        const columns = [
+            {
+                name: "Nama mahasiswa/i",
+                selector: row => row.namamahasiswa,
+            },
+            {
+                name: "Batch beasiswa",
+                selector: row => row.batchbeasiswa,
+            },
+            {
+                name: "File proposal",
+                selector: row => {
+                    return (
+                        <button className="bg-green-700 px-2 rounded-full text-xs font-bold text-white" onClick={() => downloadPDF(APIURLConfig.baseurl + "static/berkasbeasiswa/" + row.dokproposalbsw)}>Unduh</button>
+                    )
+                },
+            },
+            {
+                name: "File CV",
+                selector: row => {
+                    return (
+                        <button className="bg-orange-700 px-2 rounded-full text-xs font-bold text-white" onClick={() => downloadPDF(APIURLConfig.baseurl + "static/berkasbeasiswa/" + row.dokcv)}>Unduh</button>
+                    )
+                },
+            },
+            {
+                name: "File Portofolio",
+                selector: row => {
+                    return (
+                        <button className="bg-sky-700 px-2 rounded-full text-xs font-bold text-white" onClick={() => downloadPDF(APIURLConfig.baseurl + "static/berkasbeasiswa/" + row.dokportofolio)}>Unduh</button>
+                    )
+                },
+            },
+            {
+                name: "Hasil seleksi",
+                selector: row => row.hasilseleksiakhir,
+            },
+            {
+                name: "Created",
+                selector: row => {
+                    return (
+                        <span>
+                            {
+                                Intl.DateTimeFormat("id-ID", {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'long',
+                                    timeZone: 'Asia/Jakarta',
+                                }).format(new Date(row.created_at))
+                            }
+                        </span>
+                    )
+                }
+            },
+            {
+                name: "Action",
+                selector: row => {
+                    return (
+                        <div className="flex flex-row gap-2 text-white my-1">
+                            <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.iduser)}>Remove</button>
+                        </div>
+                    )
+                },
+            },
+        ]
+
+
         return (
             <>
                 <div className="">
                     <h3 className='font-bold text-lg text-green-500'>Daftar Pengajuan Beasiswa Saya</h3>
-                    <div id="daftarpengajuanbeasiswasaya" className="mt-4 flex flex-col gap-2">
-
+                    <div className="mt-4 flex flex-col gap-2">
+                        {databeasiswa && databeasiswa.pengajuanbeasiswa !== undefined && databeasiswa.pengajuanbeasiswa.length > 0 ?
+                            <div className="rounded-lg">
+                                <DataTable
+                                    columns={columns}
+                                    data={databeasiswa.pengajuanbeasiswa}
+                                    theme="kartunsdark"
+                                    pagination
+                                    customStyles={customStyles}
+                                />
+                            </div>
+                            :
+                            "Belum ada datanya"
+                        }
                     </div>
                 </div>
             </>
         )
     }
+
+    useEffect(() => {
+        getPengajuanBsw(cookie.iduser)
+            .then((isi) => {
+                setPengajuanBsw(isi)
+            })
+            .catch((err) => console.log(err))
+        console.log("Data beasiswa: ", pengajuanbsw)
+    }, [])
 
     return (
         <>
@@ -195,7 +339,7 @@ export const MhsBeasiswa = () => {
                 </div>
                 <hr className="border-slate-700 mt-8 border-dotted" />
                 <div className="my-4">
-                    <DaftarPengajuanBeasiswaSaya />
+                    <DaftarPengajuanBeasiswaSaya data={pengajuanbsw} />
                 </div>
             </div>
             <ToastContainer

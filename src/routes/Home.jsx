@@ -47,6 +47,7 @@ import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
 import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
 import { Footer } from "../components/Footer";
 import { PgProfil } from "../components/pengurus/PgProfil";
+import { PgBeasiswa } from "../components/pengurus/PgBeasiswa";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -307,6 +308,12 @@ export const Home = () => {
                             {activemenu === "Training" ?
                                 <div>
                                     <PgTraining />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Beasiswa" ?
+                                <div>
+                                    <PgBeasiswa />
                                 </div>
                                 :
                                 ""}
