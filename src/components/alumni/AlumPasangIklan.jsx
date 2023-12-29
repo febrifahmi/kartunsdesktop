@@ -22,7 +22,7 @@ export const AlumPasangIklan = () => {
     const success = (msg) => toast.success(msg);
 
     const [adsdata, setAdsData] = useState([])
-    const [adrates, setAdRates] = useState([])
+    const [adrate, setAdrate] = useState()
     const [submitted, setSubmitted] = useState(false)
     const [showadrule, setAdRule] = useState(false)
 
@@ -56,6 +56,7 @@ export const AlumPasangIklan = () => {
             adcampaigntext: campaigntext,
             adimgurl: campaignimgurl,
             nrdaysserved: campaignduration,
+            totalprice: calcHargaIklan(campaignduration, adrate),
             advertiser_id: cookie.iduser
         })
     }
@@ -110,12 +111,18 @@ export const AlumPasangIklan = () => {
             .catch((err) => console.log(err))
         getAdRates()
             .then((isi) => {
-                // console.log("Isi adrates: ", isi.adrates);
-                setAdRates(isi.adrates)
+                // console.log("Isi: ", isi.adrates);
+                isi.adrates.forEach(element => {
+                    if (element.is_active === true) {
+                        setAdrate(element)
+                        console.log("Ad rate: ", element)
+                    }
+                });
+                // setAdrate(isi)
             })
             .catch((err) => console.log(err))
         console.log("Setelah diisi baru ", adsdata)
-        console.log("Adrates ", adrates)
+        console.log("Adrates ", adrate)
     }, [submitted])
 
     const currentDate = new Date();
@@ -135,6 +142,7 @@ export const AlumPasangIklan = () => {
             "adcampaigntext": campaigntext,
             "adimgurl": campaignimgurl,
             "nrdaysserved": campaignduration,
+            "totalprice": calcHargaIklan(campaignduration, adrate),
             "advertiser_id": cookie.iduser,
             "kodetagihan": "order_" + cookie.username + "_" + dateString,
             "file": image,
@@ -146,6 +154,7 @@ export const AlumPasangIklan = () => {
             "adcampaigntext": campaigntext,
             "adimgurl": campaignimgurl,
             "nrdaysserved": campaignduration,
+            "totalprice": calcHargaIklan(campaignduration, adrate),
             "advertiser_id": cookie.iduser,
             "kodetagihan": "order_" + cookie.username + "_" + dateString,
             "file": image,
@@ -167,6 +176,7 @@ export const AlumPasangIklan = () => {
                     "adcampaigntext": campaigntext,
                     "adimgurl": campaignimgurl,
                     "nrdaysserved": campaignduration,
+                    "totalprice": calcHargaIklan(campaignduration, adrate),
                     "advertiser_id": cookie.iduser,
                     "kodetagihan": "order_" + cookie.username + "_" + dateString,
                     "file": image,
@@ -216,7 +226,11 @@ export const AlumPasangIklan = () => {
                             </select>
                         </div>
                         <div className='text-white pb-6'>
-                            <div>Perkiraan harga iklan anda: <span>{adrates && adrates.adrates !== undefined && adrates.adrates.length > 0 ? adrates.adrates : <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan. Kontak pengurus untuk informasi lebih lanjut.</span>}</span></div>
+                        <div>Perkiraan harga iklan anda: {adrate && adrate !== undefined ?
+                                        <span>{parseInt(campaignduration) <= 31 && parseInt(campaignduration) >= 1 ? <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperhariharian)}</span> : parseInt(campaignduration) > 31 && parseInt(campaignduration) <= 365 ? <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperharibulanan)}</span> : <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperharitahunan)}</span>}</span>
+                                        :
+                                        <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan/rate belum aktif. Buat ad rates/aktifkan rate dahulu sebelum buat unit iklan!</span>}
+                                    </div>
                         </div>
                         <Editor
                             onInit={(evt, editor) => editorRef.current = editor}
@@ -292,6 +306,9 @@ export const AlumPasangIklan = () => {
                                                 <div className='text-xs text-slate-400'>
                                                     {item.adcampaigndesc}
                                                 </div>
+                                                <div className='text-xs text-slate-400'>
+                                                        <span>Biaya iklan: {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.totalprice)}</span>
+                                                    </div>
                                                 <div className='text-xs text-slate-400'>
                                                     <span className='font-bold'>Author:</span> <ShowUsername userid={item.advertiser_id} token={cookie.token} />
                                                 </div>

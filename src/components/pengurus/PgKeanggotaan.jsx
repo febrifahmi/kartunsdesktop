@@ -103,19 +103,61 @@ export const PgKeanggotaan = () => {
         },
         {
             name: "Alumni",
-            selector: row => row.is_alumni.toString(),
+            selector: row => {
+                if (row.is_alumni === true) {
+                    return (
+                        <spav className="px-2 rounded-full bg-green-700 text-white text-xs font-bold">yes</spav>
+                    )
+                } else {
+                    return (
+                        <spav className="px-2 rounded-full bg-orange-700 text-white text-xs font-bold">no</spav>
+                    )
+                }
+            }
         },
         {
             name: "Pengurus",
-            selector: row => row.is_pengurus.toString(),
+            selector: row => {
+                if (row.is_pengurus === true) {
+                    return (
+                        <spav className="px-2 rounded-full bg-green-700 text-white text-xs font-bold">yes</spav>
+                    )
+                } else {
+                    return (
+                        <spav className="px-2 rounded-full bg-orange-700 text-white text-xs font-bold">no</spav>
+                    )
+                }
+            }
         },
         {
             name: "Mahasiswa",
-            selector: row => row.is_mhsarsuns.toString(),
+            selector: row => {
+                if (row.is_mhsarsuns === true) {
+                    return (
+                        <spav className="px-2 rounded-full bg-green-700 text-white text-xs font-bold">yes</spav>
+                    )
+                } else {
+                    return (
+                        <spav className="px-2 rounded-full bg-orange-700 text-white text-xs font-bold">no</spav>
+                    )
+                }
+            }
         },
         {
             name: "Created",
-            selector: row => row.created_at,
+            selector: row => {
+                return (
+                    <span>
+                        {
+                            Intl.DateTimeFormat("id-ID", {
+                                dateStyle: 'medium',
+                                timeStyle: 'long',
+                                timeZone: 'Asia/Jakarta',
+                            }).format(new Date(row.created_at))
+                        }
+                    </span>
+                )
+            }
         },
         {
             name: "Action",
@@ -176,7 +218,19 @@ export const PgKeanggotaan = () => {
         },
         {
             name: "Created",
-            selector: row => row.created_at,
+            selector: row => {
+                return (
+                    <span>
+                        {
+                            Intl.DateTimeFormat("id-ID", {
+                                dateStyle: 'medium',
+                                timeStyle: 'long',
+                                timeZone: 'Asia/Jakarta',
+                            }).format(new Date(row.created_at))
+                        }
+                    </span>
+                )
+            }
         },
         {
             name: "Action",
@@ -219,7 +273,7 @@ export const PgKeanggotaan = () => {
                             <DataTable
                                 columns={columns}
                                 data={users.users.filter((item) => {
-                                    if(item.is_admin === false){
+                                    if (item.is_admin === false) {
                                         return item
                                     }
                                 })}
