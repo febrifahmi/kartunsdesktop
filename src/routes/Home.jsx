@@ -68,6 +68,7 @@ export const Home = () => {
     const [pengsubmitstatus, setPengumumanSubmitStatus] = useState(false)
     const [jumlahads, setJumlahAds] = useState(-1)
     const [datastatus, setDataStatus] = useState(false)
+    const [allads, setAllAds] = useState([])
 
     const getArticles = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "all", {
@@ -104,13 +105,20 @@ export const Home = () => {
     }
 
     useEffect(() => {
+        let activeads = []
         getArticles()
             .then((isi) => setArticles(isi))   // karena result dari getArticles masih berupa Promise, belum datanya, maka data perlu dibaca dan dimasukkan dulu ke useState
             .catch((err) => console.log(err.message))
         getAllAds()
             .then((isi) => {
                 // console.log(isi);
-                setJumlahAds(isi.ads.length);
+                isi.ads.forEach(element => {
+                    if(element.is_blocked === false){
+                        activeads.push(element);
+                    }
+                });
+                setJumlahAds(activeads.length);
+                setAllAds(isi)
             })
             .catch((err) => console.log(err))
     }, [submitstatus])
@@ -173,7 +181,7 @@ export const Home = () => {
                 {(cookie.isalumni === "true" || cookie.ismhsarsuns === "true") && cookie.ispengurus === "false" && jumlahads > 0 ?
                     <div className="py-5 px-4 bg-slate-800 rounded-md m-2">
                         <div className="flex flex-nowrap overflow-x-auto gap-4 scrollbar-thin scrollbar-thumb-rounded-full scrollbar-track-transparent scrollbar-thumb-slate-600">
-                            <Ads goto={adsdetail} />
+                            <Ads data={allads} goto={adsdetail} />
                         </div>
                     </div>
                     : ""}

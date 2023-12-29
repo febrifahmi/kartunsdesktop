@@ -44,6 +44,7 @@ export const PgAdsApproval = () => {
     const [adsdata, setAdsData] = useState([])
     const [submitted, setSubmitted] = useState(false)
     const [approved, setApproved] = useState(false)
+    const [activated, setActivated] = useState(false)
 
     useEffect(() => {
         getAllAds()
@@ -71,7 +72,7 @@ export const PgAdsApproval = () => {
         const [campaignduration, setCampaignDuration] = useState(0)
         const [campaigntext, setCampaignText] = useState("")
         const [campaignimgurl, setCampaignImgUrl] = useState("")
-        const [adrate, setAdrate] = useState([])
+        const [adrate, setAdrate] = useState()
         const [price, setPrice] = useState(0)
         const [image, setImage] = useState()
 
@@ -115,7 +116,7 @@ export const PgAdsApproval = () => {
                 adcampaigntext: campaigntext,
                 adimgurl: campaignimgurl,
                 nrdaysserved: campaignduration,
-                totalprice: price,
+                totalprice: calcHargaIklan(campaignduration, adrate),
                 advertiser_id: cookie.iduser
             })
         }
@@ -137,7 +138,7 @@ export const PgAdsApproval = () => {
                 "adcampaigntext": campaigntext,
                 "adimgurl": campaignimgurl,
                 "nrdaysserved": campaignduration,
-                "totalprice": price,
+                "totalprice": calcHargaIklan(campaignduration, adrate),
                 "advertiser_id": cookie.iduser,
                 "kodetagihan": "order_" + cookie.username + "_" + dateString,
                 "file": image,
@@ -149,7 +150,7 @@ export const PgAdsApproval = () => {
                 "adcampaigntext": campaigntext,
                 "adimgurl": campaignimgurl,
                 "nrdaysserved": campaignduration,
-                "totalprice": price,
+                "totalprice": calcHargaIklan(campaignduration, adrate),
                 "advertiser_id": cookie.iduser,
                 "kodetagihan": "order_" + cookie.username + "_" + dateString,
                 "file": image,
@@ -171,7 +172,7 @@ export const PgAdsApproval = () => {
                         "adcampaigntext": campaigntext,
                         "adimgurl": campaignimgurl,
                         "nrdaysserved": campaignduration,
-                        "totalprice": price,
+                        "totalprice": calcHargaIklan(campaignduration, adrate),
                         "advertiser_id": cookie.iduser,
                         "kodetagihan": "order_" + cookie.username + "_" + dateString,
                         "file": image,
@@ -196,18 +197,18 @@ export const PgAdsApproval = () => {
         useEffect(() => {
             getAdRates()
                 .then((isi) => {
-                    // console.log("Isi: ", isi.adrates);
+                    console.log("Isi: ", isi.adrates);
                     isi.adrates.forEach(element => {
                         if (element.is_active === true) {
                             setAdrate(element)
-                            console.log("Ad rate: ", adrate)
+                            console.log("Ad rate: ", element)
                         }
                     });
                     // setAdrate(isi)
                 })
                 .catch((err) => console.log(err))
             // console.log("Ad rate: ", adrate)
-        }, [])
+        }, [activated])
 
         return (
             <>
@@ -238,16 +239,11 @@ export const PgAdsApproval = () => {
                                     </select>
                                 </div>
                                 <div className='text-white pb-6'>
-                                    <div>Perkiraan harga iklan anda: {adrate && adrate.adrates !== undefined ?
-                                        adrate.adrates.map((item) =>
-                                        (
-                                            1 <= parseInt(campaignduration) <= 31 ?
-                                                <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * item.adrateperhariharian)}</span>
-                                                :
-                                                ""
-                                        ))
+                                    <div>Perkiraan harga iklan anda: {adrate && adrate !== undefined ?
+                                        <span>{parseInt(campaignduration) <= 31 && parseInt(campaignduration) >= 1 ? <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperhariharian)}</span> : parseInt(campaignduration) > 31 && parseInt(campaignduration) <= 365 ? <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperharibulanan)}</span> : <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperharitahunan)}</span>}</span>
                                         :
-                                        <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan/rate belum aktif. Buat ad rates/aktifkan rate dahulu sebelum buat unit iklan!</span>}</div>
+                                        <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan/rate belum aktif. Buat ad rates/aktifkan rate dahulu sebelum buat unit iklan!</span>}
+                                    </div>
                                 </div>
                                 <Editor
                                     onInit={(evt, editor) => editorRef.current = editor}
@@ -356,6 +352,9 @@ export const PgAdsApproval = () => {
                                                     </div>
                                                     <div className='text-xs text-slate-400'>
                                                         {item.adcampaigndesc}
+                                                    </div>
+                                                    <div className='text-xs text-slate-400'>
+                                                        <span>Biaya iklan: {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.totalprice)}</span>
                                                     </div>
                                                     <div className='text-xs text-slate-400'>
                                                         <span className='font-bold'>Author:</span> <ShowUsername userid={item.advertiser_id} token={cookie.token} />
@@ -524,7 +523,57 @@ export const PgAdsApproval = () => {
                 })
                 .catch((err) => console.log(err))
             console.log("Ad rate: ", adrate)
-        }, [])
+        }, [activated])
+
+        const handleActivateAdRate = async (adrateid) => {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.adratesendpoint + "update/" + adrateid, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "is_active": true,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            if (response && response.code !== undefined && response.code === "success") {
+                success("Sukses aktivasi tarif iklan.")
+                setActivated(true)
+            }
+            return response
+        }
+
+        const handleDeActivateAdRate = async (adrateid) => {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.adratesendpoint + "update/" + adrateid, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "is_active": false,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            if (response && response.code !== undefined && response.code === "success") {
+                success("Sukses deaktivasi tarif iklan.")
+                setActivated(true)
+            }
+            return response
+        }
 
         // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
         createTheme('kartunsdark', {
@@ -570,15 +619,15 @@ export const PgAdsApproval = () => {
                 selector: row => row.adratetitle,
             },
             {
-                name: "Tarif harian",
+                name: "Tarif/hari harian",
                 selector: row => Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(row.adrateperhariharian),
             },
             {
-                name: "Tarif bulanan",
+                name: "Tarif/hari bulanan",
                 selector: row => Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(row.adrateperharibulanan),
             },
             {
-                name: "Tarif tahunan",
+                name: "Tarif/hari tahunan",
                 selector: row => Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(row.adrateperharitahunan)
             },
             {
@@ -594,8 +643,8 @@ export const PgAdsApproval = () => {
                 selector: row => {
                     return (
                         <div className="flex flex-col gap-2 text-white my-1">
-                            <button className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg" onClick={() => console.log(row.idadrate)}>Aktifkan</button>
-                            {row.is_active === true ? <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.idadrate)}>Non-aktifkan</button>:<button className="p-2 bg-slate-500 rounded-lg" onClick={() => console.log(row.idadrate)} disabled>Non-aktifkan</button>}
+                            {row.is_active === false ? <button className="p-2 bg-orange-500 hover:bg-orange-600 rounded-lg" onClick={() => handleActivateAdRate(row.idadrate)}>Aktifkan</button> : <button className="p-2 bg-slate-500 rounded-lg" onClick={() => console.log(row.idadrate)} disabled>Aktifkan</button>}
+                            {row.is_active === true ? <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => handleDeActivateAdRate(row.idadrate)}>Non-aktifkan</button> : <button className="p-2 bg-slate-500 rounded-lg" onClick={() => console.log(row.idadrate)} disabled>Non-aktifkan</button>}
                         </div>
                     )
                 },

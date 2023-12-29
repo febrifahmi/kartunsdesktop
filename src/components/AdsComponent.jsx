@@ -4,33 +4,34 @@ import { truncate } from "../config/utils"
 
 export const Ads = (props) => {
     const adsdetail = props.goto
-    const [allads, setAllAds] = useState([])
+    const allads = props.data
+    // const [allads, setAllAds] = useState([])
 
-    const getAllAds = () => {
-        const response = fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "all", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                console.log(data);
-                return data
-            })
-            .catch((err) => console.log(err))
-        return response
-    }
+    // const getAllAds = () => {
+    //     const response = fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "all", {
+    //         method: "GET",
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //         },
+    //     })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+    //             console.log(data);
+    //             return data
+    //         })
+    //         .catch((err) => console.log(err))
+    //     return response
+    // }
 
-    useEffect(() => {
-        getAllAds()
-            .then((isi) => {
-                // console.log(isi);
-                setAllAds(isi);
-            })
-            .catch((err) => console.log(err))
-        console.log("All ads: ", allads)
-    }, [])
+    // useEffect(() => {
+    //     getAllAds()
+    //         .then((isi) => {
+    //             // console.log(isi);
+    //             setAllAds(isi);
+    //         })
+    //         .catch((err) => console.log(err))
+    //     console.log("All ads: ", allads)
+    // }, [])
 
     return (
         <>
