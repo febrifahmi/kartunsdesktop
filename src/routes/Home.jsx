@@ -188,7 +188,7 @@ export const Home = () => {
                     : ""}
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
                     <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
-                        <div className="flex gap-2 items-center ml-4">
+                        <div className="flex flex-col gap-2 ml-4">
                             {cookie.isadmin === "true" ?
                                 <div>
                                     <AdmNavbar getSelection={getSelection} />
@@ -200,7 +200,7 @@ export const Home = () => {
                                 </div>
                                 : ""
                             }
-                            {cookie.isalumni === "true" && cookie.ismhsarsuns === "false" && cookie.ispengurus === "false" ?
+                            {cookie.isalumni === "true" && cookie.ismhsarsuns === "false" ?
                                 <div>
                                     <AlumniNavbar getSelection={getSelection} />
                                 </div> : ""
