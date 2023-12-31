@@ -24,7 +24,7 @@ export const MhsBeasiswa = () => {
     const success = (msg) => toast.success(msg);
 
     const getPengajuanBsw = (userid) => {
-        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengajuanbeasiswa + userid, {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengajuanbeasiswaendpoint + userid, {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',

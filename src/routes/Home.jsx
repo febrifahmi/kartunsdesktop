@@ -48,6 +48,7 @@ import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
 import { Footer } from "../components/Footer";
 import { PgProfil } from "../components/pengurus/PgProfil";
 import { PgBeasiswa } from "../components/pengurus/PgBeasiswa";
+import { AdmProfil } from "../components/admin/AdmProfil";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -217,6 +218,12 @@ export const Home = () => {
                             {activemenu === "Dashboard" ?
                                 <div>
                                     <AdmDashboard />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Profil Admin" ?
+                                <div>
+                                    <AdmProfil getstatus={getProfilEditStatus} />
                                 </div>
                                 :
                                 ""}
@@ -420,7 +427,7 @@ export const Home = () => {
                                 <Footer />
                             </div> : ""
                         }
-                        {ReadCookieLocal().ispengurus === "true" ?
+                        {ReadCookieLocal().ispengurus === "true" || ReadCookieLocal().isadmin === "true" ?
                             <div className="px-5">
                                 <Footer />
                             </div> : ""

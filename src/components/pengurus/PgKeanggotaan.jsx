@@ -14,6 +14,7 @@ export const PgKeanggotaan = () => {
     const [members, getMembers] = useState([])
     const [showedit, setShowEdit] = useState(-1)
     const [selecteduser, setSelectedUser] = useState({})
+    const [userupdatestatus, setUserUpdateStatus] = useState(false)
 
     const getAllUsers = () => {
         const data = fetch(APIURLConfig.baseurl + APIURLConfig.userendpoint + "all", {
@@ -48,7 +49,10 @@ export const PgKeanggotaan = () => {
         // console.log(users)
         getAllMembers().then((data) => getMembers(data));
         console.log(members)
-    }, [])
+        if(userupdatestatus === true){
+            setUserUpdateStatus(false)
+        }
+    }, [userupdatestatus])
 
     // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
     createTheme('kartunsdark', {
@@ -371,7 +375,8 @@ export const PgKeanggotaan = () => {
             if (response.code === "success") {
                 success("Sukses melakukan pembaruan data pengguna.")
                 // setSubmitted(true)
-                setstatus("submitted")
+                // setstatus("submitted")
+                setUserUpdateStatus(true)
             } else {
                 failed("Gagal melakukan pembaruan data pengguna.")
             }
@@ -381,7 +386,10 @@ export const PgKeanggotaan = () => {
         useEffect(() => {
             getSelectedUser(userid, users.users);
             console.log("Selected user: ", selecteduser)
-        }, [])
+            if(userupdatestatus === true){
+                setShowEdit(-1)
+            }
+        }, [userupdatestatus])
 
         return (
             <>
@@ -408,7 +416,7 @@ export const PgKeanggotaan = () => {
                             </div>
                             <Editor
                                 onInit={(evt, editor) => editorRef.current = editor}
-                                initialValue={userdata && userdata.tentang !== undefined && userdata.tentang !== "" && userdata.tentang !== null ? userdata.tentang : "<p>Silahkan tuliskan tentang profil pengguna di sini, usaha pengguna, dan sebagainya.</p>"}
+                                initialValue={userdata && userdata.tentang !== null && userdata.tentang !== undefined && userdata.tentang !== "" ? userdata.tentang : "<p>Silahkan tuliskan tentang profil pengguna di sini, usaha pengguna, dan sebagainya.</p>"}
                                 init={{
                                     height: 500,
                                     menubar: false,

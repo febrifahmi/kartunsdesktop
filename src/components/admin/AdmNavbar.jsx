@@ -14,6 +14,12 @@ export const AdmNavbar = ({ getSelection }) => {
                     <NavbarItem title="Dashboard" selected={selected} />
                 </div>
                 <div onClick={() => {
+                    setSelected("Profil Admin");
+                    getSelection("Profil Admin");
+                }}>
+                    <NavbarItem title="Profil Admin" selected={selected} />
+                </div>
+                <div onClick={() => {
                     setSelected("User Management");
                     getSelection("User Management");
                 }}>

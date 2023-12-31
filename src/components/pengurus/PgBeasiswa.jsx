@@ -9,7 +9,7 @@ export const PgBeasiswa = () => {
     const [pengajuanbsw, setPengajuanBsw] = useState([])
 
     const getPengajuanBsw = () => {
-        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengajuanbeasiswa + "all", {
+        const response = fetch(APIURLConfig.baseurl + APIURLConfig.pengajuanbeasiswaendpoint + "all", {
             method: "GET",
             headers: {
                 'Content-Type': 'application/json',
