@@ -168,7 +168,7 @@ export const PgBeasiswa = () => {
                             />
                         </div>
                         :
-                        "Belum ada datanya"
+                        <div className="px-4">Belum ada datanya</div>
                     }
                 </div>
             </div>

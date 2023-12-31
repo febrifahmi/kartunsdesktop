@@ -227,7 +227,9 @@ export const PgKeanggotaan = () => {
         },
         {
             name: "Created",
-            selector: row => {
+            selector: row => 
+            // row.created_at
+            {
                 return (
                     <span>
                         {
@@ -235,7 +237,7 @@ export const PgKeanggotaan = () => {
                                 dateStyle: 'medium',
                                 timeStyle: 'long',
                                 timeZone: 'Asia/Jakarta',
-                            }).format(new Date(row.created_at))
+                            }).format(row.created_at)
                         }
                     </span>
                 )
