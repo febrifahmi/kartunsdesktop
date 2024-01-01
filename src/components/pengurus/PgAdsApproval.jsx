@@ -332,6 +332,31 @@ export const PgAdsApproval = () => {
             return response
         }
 
+        const handleUnpublishAds = async (adsid) => {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.adsendpoint + "update/" + adsid, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "is_blocked": true,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+            if (response.code !== undefined && response.code === "success") {
+                success("Sukses membatalkan penayangan unit iklan.")
+                setApproved(false)
+            }
+            return response
+        }
+
         return (
             <>
                 <div className="my-4">
@@ -340,8 +365,8 @@ export const PgAdsApproval = () => {
                         {
                             allads.ads !== undefined && allads.ads.length > 0 ?
                                 allads.ads.map((item) => (
-                                    <form method="put">
-                                        <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idad}>
+                                    <form method="put" key={item.idad}>
+                                        <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md'>
                                             <div className='w-5/6 flex flex-row gap-4'>
                                                 <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
                                                     <img className='object-fill rounded-md' src={item.adimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.adimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.adimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
@@ -407,7 +432,7 @@ export const PgAdsApproval = () => {
                                                 {
                                                     item.is_blocked === false ?
                                                         <div className='flex flex-col gap-2'>
-                                                            <button className='bg-red-500 px-2 rounded font-bold text-sm' onClick={() => console.log(item.idad)}>Unpublish</button>
+                                                            <button className='bg-red-500 px-2 rounded font-bold text-sm' onClick={() => handleUnpublishAds(item.idad)}>Unpublish</button>
                                                         </div>
                                                         :
                                                         ""

@@ -13,7 +13,7 @@ export const Breadcrumb = () => {
                     <MdChevronRight />
                     <h1 className="text-sm text-left">{location.pathname}</h1>
                 </div>
-                <div className="mr-4">
+                <div className="mr-4 flex flex-row gap-2">
                     {cookie.isalumni === "true"? <div className="px-2 bg-slate-800 rounded-full text-xs">Alumni</div>:""}
                     {cookie.ismhsarsuns === "true"? <div className="px-2 bg-slate-800 rounded-full text-xs">Mahasiswa Arsitektur UNS</div>:""}
                     {cookie.ispengurus === "true"? <div className="px-2 bg-green-700 rounded-full text-xs text-white">Pengurus</div>:""}

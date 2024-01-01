@@ -39,10 +39,16 @@ export const ArtikelDetail = (props) => {
     return (
         <>
             <div>
-                <h3></h3>
-                <div>
-
-                </div>
+                {artikel && artikel !== undefined ?
+                    <div>
+                        <h3>{artikel.articletitle}</h3>
+                        <div>
+                            {artikel.articledesc}
+                        </div>
+                    </div>
+                    :
+                    ""
+                }
             </div>
         </>
     )

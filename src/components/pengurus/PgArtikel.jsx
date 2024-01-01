@@ -1,12 +1,15 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, resizeImage, ImageExist } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, resizeImage, ImageExist, truncate, Purify } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { ShowUsername } from '../GetUsername';
 import { ValidateInputForm } from '../../config/formvalidation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DataTable, { createTheme } from 'react-data-table-component';
+import { MdLockReset, MdDelete, MdEditSquare } from "react-icons/md";
+import { ArtikelDetail } from '../ArtikelDetail';
 
 export const PgArtikel = (props) => {
     const editorRef = useRef(null);
@@ -30,6 +33,13 @@ export const PgArtikel = (props) => {
     const [artikelimgurl, setArtikelImgUrl] = useState("");
     const [image, setImage] = useState()
     const [submitted, setSubmitted] = useState(false)
+    const [selectedartikelid, setSelectedArtikelId] = useState(-1)
+    const [selartikel, setSelArtikel] = useState()
+    const [editjudulartikel, setEditJudulArtikel] = useState("");
+    const [editdescartikel, setEditDescArtikel] = useState("")
+    const [editartikeltext, setEditArtikelText] = useState("")
+    const [editartikelimgurl, setEditArtikelImgUrl] = useState("")
+    const [editimage, setEditImage] = useState()
 
     // initialization of form submission status
     status(submitted);
@@ -47,6 +57,14 @@ export const PgArtikel = (props) => {
             })
             .catch((err) => console.log(err))
         return response
+    }
+
+    const getSelectedArticle = (id, articles) => {
+        articles.forEach(element => {
+            if (element.idarticle === id) {
+                setSelArtikel(element)
+            }
+        });
     }
 
     var newFormData = new FormData();
@@ -76,8 +94,11 @@ export const PgArtikel = (props) => {
                 setArtikel(isi.articles)
             })
             .catch((err) => console.log(err))
+        getSelectedArticle(selectedartikelid, artikel)
         console.log("Setelah diisi baru", artikel)
-    }, [submitted])
+        setSubmitted(false)
+        setSelectedArtikelId(-1)
+    }, [submitted, selectedartikelid])
 
     const handleImageChange = async (event) => {
         const file = event.target.files[0];
@@ -148,6 +169,215 @@ export const PgArtikel = (props) => {
         }
     }
 
+    // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
+    createTheme('kartunsdark', {
+        text: {
+            primary: '#94a3b8',
+            secondary: '#64748b',
+        },
+        background: {
+            default: '#334155',
+        },
+        context: {
+            background: '#cb4b16',
+            text: '#FFFFFF',
+        },
+        divider: {
+            default: '#1e293b',
+        },
+        action: {
+            button: 'rgba(0,0,0,.54)',
+            hover: 'rgba(0,0,0,.08)',
+            disabled: 'rgba(0,0,0,.12)',
+        },
+    }, 'dark');
+
+    //  Internally, customStyles will deep merges your customStyles with the default styling.
+    const customStyles = {
+        headCells: {
+            style: {
+                fontSize: '14px',
+                justifyContent: 'center',
+                backgroundColor: '#0f172a',
+            },
+        },
+        cells: {
+            style: {
+                justifyContent: 'justify',
+            }
+        }
+    };
+
+    const columns = [
+        {
+            name: "Gambar cover",
+            selector: row => {
+                return (
+                    <div>
+                        <img className='w-[100px] h-[100px] rounded-lg my-1' src={row.articleimgurl && row.articleimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + row.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + row.articleimgurl : APIURLConfig.baseurl + "static/img/noimage.png"}></img>
+                    </div>
+                )
+            },
+            width: "140px",
+        },
+        {
+            name: "Judul artikel",
+            selector: row => row.articletitle,
+            width: "300px",
+        },
+        {
+            name: "Deskripsi pendek",
+            selector: row => row.articledesc,
+            width: "300px",
+        },
+        {
+            name: "Isi artikel",
+            selector: row => row.articletext,
+            width: "500px",
+        },
+        {
+            name: "Created",
+            selector: row => {
+                return (
+                    <span>
+                        {
+                            Intl.DateTimeFormat("id-ID", {
+                                dateStyle: 'medium',
+                                timeStyle: 'long',
+                                timeZone: 'Asia/Jakarta',
+                            }).format(new Date(row.created_at))
+                        }
+                    </span>
+                )
+            },
+            width: "150px",
+        },
+        {
+            name: "Action",
+            selector: row => {
+                return (
+                    <div className="flex flex-col gap-2 text-white my-1">
+                        <button className="p-2 bg-sky-500 hover:bg-sky-600 rounded-lg" onClick={() => setSelectedArtikelId(row.idarticle)}>View & Edit</button>
+                        <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={(e) => handleDeleteArtikel(e, row.idarticle)}>Remove</button>
+                    </div>
+                )
+            },
+        },
+    ]
+
+    const handleChangeEditArticle = (e) => {
+        // ... get data form
+        newFormData[e.target.name] = e.target.value.trim()
+        if (newFormData["editarticletitle"] !== undefined) {
+            setEditJudulArtikel(newFormData["editarticletitle"])
+        }
+        if (newFormData["editarticledesc"] !== undefined) {
+            setEditDescArtikel(newFormData["editarticledesc"])
+        }
+        console.log({
+            articletitle: editjudulartikel,
+            articledesc: editdescartikel,
+            articletext: editartikeltext,
+            articleimgurl: editartikelimgurl,
+            author_id: cookie.iduser,
+            file: editimage,
+        })
+    }
+
+    const handleEditImageChange = async (event) => {
+        const file = event.target.files[0];
+        const editimage = await resizeImage(file);
+        // console.log(image);
+        setEditArtikelImgUrl(file.name);
+        // // Convert data to base64
+        // let img = await getBase64(image)
+        setEditImage(editimage);
+        console.log({ file: editimage })
+    }
+
+    const handleSubmitEdit = async (e, id) => {
+        e.preventDefault()
+        // console.log(e.target);
+        console.log({
+            "articletitle": editjudulartikel,
+            "articledesc": editdescartikel,
+            "articletext": editartikeltext,
+            "articleimgurl": editartikelimgurl,
+            "author_id": cookie.iduser,
+            "file": editimage,
+        })
+
+        let cekdata = {
+            "articletitle": editjudulartikel,
+            "articledesc": editdescartikel,
+            "articletext": editartikeltext,
+            "articleimgurl": editartikelimgurl,
+            "author_id": cookie.iduser,
+            "file": editimage,
+        }
+
+        // const validation = ValidateArtikel(judulartikel, descartikel, artikeltext, artikelimgurl, ReadCookie().iduser, image);
+        const validation = ValidateInputForm(cekdata)
+
+        if (validation.message === undefined) {
+            // ... submit to RestAPI using fetch api
+            const response = await fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "update/" + id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${cookie.token}`
+                },
+                body: JSON.stringify({
+                    "articletitle": editjudulartikel,
+                    "articledesc": editdescartikel,
+                    "articletext": editartikeltext,
+                    "articleimgurl": editartikelimgurl,
+                    "author_id": cookie.iduser,
+                    "file": editimage,
+                }),
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    return data
+                })
+                .catch((err) => console.log(err))
+
+            if (response.code === "success") {
+                success("Sukses mengubah/update artikel.")
+                setSubmitted(true)
+                status(submitted)
+            }
+            return response
+        } else {
+            failed(validation.message)
+        }
+    }
+
+    const handleDeleteArtikel = async (e, id) => {
+        const response = await fetch(APIURLConfig.baseurl + APIURLConfig.articleendpoint + "delete/" + id, {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cookie.token}`
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                return data
+            })
+            .catch((err) => console.log(err))
+
+        if (response.code === "success") {
+            success("Sukses menghapus artikel.")
+            setSubmitted(true)
+            status(submitted)
+        } else {
+            failed("Gagal menghapus artikel.")
+        }
+    }
+
     return (
         <>
             <div className="px-5">
@@ -198,31 +428,98 @@ export const PgArtikel = (props) => {
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Artikel KartUNS</h3>
                     <div className='py-4'>
-                        {artikel !== undefined && artikel.length !== 0 ? artikel.slice(0, 10).map((item) => (
-                            <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-row gap-4 my-2 rounded-md' key={item.idarticle}>
-                                <div className='rounded-md flex hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/6'>
-                                    <img className='object-fill rounded-md' src={item.articleimgurl !== undefined && ImageExist(APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl) ? APIURLConfig.baseurl + "static/uploads/" + item.articleimgurl : APIURLConfig.baseurl + 'static/img/noimage.png'}></img>
-                                </div>
-                                <div className='flex flex-col gap-2 w-5/6'>
-                                    <div className='text-sm font-bold'>
-                                        {item.articletitle}
-                                    </div>
-                                    <div className='text-xs text-slate-400'>
-                                        {item.articledesc}
-                                    </div>
-                                    <div className='text-xs text-slate-400'>
-                                        <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
-                                    </div>
-                                    <div className='text-xs text-slate-500'>
-                                        <p>Published: {item.created_at}</p>
-                                    </div>
-                                </div>
+                        {artikel !== undefined && artikel.length !== 0 ?
+                            <div className="rounded-lg">
+                                <DataTable
+                                    columns={columns}
+                                    data={artikel}
+                                    theme="kartunsdark"
+                                    pagination
+                                    customStyles={customStyles}
+                                />
                             </div>
-                        ))
                             :
                             <div className=''>Belum ada artikel di dalam database.</div>}
                     </div>
                 </div>
+            </div>
+            {selartikel && selartikel !== undefined ? <hr className="border-slate-700 mt-8 mb-4 border-dotted" /> : ""}
+            <div className='px-5'>
+                {selartikel && selartikel !== undefined ?
+                    <div className='p-10 bg-slate-900 rounded-lg'>
+                        <h3 className='text-lg font-bold text-sky-500'>{selartikel.articletitle}</h3>
+                        <img className='w-full rounded-lg my-4' src={selartikel && selartikel.articleimgurl !== undefined && selartikel.articleimgurl !== "" && selartikel.articleimgurl !== null && ImageExist(APIURLConfig.baseurl + "static/uploads/" + selartikel.articleimgurl) ?
+                            APIURLConfig.baseurl + "static/uploads/" + selartikel.articleimgurl
+                            :
+                            APIURLConfig.baseurl + "static/img/noimage.png"
+                        }>
+                        </img>
+                        <div className='text-sm text-slate-500 italic mb-4'>
+                            {selartikel.articledesc}
+                        </div>
+                        <div className='text-sm text-slate-500 italic mb-4'>
+                            <span>Published: </span>{selartikel.created_at}
+                        </div>
+                        <div className='text-slate-500 text-base' dangerouslySetInnerHTML={{ __html: Purify(selartikel.articletext) }}>
+                        </div>
+                    </div>
+                    :
+                    ""
+                }
+            </div>
+            {selartikel && selartikel !== undefined ? <hr className="border-slate-700 mt-8 mb-4 border-dotted" /> : ""}
+            <div className='px-5'>
+                {
+                    selartikel && selartikel !== undefined ?
+                        <div className='p-10 bg-slate-900 text-slate-500 rounded-lg'>
+                            <div className='flex flex-row align-middle gap-2'>
+                                <h3 className='font-bold text-lg flex justify-start text-green-500 mb-6'>Edit Artikel:</h3>
+                                <span className='text-slate-500 text-lg'>{selartikel.articletitle}</span>
+                            </div>
+                            <form method='put'>
+                                <div>
+                                    <div className="flex">
+                                        <input className="grow rounded h-12" name="editarticletitle" type={"text"} placeholder={selartikel && selartikel.articletitle !== undefined ? selartikel.articletitle : " Judul artikel"} onChange={handleChangeEditArticle} />
+                                    </div>
+                                </div>
+                                <div className="flex py-6">
+                                    <input className="grow rounded h-12" name="editarticledesc" type={"text"} placeholder={selartikel && selartikel.articledesc !== undefined ? selartikel.articledesc : " Deskripsi pendek mengenai isi artikel"} onChange={handleChangeEditArticle} />
+                                </div>
+                                <Editor
+                                    onInit={(evt, editor) => editorRef.current = editor}
+                                    initialValue={selartikel && selartikel.articletext !== undefined && selartikel.articletext !== null ? selartikel.articletext : "<p>Silahkan tuliskan isi artikel terbaru KartUNS di sini.</p>"}
+                                    init={{
+                                        height: 500,
+                                        menubar: false,
+                                        plugins: [
+                                            'advlist', 'autolink',
+                                            'lists', 'link', 'image', 'charmap', 'preview', 'anchor', 'searchreplace', 'visualblocks',
+                                            'fullscreen', 'insertdatetime', 'media', 'table', 'help', 'wordcount'
+                                        ],
+                                        toolbar: 'undo redo | formatselect | ' +
+                                            'bold italic backcolor | alignleft aligncenter ' +
+                                            'alignright alignjustify | bullist numlist outdent indent | ' +
+                                            'removeformat | help',
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                                    }}
+                                    onEditorChange={(newText) => setEditArtikelText(newText)}
+                                />
+                                <input type="hidden" id="articletext" name="editarticletext" value={editartikeltext} ></input>
+                                <div className="text-white bg-gray-darker rounded-xl flex py-4 px-4 my-4 border-solid border-gray-darker border-[1px]">
+                                    <div className='flex'>
+                                        <label className='mr-6'>Upload gambar artikel (max. <span className='text-red'>500Kb</span>) <span className='text-red-500'>*)</span></label>
+                                        <input type="file" name="imagefile" accept="image/*" onChange={handleEditImageChange} />
+                                    </div>
+                                </div>
+                                <input type="hidden" id="" name="editarticleimgurl" value={editartikelimgurl} ></input>
+                                <div className='flex justify-center'>
+                                    <button className='bg-green-500 hover:bg-green-600 py-2 px-4 rounded-md text-white font-bold text-sm my-4' onClick={(e) => handleSubmitEdit(e, selartikel.idarticle)}>Edit Article</button>
+                                </div>
+                            </form>
+                        </div>
+                        :
+                        ""
+                }
             </div>
             <ToastContainer
                 position="top-center"

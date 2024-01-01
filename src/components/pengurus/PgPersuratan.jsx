@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, getB64Pdf } from '../../config/utils';
+import { CreateStatusCookieLocal, ReadCookie, ReadCookieLocal, getB64Pdf, downloadPDF, handleDownloadExcel } from '../../config/utils';
 import { APIURLConfig } from '../../config';
 import { useEffect } from 'react';
 import { MdPictureAsPdf } from "react-icons/md";
@@ -8,6 +8,7 @@ import { ShowUsername } from '../GetUsername';
 import { ValidateInputForm } from '../../config/formvalidation';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import DataTable, { createTheme } from 'react-data-table-component';
 
 export const PgPersuratan = () => {
     const editorRef = useRef(null);
@@ -172,52 +173,134 @@ export const PgPersuratan = () => {
     const DaftarSuratMasuk = (props) => {
         const data = props.data
         const [showpdf, setShowPdf] = useState(0)
+
+        // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
+        createTheme('kartunsdark', {
+            text: {
+                primary: '#94a3b8',
+                secondary: '#64748b',
+            },
+            background: {
+                default: '#334155',
+            },
+            context: {
+                background: '#cb4b16',
+                text: '#FFFFFF',
+            },
+            divider: {
+                default: '#1e293b',
+            },
+            action: {
+                button: 'rgba(0,0,0,.54)',
+                hover: 'rgba(0,0,0,.08)',
+                disabled: 'rgba(0,0,0,.12)',
+            },
+        }, 'dark');
+
+        //  Internally, customStyles will deep merges your customStyles with the default styling.
+        const customStyles = {
+            headCells: {
+                style: {
+                    fontSize: '14px',
+                    justifyContent: 'center',
+                    backgroundColor: '#0f172a',
+                },
+            },
+            cells: {
+                style: {
+                    justifyContent: 'center',
+                }
+            }
+        };
+
+        const columns = [
+            {
+                name: "Judul surat",
+                selector: row => row.suratmasuktitle,
+            },
+            {
+                name: "No surat",
+                selector: row => row.suratmasuknr,
+            },
+            {
+                name: "Pengirim",
+                selector: row => row.pengirim,
+            },
+            {
+                name: "Deskripsi",
+                selector: row => row.suratmasukdesc,
+            },
+            {
+                name: "Author",
+                selector: row => {
+                    return <ShowUsername userid={row.author_id} token={cookie.token} display="name" />
+                },
+            },
+            {
+                name: "File surat",
+                selector: row => {
+                    return (
+                        <button className="bg-green-700 px-2 rounded-full text-xs font-bold text-white" onClick={() => downloadPDF(APIURLConfig.baseurl + "static/surat/masuk/" + row.filesuraturi)}>Unduh</button>
+                    )
+                },
+            },
+            {
+                name: "Created",
+                selector: row => {
+                    return (
+                        <span>
+                            {
+                                Intl.DateTimeFormat("id-ID", {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'long',
+                                    timeZone: 'Asia/Jakarta',
+                                }).format(new Date(row.created_at))
+                            }
+                        </span>
+                    )
+                }
+            },
+            {
+                name: "Action",
+                selector: row => {
+                    return (
+                        <div className="flex flex-col gap-2 text-white my-1">
+                            <button className="p-2 bg-green-500 hover:bg-green-600 rounded-lg" onClick={() => console.log(row.idsuratmasuk)}>Edit</button>
+                            <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.idsuratmasuk)}>Hapus</button>
+                        </div>
+                    )
+                },
+            },
+        ]
+
+        const downloadExcelSuratMasuk = (data) => {
+            handleDownloadExcel(data, "datasuratmasuk", "Data_Surat_Masuk_KartUNS")
+        };
+
         return (
             <>
                 <hr className="border-slate-700 border-dotted" />
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar Surat Masuk KartUNS</h3>
                     <div className='py-4'>
+                        <div className="flex justify-end mb-4 px-4">
+                            {
+                                data && data !== undefined && data.length > 0 ?
+                                    <button className="px-4 py-1 bg-green-600 hover:bg-green-700 rounded-full text-white text-sm" onClick={() => downloadExcelSuratMasuk(data)}>Export Data</button>
+                                    :
+                                    ""
+                            }
+                        </div>
                         {data !== undefined && data.length !== 0 ?
-                            data.map((item) => (
-                                <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idsuratmasuk}>
-                                    <div className='flex flex-row gap-4'>
-                                        <div className='rounded-md text-red-600 flex justify-center items-center hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/12'>
-                                            <button onClick={() => setShowPdf(item.idsuratmasuk)}>
-                                                <div className='flex flex-col justify-center items-center gap-2'>
-                                                    <MdPictureAsPdf size={48} />
-                                                    <div className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div className='flex flex-col gap-2 w-11/12'>
-                                            <div className='text-sm font-bold'>
-                                                {item.suratmasuktitle}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                <span className='font-bold'>Deskripsi:</span> {item.suratmasukdesc}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                <span className='font-bold'>Pengirim:</span> {item.pengirim}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
-                                            </div>
-                                            <div className='text-xs text-slate-500'>
-                                                <p>Published: {item.created_at}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {showpdf === item.idsuratmasuk ?
-                                        <div className='my-4'>
-                                            {/* <iframe title='suratmasuk' className='w-full h-96 rounded-md' src={APIURLConfig.baseurl + "static/surat/masuk/" + item.filesuraturi} /> */}
-                                            <iframe title='suratmasuk' id='showPdf' name='showPdf' className='w-full h-96 rounded-md font-fontawesome' src={`data:application/pdf;base64,${item.filesuraturi}`} />
-                                        </div>
-                                        :
-                                        ""
-                                    }
-                                </div>
-                            ))
+                            <div className="rounded-lg">
+                                <DataTable
+                                    columns={columns}
+                                    data={data}
+                                    theme="kartunsdark"
+                                    pagination
+                                    customStyles={customStyles}
+                                />
+                            </div>
                             :
                             "Belum ada data surat masuk di dalam sistem."
                         }
@@ -376,52 +459,133 @@ export const PgPersuratan = () => {
         console.log("Data in child: ", data)
         const [showpdf, setShowPdf] = useState(0)
 
+        // createTheme creates a new theme named kartunsdark that overrides the build in dark theme
+        createTheme('kartunsdark', {
+            text: {
+                primary: '#94a3b8',
+                secondary: '#64748b',
+            },
+            background: {
+                default: '#334155',
+            },
+            context: {
+                background: '#cb4b16',
+                text: '#FFFFFF',
+            },
+            divider: {
+                default: '#1e293b',
+            },
+            action: {
+                button: 'rgba(0,0,0,.54)',
+                hover: 'rgba(0,0,0,.08)',
+                disabled: 'rgba(0,0,0,.12)',
+            },
+        }, 'dark');
+
+        //  Internally, customStyles will deep merges your customStyles with the default styling.
+        const customStyles = {
+            headCells: {
+                style: {
+                    fontSize: '14px',
+                    justifyContent: 'center',
+                    backgroundColor: '#0f172a',
+                },
+            },
+            cells: {
+                style: {
+                    justifyContent: 'center',
+                }
+            }
+        };
+
+        const columns = [
+            {
+                name: "Judul surat",
+                selector: row => row.suratkeluartitle,
+            },
+            {
+                name: "No surat",
+                selector: row => row.suratkeluarnr,
+            },
+            {
+                name: "Kepada",
+                selector: row => row.kepada,
+            },
+            {
+                name: "Deskripsi",
+                selector: row => row.suratkeluardesc,
+            },
+            {
+                name: "Author",
+                selector: row => {
+                    return <ShowUsername userid={row.author_id} token={cookie.token} display="name" />
+                },
+            },
+            {
+                name: "File surat",
+                selector: row => {
+                    return (
+                        <button className="bg-green-700 px-2 rounded-full text-xs font-bold text-white" onClick={() => downloadPDF(APIURLConfig.baseurl + "static/surat/keluar/" + row.filesuratkeluaruri)}>Unduh</button>
+                    )
+                },
+            },
+            {
+                name: "Created",
+                selector: row => {
+                    return (
+                        <span>
+                            {
+                                Intl.DateTimeFormat("id-ID", {
+                                    dateStyle: 'medium',
+                                    timeStyle: 'long',
+                                    timeZone: 'Asia/Jakarta',
+                                }).format(new Date(row.created_at))
+                            }
+                        </span>
+                    )
+                }
+            },
+            {
+                name: "Action",
+                selector: row => {
+                    return (
+                        <div className="flex flex-col gap-2 text-white my-1">
+                            <button className="p-2 bg-green-500 hover:bg-green-600 rounded-lg" onClick={() => console.log(row.idsuratkeluar)}>Edit</button>
+                            <button className="p-2 bg-red-500 hover:bg-red-600 rounded-lg" onClick={() => console.log(row.idsuratkeluar)}>Hapus</button>
+                        </div>
+                    )
+                },
+            },
+        ]
+
+        const downloadExcelSuratKeluar = (data) => {
+            handleDownloadExcel(data, "datasuratkeluar", "Data_Surat_Keluar_KartUNS")
+        };
+
         return (
             <>
                 <hr className="border-slate-700 border-dotted" />
                 <div className="my-4">
                     <h3 className='font-bold text-lg flex justify-start text-green-500 mb-2'>Daftar Surat Kaluar KartUNS</h3>
                     <div className='py-4'>
+                        <div className="flex justify-end mb-4 px-4">
+                            {
+                                data && data !== undefined && data.length > 0 ?
+                                    <button className="px-4 py-1 bg-green-600 hover:bg-green-700 rounded-full text-white text-sm" onClick={() => downloadExcelSuratKeluar(data)}>Export Data</button>
+                                    :
+                                    ""
+                            }
+                        </div>
                         {data !== undefined && data.length !== 0 ?
-                            data.map((item) => (
-                                <div className='border-t-[1px] border-slate-500 border-dotted px-4 py-2 bg-slate-900 flex flex-col gap-4 my-2 rounded-md' key={item.idsuratkeluar}>
-                                    <div className='flex flex-row gap-4'>
-                                        <div className='rounded-md text-red-600 flex justify-center items-center hover:outline hover:outline-[1px] hover:outline-slate-600 w-1/12'>
-                                            <button onClick={() => setShowPdf(item.idsuratkeluar)}>
-                                                <div className='flex flex-col justify-center items-center gap-2'>
-                                                    <MdPictureAsPdf size={48} />
-                                                    <div className='text-xs text-white bg-red-700 px-2 rounded-md'>Show PDF</div>
-                                                </div>
-                                            </button>
-                                        </div>
-                                        <div className='flex flex-col gap-2 w-11/12'>
-                                            <div className='text-sm font-bold'>
-                                                {item.suratkeluartitle}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                <span className='font-bold'>Deskripsi:</span> {item.suratkeluardesc}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                <span className='font-bold'>Kepada:</span> {item.kepada}
-                                            </div>
-                                            <div className='text-xs text-slate-400'>
-                                                <span className='font-bold'>Author:</span> <ShowUsername userid={item.author_id} token={cookie.token} />
-                                            </div>
-                                            <div className='text-xs text-slate-500'>
-                                                <p>Published: {item.created_at}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {showpdf === item.idsuratkeluar ?
-                                        <div className='my-4'>
-                                            {/* <iframe title='suratkeluar' id='showPdf' name='showPdf' className='w-full h-96 rounded-md font-fontawesome' src={APIURLConfig.baseurl + "static/surat/keluar/" + item.filesuratkeluaruri} /> */}
-                                            <iframe title='suratkeluar' id='showPdf' name='showPdf' className='w-full h-96 rounded-md font-fontawesome' src={`data:application/pdf;base64,${item.filesuratkeluaruri}`} />
-                                        </div>
-                                        :
-                                        ""
-                                    }
-                                </div>
-                            ))
+                            <div className="rounded-lg">
+                                <DataTable
+                                    columns={columns}
+                                    data={data}
+                                    theme="kartunsdark"
+                                    pagination
+                                    customStyles={customStyles}
+                                />
+                            </div>
                             :
                             "Belum ada data surat keluar di dalam sistem."
                         }

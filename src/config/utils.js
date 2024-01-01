@@ -295,3 +295,11 @@ export const cekDurasiTayangAds = (publishdate, today, campaignduration) => {
         return false
     }
 }
+
+export const downloadPDF = (url) => {
+    let link = document.createElement('a')
+    link.href = url
+    link.target = "_blank"
+    link.download = 'download.pdf'
+    link.dispatchEvent(new MouseEvent('click'));
+}

@@ -47,6 +47,8 @@ import { MhsAgenda } from "../components/mahasiswa/MhsAgenda";
 import { MhsLowongan } from "../components/mahasiswa/MhsLowongan";
 import { Footer } from "../components/Footer";
 import { PgProfil } from "../components/pengurus/PgProfil";
+import { PgBeasiswa } from "../components/pengurus/PgBeasiswa";
+import { AdmProfil } from "../components/admin/AdmProfil";
 
 export const Home = () => {
     const navigate = useNavigate();
@@ -187,7 +189,7 @@ export const Home = () => {
                     : ""}
                 <div className="flex flex-row justify-between mx-2 gap-x-2 h-full">
                     <div className="flex flex-col gap-1 bg-slate-800 rounded-md w-5/6 text-white mb-2">
-                        <div className="flex gap-2 items-center ml-4">
+                        <div className="flex flex-col gap-2 ml-4">
                             {cookie.isadmin === "true" ?
                                 <div>
                                     <AdmNavbar getSelection={getSelection} />
@@ -199,7 +201,7 @@ export const Home = () => {
                                 </div>
                                 : ""
                             }
-                            {cookie.isalumni === "true" && cookie.ismhsarsuns === "false" && cookie.ispengurus === "false" ?
+                            {cookie.isalumni === "true" && cookie.ismhsarsuns === "false" ?
                                 <div>
                                     <AlumniNavbar getSelection={getSelection} />
                                 </div> : ""
@@ -216,6 +218,12 @@ export const Home = () => {
                             {activemenu === "Dashboard" ?
                                 <div>
                                     <AdmDashboard />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Profil Admin" ?
+                                <div>
+                                    <AdmProfil getstatus={getProfilEditStatus} />
                                 </div>
                                 :
                                 ""}
@@ -307,6 +315,12 @@ export const Home = () => {
                             {activemenu === "Training" ?
                                 <div>
                                     <PgTraining />
+                                </div>
+                                :
+                                ""}
+                            {activemenu === "Beasiswa" ?
+                                <div>
+                                    <PgBeasiswa />
                                 </div>
                                 :
                                 ""}
@@ -413,7 +427,7 @@ export const Home = () => {
                                 <Footer />
                             </div> : ""
                         }
-                        {ReadCookieLocal().ispengurus === "true" ?
+                        {ReadCookieLocal().ispengurus === "true" || ReadCookieLocal().isadmin === "true" ?
                             <div className="px-5">
                                 <Footer />
                             </div> : ""

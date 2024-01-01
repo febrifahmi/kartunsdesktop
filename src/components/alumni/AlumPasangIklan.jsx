@@ -229,7 +229,7 @@ export const AlumPasangIklan = () => {
                         <div>Perkiraan harga iklan anda: {adrate && adrate !== undefined ?
                                         <span>{parseInt(campaignduration) <= 31 && parseInt(campaignduration) >= 1 ? <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperhariharian)}</span> : parseInt(campaignduration) > 31 && parseInt(campaignduration) <= 365 ? <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperharibulanan)}</span> : <span className="text-sky-500 font-bold">{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(parseInt(campaignduration) * adrate.adrateperharitahunan)}</span>}</span>
                                         :
-                                        <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan/rate belum aktif. Buat ad rates/aktifkan rate dahulu sebelum buat unit iklan!</span>}
+                                        <span className='bg-red-500 px-2 rounded-full text-xs italic'>Belum ada rates iklan/rate belum aktif. Hubungi pengurus untuk info lebih lanjut!</span>}
                                     </div>
                         </div>
                         <Editor

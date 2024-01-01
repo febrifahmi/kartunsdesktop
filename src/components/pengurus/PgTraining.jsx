@@ -379,7 +379,7 @@ export const PgTraining = () => {
                                 </div>
                             ))
                             :
-                            "Belum ada data training webinar di dalam sistem."
+                            <div className='text-slate-500'>Belum ada data training webinar di dalam sistem.</div>
                         }
                     </div>
                 </div>
